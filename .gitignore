@@ -42,3 +42,13 @@ src/
 .lovable/
 .workspace/
 tsconfig.tsbuildinfo
+
+# Archivos locales del proyecto original
+.prettierignore
+.prettierrc
+AGENTS.md
+bun.lock
+bunfig.toml
+components.json
+eslint.config.js
+tsconfig.json
