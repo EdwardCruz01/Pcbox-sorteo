@@ -1,7 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const runtimeEnv = import.meta.env || {};
-const asset = (name) => `/assets/${name}`;
+const siteBase =
+  runtimeEnv.BASE_URL ||
+  (window.location.pathname.startsWith("/Pcbox-sorteo/") ? "/Pcbox-sorteo/" : "/");
+const asset = (name) => `${siteBase}assets/${name}`;
 const heroImage = asset("hero-sorteo.jpg");
 const flyer001 = asset("flyer-001.jpg");
 const flyer003 = asset("flyer-003.jpg");
