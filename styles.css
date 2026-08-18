@@ -16,7 +16,6 @@
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   --radius: 22px;
 }
-
 * {
   box-sizing: border-box;
 }
@@ -1021,6 +1020,212 @@ p {
     padding: 21px;
   }
 }
+
+/* Ajuste final del banner y del único sorteo visible. */
+.hero-ticket-banner .hero-content {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: 108px 0 92px;
+  text-align: center;
+}
+.hero-ticket-banner h1 {
+  max-width: 860px;
+  margin-inline: auto;
+  font-size: clamp(42px, 7vw, 78px);
+}
+.hero-ticket-banner .eyebrow {
+  margin-inline: auto;
+}
+
+#raffle-grid {
+  display: block;
+  width: min(100%, 820px);
+  margin: 30px auto 0;
+}
+.raffle-showcase {
+  position: relative;
+  display: block;
+  min-height: 650px;
+  overflow: hidden;
+  border-color: rgba(153, 176, 224, 0.3);
+  border-radius: 30px;
+  background: #161a25;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.28);
+}
+.raffle-showcase-visual {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+.raffle-showcase-visual::after {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 14, 27, 0.12) 8%,
+      rgba(10, 14, 27, 0.32) 37%,
+      rgba(10, 14, 27, 0.96) 92%
+    ),
+    linear-gradient(90deg, rgba(10, 14, 27, 0.4), transparent 60%);
+}
+.raffle-showcase-visual img {
+  object-position: center;
+  opacity: 0.76;
+}
+.raffle-showcase-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 650px;
+  flex-direction: column;
+  padding: 43px 44px 30px;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 22, 37, 0.05),
+    rgba(18, 22, 37, 0.12) 48%,
+    rgba(18, 22, 37, 0.28)
+  );
+}
+.raffle-showcase-body h3 {
+  max-width: min(76%, 620px);
+  margin-top: 12px;
+  color: #fff;
+  font-size: clamp(30px, 5vw, 55px);
+  line-height: 1.02;
+  text-shadow: 0 3px 22px rgba(0, 0, 0, 0.36);
+}
+.raffle-title-row {
+  align-items: flex-start;
+}
+.showcase-date {
+  color: #161a25;
+  background: #fff4e4;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+.showcase-price {
+  top: 38px;
+  right: 38px;
+  bottom: auto;
+  font-size: clamp(48px, 7vw, 74px);
+}
+.showcase-price small {
+  font-size: 25px;
+}
+.showcase-price em {
+  color: #fff4e4;
+  font-size: 11px;
+}
+.raffle-description {
+  max-width: 580px;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 16px;
+}
+.showcase-meta {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+}
+.raffle-card-countdown {
+  width: min(100%, 580px);
+  margin-top: 19px;
+  padding: 12px 14px 14px;
+  border-color: rgba(255, 244, 228, 0.34);
+  background: rgba(18, 22, 37, 0.42);
+}
+.raffle-card-countdown .countdown-grid div {
+  color: #201a18;
+  background: #fff4e4;
+}
+.raffle-card-countdown .countdown-grid small {
+  color: #766c63;
+}
+.raffle-showcase .prize-toggle {
+  margin-top: 17px;
+  border-color: rgba(255, 244, 228, 0.35);
+  color: #fff;
+  background: rgba(255, 244, 228, 0.13);
+}
+.raffle-showcase .prize-panel {
+  max-height: 190px;
+  overflow: auto;
+  border-color: rgba(255, 244, 228, 0.25);
+  background: rgba(18, 22, 37, 0.68);
+}
+.raffle-showcase .card-actions {
+  grid-template-columns: 1fr;
+  margin-top: auto;
+  padding-top: 20px;
+}
+.raffle-showcase .card-actions .secondary {
+  display: none;
+}
+.raffle-showcase .button.full {
+  min-height: 62px;
+  border: 0;
+  border-radius: 19px;
+  color: #171522;
+  background: linear-gradient(100deg, #ffb13d, #ff851c);
+  box-shadow: 0 15px 30px rgba(255, 133, 28, 0.24);
+  font-size: 18px;
+  font-weight: 900;
+}
+.raffle-showcase .button.full:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+@media (max-width: 700px) {
+  .hero-ticket-banner {
+    min-height: 600px;
+  }
+  .hero-ticket-banner .hero-content {
+    padding: 84px 20px 66px;
+  }
+  .hero-ticket-banner h1 {
+    font-size: clamp(39px, 12vw, 62px);
+  }
+  .raffle-showcase,
+  .raffle-showcase-body {
+    min-height: 660px;
+  }
+  .raffle-showcase-body {
+    padding: 30px 22px 22px;
+  }
+  .raffle-showcase .raffle-title-row {
+    display: block;
+    padding-top: 76px;
+  }
+  .raffle-showcase-body h3 {
+    max-width: 100%;
+    font-size: clamp(29px, 9vw, 45px);
+  }
+  .showcase-price {
+    top: 28px;
+    right: 22px;
+    font-size: 48px;
+  }
+  .showcase-price small {
+    font-size: 19px;
+  }
+  .showcase-date {
+    margin-top: 3px;
+    font-size: 9px;
+  }
+  .raffle-description {
+    font-size: 14px;
+  }
+  .raffle-card-countdown {
+    margin-top: 17px;
+  }
+  .countdown-grid {
+    gap: 5px;
+  }
+  .countdown-grid div {
+    min-height: 59px;
+  }
+  .countdown-grid strong {
+    font-size: 24px;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1579,5 +1784,201 @@ p {
   .policy-bar .container {
     justify-content: flex-start;
     padding: 14px 0;
+  }
+}
+
+/* Prioridad final para la composición tipo tarjeta única. */
+.hero-ticket-banner .hero-content {
+  max-width: 900px;
+  margin-inline: auto;
+  padding: 108px 0 92px;
+  text-align: center;
+}
+.hero-ticket-banner h1 {
+  max-width: 860px;
+  margin-inline: auto;
+  font-size: clamp(42px, 7vw, 78px);
+}
+.hero-ticket-banner .eyebrow {
+  margin-inline: auto;
+}
+#raffle-grid {
+  display: block;
+  width: min(100%, 820px);
+  margin: 30px auto 0;
+}
+.raffle-showcase {
+  position: relative;
+  display: block;
+  min-height: 650px;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #161a25;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.28);
+}
+.raffle-showcase-visual {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+}
+.raffle-showcase-visual::after {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(10, 14, 27, 0.12) 8%,
+      rgba(10, 14, 27, 0.32) 37%,
+      rgba(10, 14, 27, 0.96) 92%
+    ),
+    linear-gradient(90deg, rgba(10, 14, 27, 0.4), transparent 60%);
+}
+.raffle-showcase-visual img {
+  object-position: center;
+  opacity: 0.76;
+}
+.raffle-showcase-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 650px;
+  flex-direction: column;
+  padding: 43px 44px 30px;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 22, 37, 0.05),
+    rgba(18, 22, 37, 0.12) 48%,
+    rgba(18, 22, 37, 0.28)
+  );
+}
+.raffle-showcase-body h3 {
+  max-width: min(76%, 620px);
+  margin-top: 12px;
+  color: #fff;
+  font-size: clamp(30px, 5vw, 55px);
+  line-height: 1.02;
+  text-shadow: 0 3px 22px rgba(0, 0, 0, 0.36);
+}
+.showcase-price {
+  top: 38px;
+  right: 38px;
+  bottom: auto;
+  font-size: clamp(48px, 7vw, 74px);
+}
+.showcase-price small {
+  font-size: 25px;
+}
+.showcase-price em {
+  color: #fff4e4;
+  font-size: 11px;
+}
+.showcase-date {
+  color: #161a25;
+  background: #fff4e4;
+}
+.raffle-description {
+  max-width: 580px;
+  margin-top: 16px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 16px;
+}
+.showcase-meta {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+}
+.raffle-card-countdown {
+  width: min(100%, 580px);
+  margin-top: 19px;
+  padding: 12px 14px 14px;
+  border-color: rgba(255, 244, 228, 0.34);
+  background: rgba(18, 22, 37, 0.42);
+}
+.raffle-card-countdown .countdown-grid div {
+  color: #201a18;
+  background: #fff4e4;
+}
+.raffle-card-countdown .countdown-grid small {
+  color: #766c63;
+}
+.raffle-showcase .prize-toggle {
+  margin-top: 17px;
+  border-color: rgba(255, 244, 228, 0.35);
+  color: #fff;
+  background: rgba(255, 244, 228, 0.13);
+}
+.raffle-showcase .prize-panel {
+  max-height: 190px;
+  overflow: auto;
+  border-color: rgba(255, 244, 228, 0.25);
+  background: rgba(18, 22, 37, 0.68);
+}
+.raffle-showcase .card-actions {
+  grid-template-columns: 1fr;
+  margin-top: auto;
+  padding-top: 20px;
+}
+.raffle-showcase .card-actions .secondary {
+  display: none;
+}
+.raffle-showcase .button.full {
+  min-height: 62px;
+  border: 0;
+  border-radius: 19px;
+  color: #171522;
+  background: linear-gradient(100deg, #ffb13d, #ff851c);
+  box-shadow: 0 15px 30px rgba(255, 133, 28, 0.24);
+  font-size: 18px;
+  font-weight: 900;
+}
+.raffle-showcase .button.full:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+@media (max-width: 700px) {
+  .hero-ticket-banner {
+    min-height: 600px;
+  }
+  .hero-ticket-banner .hero-content {
+    padding: 84px 20px 66px;
+  }
+  .hero-ticket-banner h1 {
+    font-size: clamp(39px, 12vw, 62px);
+  }
+  .raffle-showcase,
+  .raffle-showcase-body {
+    min-height: 660px;
+  }
+  .raffle-showcase-body {
+    padding: 30px 22px 22px;
+  }
+  .raffle-showcase-body h3 {
+    max-width: 68%;
+    font-size: clamp(29px, 9vw, 45px);
+  }
+  .showcase-price {
+    top: 28px;
+    right: 22px;
+    font-size: 48px;
+  }
+  .showcase-price small {
+    font-size: 19px;
+  }
+  .showcase-date {
+    margin-top: 3px;
+    font-size: 9px;
+  }
+  .raffle-description {
+    font-size: 14px;
+  }
+  .raffle-card-countdown {
+    margin-top: 17px;
+  }
+  .raffle-showcase .card-actions {
+    grid-template-columns: 1fr;
+  }
+  .raffle-showcase .raffle-title-row {
+    display: block;
+    padding-top: 76px;
+  }
+  .raffle-showcase-body h3 {
+    max-width: 100%;
   }
 }

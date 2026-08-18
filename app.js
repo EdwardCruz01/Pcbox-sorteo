@@ -192,7 +192,7 @@ function renderApp() {
 
       <section class="section" id="sorteos">
         <div class="container">
-          <div class="section-heading"><div><h2>Sorteos activos</h2><p>Elige tu sorteo y asegura tus tickets antes del cierre.</p></div></div>
+          <div class="section-heading"><div><h2>Sorteo activo</h2><p>Conoce el sorteo vigente y asegura tus tickets antes del cierre.</p></div></div>
           <div id="data-notice"></div><div class="raffle-grid" id="raffle-grid"></div>
         </div>
       </section>
@@ -387,7 +387,7 @@ function startCountdown() {
 
 function renderRaffleCardsV2() {
   const active = state.raffles.filter((raffle) => raffle.status === "activo");
-  const list = active.length ? active : [defaultRaffle];
+  const list = active.length ? [active[0]] : [defaultRaffle];
   state.activeRaffle = list[0];
   const grid = document.querySelector("#raffle-grid");
   const notice = document.querySelector("#data-notice");
@@ -411,6 +411,7 @@ function renderRaffleCardsV2() {
             <div class="raffle-title-row"><h3>${escapeHtml(raffle.title)}</h3><span class="showcase-date">23 SEP</span></div>
             <p class="raffle-description">${escapeHtml(raffle.description || "Participa por tecnología y premios increíbles para tu hogar.")}</p>
             <div class="showcase-meta"><span>◷ 23 de septiembre</span><span>✓ Tickets verificados</span></div>
+            <div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
             <button class="prize-toggle" data-action="toggle-prizes" data-id="${escapeHtml(raffle.id)}" data-count="${prizes.length}" aria-expanded="false">Ver premios (${prizes.length}) <span>⌄</span></button>
             <div class="prize-panel" data-prizes-panel="${escapeHtml(raffle.id)}" hidden>
               <p class="prize-panel-title">Premios incluidos</p>
@@ -467,11 +468,7 @@ function enhancePublicLayout() {
       <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
       <div class="container hero-content">
         <span class="eyebrow">✦ SORTEO ACTIVO · PC BOX</span>
-        <h1>El próximo <span class="gradient-text">setup gamer</span> puede ser tuyo</h1>
-        <p class="hero-copy">Participa por una laptop, silla gamer, impresora y más premios. Compra tus tickets por Yape y recibe tus números después de la validación.</p>
-        <div class="hero-pills"><span>S/ 5 por ticket</span><span>23 de septiembre</span><span>Pago por Yape</span></div>
-        <div class="hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
-        <div class="actions"><a class="button" href="#sorteos" data-nav>Ver sorteo activo <span>→</span></a><a class="button secondary" href="#mis-tickets" data-nav>Mis tickets</a></div>
+        <h1>El próximo <span class="gradient-text">setup profesional</span> puede ser tuyo</h1>
       </div>`;
   }
   const ticketsSection = document.querySelector("#participantes");
