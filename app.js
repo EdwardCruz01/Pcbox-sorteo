@@ -43,16 +43,16 @@ const flyers = [
   [flyer028, "Tarjeta de video ROG Strix RTX 4090"],
   [flyer033, "Enfriamiento líquido"],
 ];
-const brands = [
-  "EPSON",
-  "Canon",
-  "HP",
-  "Lenovo",
-  "NVIDIA",
-  "AMD",
-  "CORSAIR",
-  "ANTRYX",
-  "HIKVISION",
+const distributorLogos = [
+  [asset("logo-epson.png"), "Epson"],
+  [asset("logo-canon.png"), "Canon"],
+  [asset("logo-hp.png"), "HP"],
+  [asset("logo-lenovo.png"), "Lenovo"],
+  [asset("logo-nvidia.png"), "NVIDIA"],
+  [asset("logo-amd.png"), "AMD Radeon Graphics"],
+  [asset("logo-corsair.png"), "Corsair"],
+  [asset("logo-antryx.png"), "Antryx"],
+  [asset("logo-hikvision.png"), "Hikvision"],
 ];
 const defaultRaffle = {
   id: "demo",
@@ -217,7 +217,7 @@ function renderApp() {
           "",
         )}</div><aside class="card credit-card"><span class="credit-label">Crédito directo</span><h3>Solicita tu <span class="gradient-text">crédito a sola firma</span></h3><p>Llévate tu laptop, PC gamer o impresora hoy mismo. Escríbenos por WhatsApp.</p><a class="button success" href="https://wa.me/51973604479?text=Hola%20PC%20BOX%2C%20quiero%20solicitar%20mi%20cr%C3%A9dito%20a%20sola%20firma." target="_blank" rel="noopener">◉ Solicitar por WhatsApp</a><p class="phone">+51 973 604 479</p></aside></div></div></section>
 
-      <section class="section compact border" id="marcas"><div class="container"><div class="section-heading"><div><h2>Representantes oficiales</h2><p>Trabajamos con las marcas líderes en tecnología.</p></div></div></div><div class="brands"><div class="brands-track"><ul class="brands-list">${brands.map((brand) => `<li>${brand}</li>`).join("")}</ul><ul class="brands-list" aria-hidden="true">${brands.map((brand) => `<li>${brand}</li>`).join("")}</ul></div></div></section>
+      <section class="section compact border" id="marcas"><div class="container"><div class="section-heading"><div><h2>Distribuidores Autorizados</h2><p>Trabajamos con las marcas líderes en tecnología.</p></div></div></div><div class="brands"><div class="brands-track"><ul class="brands-list">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul><ul class="brands-list" aria-hidden="true">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul></div></div></section>
 
       <section class="section compact" id="notificaciones"><div class="container notify-wrap"><div><p class="notify-title">♧ Recibir notificaciones</p><h2 style="margin-top:8px">No te pierdas el próximo sorteo</h2><p class="muted" style="margin-top:7px">Déjanos un correo o celular y te avisaremos de nuevos sorteos, resultados y ofertas.</p></div><form class="notify-form" id="notify-form"><input class="field" name="fullName" placeholder="Tu nombre" required /><input class="field" name="email" type="email" placeholder="Correo" /><input class="field" name="phone" inputmode="tel" placeholder="Celular" /><button class="button" type="submit">Avisarme</button></form></div></section>
 
@@ -404,11 +404,11 @@ function renderRaffleCardsV2() {
         <article class="card raffle-showcase">
           <div class="raffle-showcase-visual">
             <img src="${escapeHtml(raffle.image_url || heroImage)}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
-            <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
           </div>
+          <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
           <div class="raffle-showcase-body">
             <span class="showcase-kicker">✦ Sorteo activo</span>
-            <div class="raffle-title-row"><h3>${escapeHtml(raffle.title)}</h3><span class="showcase-date">23 SEP</span></div>
+            <div class="raffle-title-row"><h3>${escapeHtml(raffle.title)}</h3></div>
             <p class="raffle-description">${escapeHtml(raffle.description || "Participa por tecnología y premios increíbles para tu hogar.")}</p>
             <div class="showcase-meta"><span>◷ 23 de septiembre</span><span>✓ Tickets verificados</span></div>
             <div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
