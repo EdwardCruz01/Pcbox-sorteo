@@ -101,6 +101,7 @@ const state = {
     dni: "",
     name: "",
     birthDate: "",
+    adultConfirmed: false,
     phone: "",
     email: "",
     quantity: 1,
@@ -557,6 +558,7 @@ function openRegistration(raffle) {
     dni: "",
     name: "",
     birthDate: "",
+    adultConfirmed: false,
     phone: "",
     email: "",
     quantity: 1,
@@ -574,9 +576,9 @@ function renderRegistrationModal() {
   if (form.step === 0)
     content = `<div class="terms"><strong>Términos y condiciones</strong><p>1. Participación exclusiva para mayores de 18 años con DNI vigente.</p><p>2. Cada ticket cuesta ${money(raffle.ticket_price)} y se paga únicamente por Yape.</p><p>3. La inscripción queda en revisión hasta validar el comprobante.</p><p>4. Los tickets se asignan de forma correlativa desde el 100 al aprobar.</p><p>5. Los resultados se publican en esta página.</p></div><label class="check-row"><input type="checkbox" id="terms-check" ${form.accepted ? "checked" : ""} /> He leído y acepto los términos y condiciones.</label><button class="button full" id="continue-terms" ${form.accepted ? "" : "disabled"}>Aceptar y continuar</button>`;
   if (form.step === 1)
-    content = `<form id="dni-form"><label class="form-label">Número de DNI<input class="field" name="dni" inputmode="numeric" maxlength="8" placeholder="12345678" value="${escapeHtml(form.dni)}" required /></label><p class="muted" style="margin-top:10px;font-size:12px">Validamos tu identidad y mayoría de edad.</p><button class="button full" type="submit">Validar DNI</button></form>`;
+    content = `<form id="dni-form"><label class="form-label">Número de DNI<input class="field" name="dni" inputmode="numeric" maxlength="8" placeholder="12345678" value="${escapeHtml(form.dni)}" required /></label><p class="muted" style="margin-top:10px;font-size:12px">Validamos tu DNI y tus nombres registrados.</p><button class="button full" type="submit">Validar DNI</button></form>`;
   if (form.step === 2)
-    content = `<form id="person-form"><div class="person-box"><p class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.12em">Datos validados</p><p class="person-name">${escapeHtml(form.name)}</p><p class="muted">DNI ${escapeHtml(form.dni)}</p></div><div class="form-grid"><label class="form-label">Nombre completo<input class="field" name="name" value="${escapeHtml(form.name)}" readonly /></label><label class="form-label">Fecha de nacimiento<input class="field" name="birthDate" type="date" value="${escapeHtml(form.birthDate)}" readonly /></label><label class="form-label">Celular<input class="field" name="phone" inputmode="tel" maxlength="20" placeholder="999 999 999" required /></label><label class="form-label">Correo (opcional)<input class="field" name="email" type="email" maxlength="160" placeholder="correo@ejemplo.com" /></label></div><button class="button full" type="submit">Continuar</button></form>`;
+    content = `<form id="person-form"><div class="person-box"><p class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.12em">Datos validados por ApiPeruDev</p><p class="person-name">${escapeHtml(form.name)}</p><p class="muted">DNI ${escapeHtml(form.dni)}</p></div><div class="form-grid"><label class="form-label full">Nombre completo<input class="field" name="name" value="${escapeHtml(form.name)}" readonly /></label><label class="form-label">Celular<input class="field" name="phone" inputmode="tel" maxlength="20" placeholder="999 999 999" required /></label><label class="form-label">Correo (opcional)<input class="field" name="email" type="email" maxlength="160" placeholder="correo@ejemplo.com" /></label><label class="check-row full"><input name="adultConfirmed" type="checkbox" required /> Confirmo que soy mayor de 18 años.</label></div><button class="button full" type="submit">Continuar</button></form>`;
   if (form.step === 3)
     content = `<div class="total-box"><p class="muted" style="text-align:center;text-transform:uppercase;font-size:11px;letter-spacing:.12em">Cantidad de tickets</p><div class="quantity"><button class="round-button" data-quantity="minus" type="button">−</button><strong>${form.quantity}</strong><button class="round-button" data-quantity="plus" type="button">+</button></div><div class="total-row"><span>Precio por ticket</span><span>${money(raffle.ticket_price)}</span></div><div class="total-row"><span>Tickets</span><span>× ${form.quantity}</span></div><div class="total-row final"><span>Total</span><span class="gradient-text">${money(Number(raffle.ticket_price) * form.quantity)}</span></div></div><button class="button full" id="go-payment">Pagar ${money(Number(raffle.ticket_price) * form.quantity)}</button>`;
   if (form.step === 4)
@@ -611,8 +613,11 @@ function bindRegistrationEvents() {
       const data = new FormData(personForm);
       state.registration.phone = String(data.get("phone") || "").trim();
       state.registration.email = String(data.get("email") || "").trim();
+      state.registration.adultConfirmed = data.get("adultConfirmed") === "on";
       if (state.registration.phone.length < 6)
         return showToast("Ingresa un celular válido.", "error");
+      if (!state.registration.adultConfirmed)
+        return showToast("Debes confirmar que eres mayor de 18 años.", "error");
       state.registration.step = 3;
       renderRegistrationModal();
     });
@@ -653,7 +658,7 @@ async function handleDniValidation(event) {
   if (!/^\d{8}$/.test(dni)) return showToast("Ingresa un DNI válido de 8 dígitos.", "error");
   try {
     const result = await publicApi("consultar-dni", { dni });
-    if (!result.mayorDeEdad) throw new Error("Debes ser mayor de edad para participar.");
+    if (result.mayorDeEdad === false) throw new Error("Debes ser mayor de edad para participar.");
     state.registration.dni = dni;
     state.registration.name = result.nombreCompleto;
     state.registration.birthDate = result.fechaNacimiento;
@@ -687,6 +692,7 @@ async function handleReceiptSubmit(event) {
       dni: state.registration.dni,
       fullName: state.registration.name,
       birthDate: state.registration.birthDate,
+      adultConfirmed: state.registration.adultConfirmed,
       phone: state.registration.phone,
       email: state.registration.email,
       quantity: state.registration.quantity,

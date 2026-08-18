@@ -11,33 +11,8 @@ const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const admin = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
-
-const names = [
-  "JOSE LUIS",
-  "MARIA ELENA",
-  "CARLOS ALBERTO",
-  "ANA LUCIA",
-  "JORGE ENRIQUE",
-  "ROSA MERCEDES",
-  "MIGUEL ANGEL",
-  "CLAUDIA PATRICIA",
-  "LUIS FERNANDO",
-  "SANDRA MILAGROS",
-];
-const surnames = [
-  "QUISPE",
-  "MAMANI",
-  "ROJAS",
-  "TORRES",
-  "VASQUEZ",
-  "HUAMAN",
-  "CASTILLO",
-  "FLORES",
-  "RAMIREZ",
-  "SANCHEZ",
-  "CHAVEZ",
-  "GUTIERREZ",
-];
+const apiPeruToken = Deno.env.get("APIPERU_TOKEN") ?? "";
+const apiPeruDniUrl = "https://api.apiperu.dev/dni";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -55,29 +30,6 @@ function normalizeText(value: string) {
     .toUpperCase();
 }
 
-function padron(dni: string) {
-  const digits = dni.split("").map(Number);
-  const sum = digits.reduce((total, digit) => total + digit, 0);
-  const year = 1970 + (sum % 32);
-  const month = String((digits[2] % 12) + 1).padStart(2, "0");
-  const day = String((digits[3] % 27) + 1).padStart(2, "0");
-  return {
-    dni,
-    nombreCompleto: `${surnames[digits[0] % surnames.length]} ${surnames[(digits[1] + 3) % surnames.length]} ${names[sum % names.length]}`,
-    fechaNacimiento: `${year}-${month}-${day}`,
-    simulado: true,
-  };
-}
-
-function age(date: string) {
-  const birth = new Date(`${date}T00:00:00Z`);
-  const today = new Date();
-  let result = today.getUTCFullYear() - birth.getUTCFullYear();
-  const month = today.getUTCMonth() - birth.getUTCMonth();
-  if (month < 0 || (month === 0 && today.getUTCDate() < birth.getUTCDate())) result -= 1;
-  return result;
-}
-
 function validDni(dni: unknown): dni is string {
   return typeof dni === "string" && /^\d{8}$/.test(dni);
 }
@@ -92,12 +44,37 @@ function validPhone(phone: unknown) {
   return typeof phone === "string" && /^\+?\d[\d\s-]{7,18}$/.test(phone);
 }
 
+async function consultDni(dni: string) {
+  if (!apiPeruToken) throw new Error("La validación de DNI no está configurada en Supabase.");
+  const response = await fetch(apiPeruDniUrl, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${apiPeruToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ dni }),
+  });
+  const payload = await response.json().catch(() => null);
+  if (!response.ok || payload?.success !== true || !payload?.data?.nombre_completo) {
+    throw new Error(payload?.message || "No encontramos datos para ese DNI.");
+  }
+  return {
+    dni,
+    nombreCompleto: String(payload.data.nombre_completo),
+    fechaNacimiento: "",
+    mayorDeEdad: null,
+    fuente: "ApiPeruDev",
+  };
+}
+
 async function createRegistration(data: Record<string, unknown>) {
   if (
     !validDni(data.dni) ||
     typeof data.raffleId !== "string" ||
     typeof data.fullName !== "string" ||
     typeof data.birthDate !== "string" ||
+    data.adultConfirmed !== true ||
     !validPhone(data.phone) ||
     !validEmail(data.email) ||
     typeof data.quantity !== "number" ||
@@ -113,12 +90,8 @@ async function createRegistration(data: Record<string, unknown>) {
   if (!receiptMatch || receiptMatch[1] !== data.dni)
     throw new Error("Ruta de comprobante inválida.");
 
-  const person = padron(data.dni);
-  if (
-    age(person.fechaNacimiento) < 18 ||
-    person.fechaNacimiento !== data.birthDate ||
-    normalizeText(data.fullName) !== normalizeText(person.nombreCompleto)
-  )
+  const person = await consultDni(data.dni);
+  if (normalizeText(data.fullName) !== normalizeText(person.nombreCompleto))
     throw new Error("Los datos no coinciden con el DNI validado.");
 
   const { data: raffle, error: raffleError } = await admin
@@ -144,7 +117,7 @@ async function createRegistration(data: Record<string, unknown>) {
       raffle_id: data.raffleId,
       dni: data.dni,
       full_name: data.fullName,
-      birth_date: data.birthDate,
+      birth_date: data.birthDate || null,
       phone: data.phone,
       email: data.email || null,
       quantity: data.quantity,
@@ -203,12 +176,7 @@ async function handle(request: Request) {
     switch (body.action) {
       case "consultar-dni": {
         if (!validDni(body.dni)) throw new Error("El DNI debe tener 8 dígitos.");
-        const person = padron(body.dni);
-        return json({
-          ...person,
-          edad: age(person.fechaNacimiento),
-          mayorDeEdad: age(person.fechaNacimiento) >= 18,
-        });
+        return json(await consultDni(body.dni));
       }
       case "crear-inscripcion":
         return json(await createRegistration(body));
