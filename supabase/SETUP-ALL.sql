@@ -260,7 +260,7 @@ BEGIN
   SELECT id INTO v_raffle FROM public.raffles WHERE title = 'Gran Sorteo Laptop Gamer ASUS ROG' LIMIT 1;
   IF v_raffle IS NULL THEN
     INSERT INTO public.raffles (title, description, details, ticket_price, status, draw_date)
-    VALUES ('Gran Sorteo Laptop Gamer ASUS ROG', 'Participa por una laptop gamer de última generación y más premios tecnológicos.', 'Sorteo con 5 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.', 5, 'activo', now() + interval '20 days') RETURNING id INTO v_raffle;
+    VALUES ('Gran Sorteo Laptop Gamer ASUS ROG', 'Participa por una laptop gamer de última generación y más premios tecnológicos.', 'Sorteo con 5 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.', 5, 'activo', '2026-09-23 23:59:59-05:00') RETURNING id INTO v_raffle;
     INSERT INTO public.prizes (raffle_id, position, name) VALUES
       (v_raffle, 1, 'Laptop Gamer ASUS ROG RTX 4060'),
       (v_raffle, 2, 'Monitor Gamer 27" 165Hz'),

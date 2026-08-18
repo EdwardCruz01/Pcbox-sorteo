@@ -10,6 +10,7 @@ BEGIN;
 -- Precio oficial del sorteo y precio por defecto para nuevos sorteos.
 ALTER TABLE public.raffles ALTER COLUMN ticket_price SET DEFAULT 5;
 UPDATE public.raffles SET ticket_price = 5 WHERE status = 'activo';
+UPDATE public.raffles SET draw_date = '2026-09-23 23:59:59-05:00' WHERE status = 'activo';
 
 -- Comprobantes privados, máximo 10 MB y solo formatos permitidos.
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

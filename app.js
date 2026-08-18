@@ -29,6 +29,8 @@ const API_URL =
 const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 const MAX_RECEIPT_BYTES = 10 * 1024 * 1024;
 const RECEIPT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
+const FIXED_DRAW_DATE = "2026-09-23T23:59:59-05:00";
+let countdownTimer = null;
 
 const flyers = [
   [flyer042, "Tablets PC BOX"],
@@ -60,7 +62,7 @@ const defaultRaffle = {
   details:
     "Sorteo con 5 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.",
   ticket_price: 5,
-  draw_date: null,
+  draw_date: FIXED_DRAW_DATE,
   status: "activo",
   image_url: heroImage,
   prizes: [
@@ -327,10 +329,210 @@ function findRaffle(id) {
 function handleRaffleAction(event) {
   const button = event.target.closest("[data-action]");
   if (!button) return;
+  if (button.dataset.action === "toggle-prizes") {
+    const panel = document.querySelector(`[data-prizes-panel="${button.dataset.id}"]`);
+    if (!panel) return;
+    const isOpen = !panel.hidden;
+    panel.hidden = isOpen;
+    button.setAttribute("aria-expanded", String(!isOpen));
+    button.innerHTML = isOpen
+      ? `Ver premios (${button.dataset.count}) <span>⌄</span>`
+      : `Ocultar premios <span>⌃</span>`;
+    return;
+  }
   const raffle = findRaffle(button.dataset.id);
   if (!raffle) return;
   if (button.dataset.action === "info") showInfoModal(raffle);
   if (button.dataset.action === "register") openRegistration(raffle);
+}
+
+function countdownTarget() {
+  const configured = state.activeRaffle?.draw_date ? new Date(state.activeRaffle.draw_date) : null;
+  if (
+    configured &&
+    !Number.isNaN(configured.getTime()) &&
+    configured.getMonth() === 8 &&
+    configured.getDate() === 23
+  ) {
+    return configured;
+  }
+  return new Date(FIXED_DRAW_DATE);
+}
+
+function updateCountdown() {
+  const target = countdownTarget();
+  const remaining = Math.max(0, target.getTime() - Date.now());
+  const totalSeconds = Math.floor(remaining / 1000);
+  const values = {
+    days: Math.floor(totalSeconds / 86400),
+    hours: Math.floor((totalSeconds % 86400) / 3600),
+    minutes: Math.floor((totalSeconds % 3600) / 60),
+    seconds: totalSeconds % 60,
+  };
+  document.querySelectorAll("[data-countdown]").forEach((counter) => {
+    Object.entries(values).forEach(([unit, value]) => {
+      const element = counter.querySelector(`[data-countdown-unit="${unit}"]`);
+      if (element) element.textContent = String(value).padStart(2, "0");
+    });
+    const label = counter.querySelector("[data-countdown-label]");
+    if (label) label.textContent = remaining ? "Cierre de ventas en" : "Sorteo en proceso";
+  });
+}
+
+function startCountdown() {
+  if (countdownTimer) window.clearInterval(countdownTimer);
+  updateCountdown();
+  countdownTimer = window.setInterval(updateCountdown, 1000);
+}
+
+function renderRaffleCardsV2() {
+  const active = state.raffles.filter((raffle) => raffle.status === "activo");
+  const list = active.length ? active : [defaultRaffle];
+  state.activeRaffle = list[0];
+  const grid = document.querySelector("#raffle-grid");
+  const notice = document.querySelector("#data-notice");
+  if (!grid || !notice) return;
+  notice.innerHTML = state.dataError
+    ? `<p class="notice">${escapeHtml(state.dataError)}</p>`
+    : state.raffles.length === 0
+      ? `<p class="notice">El sorteo se activará cuando el administrador publique la fecha y sus premios.</p>`
+      : "";
+  grid.innerHTML = list
+    .map((raffle) => {
+      const prizes = (raffle.prizes || []).slice(0, 10);
+      return `
+        <article class="card raffle-showcase">
+          <div class="raffle-showcase-visual">
+            <img src="${escapeHtml(raffle.image_url || heroImage)}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
+            <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
+          </div>
+          <div class="raffle-showcase-body">
+            <span class="showcase-kicker">✦ Sorteo activo</span>
+            <div class="raffle-title-row"><h3>${escapeHtml(raffle.title)}</h3><span class="showcase-date">23 SEP</span></div>
+            <p class="raffle-description">${escapeHtml(raffle.description || "Participa por tecnología y premios increíbles para tu hogar.")}</p>
+            <div class="showcase-meta"><span>◷ 23 de septiembre</span><span>✓ Tickets verificados</span></div>
+            <button class="prize-toggle" data-action="toggle-prizes" data-id="${escapeHtml(raffle.id)}" data-count="${prizes.length}" aria-expanded="false">Ver premios (${prizes.length}) <span>⌄</span></button>
+            <div class="prize-panel" data-prizes-panel="${escapeHtml(raffle.id)}" hidden>
+              <p class="prize-panel-title">Premios incluidos</p>
+              <div class="prize-cards">${prizes.map((prize) => `<div class="prize-card"><span>${prize.position}</span><strong>${escapeHtml(prize.name)}</strong></div>`).join("")}</div>
+            </div>
+            <div class="card-actions"><button class="button full" data-action="register" data-id="${escapeHtml(raffle.id)}" ${raffle.demo ? "disabled" : ""}>PARTICIPAR <span>→</span></button><button class="button secondary full" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div>
+          </div>
+        </article>`;
+    })
+    .join("");
+  updateCountdown();
+}
+
+function showPolicyModal(policy) {
+  const content = {
+    terms: [
+      "Términos y condiciones",
+      "<p>Participan personas mayores de 18 años con DNI vigente. La inscripción se registra cuando se envía el comprobante de pago y queda sujeta a revisión.</p><p>Cada ticket tiene el precio publicado en el sorteo. Los números se asignan correlativamente desde el 100 después de la aprobación del comprobante. El resultado se determina mediante selección aleatoria de tickets aprobados.</p><p>PC BOX podrá rechazar comprobantes ilegibles, duplicados o que no correspondan al monto indicado.</p>",
+    ],
+    privacy: [
+      "Política de privacidad",
+      "<p>Usamos los datos entregados —DNI, nombre, celular, correo y comprobante— para validar la inscripción, asignar tickets, atender consultas y publicar resultados.</p><p>No vendemos tus datos. El acceso queda limitado al personal autorizado y a los servicios necesarios para operar la plataforma. Puedes solicitar actualización o eliminación de tus datos mediante Soporte.</p>",
+    ],
+    refunds: [
+      "Política de devoluciones",
+      "<p>Si el comprobante es rechazado antes de asignar tickets, la participación no se considera confirmada. Las solicitudes relacionadas con pagos duplicados, errores de monto o incidencias se revisan caso por caso con el comprobante correspondiente.</p><p>Escríbenos por Soporte antes de la fecha de cierre de ventas para que podamos revisar tu caso.</p>",
+    ],
+    news: [
+      "Noticias",
+      "<p>Aquí publicaremos novedades de sorteos, fechas de cierre, resultados y comunicados importantes de PC BOX.</p><p>Consulta también la sección Ganadores para ver los tickets premiados cuando el sorteo haya terminado.</p>",
+    ],
+    complaints: [
+      "Libro de reclamaciones",
+      "<p>Si deseas presentar una queja o reclamo, comunícate con Soporte indicando tu nombre, DNI, fecha de la operación y una descripción clara del caso. Te responderemos por el canal de atención de PC BOX.</p><p>Soporte: lunes a sábado por WhatsApp.</p>",
+    ],
+  };
+  const selected = content[policy] || content.terms;
+  const root = document.querySelector("#modal-root");
+  root.innerHTML = `<div class="modal-backdrop policy-backdrop" data-close-policy><section class="modal policy-modal" role="dialog" aria-modal="true" aria-labelledby="policy-title"><button class="modal-close" data-close-policy aria-label="Cerrar">×</button><span class="showcase-kicker">PC BOX · Información</span><h2 id="policy-title">${selected[0]}</h2><div class="policy-content">${selected[1]}</div><button class="button full" data-close-policy>Entendido</button></section></div>`;
+  root.querySelectorAll("[data-close-policy]").forEach((element) =>
+    element.addEventListener("click", (event) => {
+      if (event.target === element) root.innerHTML = "";
+    }),
+  );
+  root.querySelector(".policy-modal").addEventListener("click", (event) => event.stopPropagation());
+}
+
+function enhancePublicLayout() {
+  const hero = document.querySelector(".hero");
+  if (hero) {
+    hero.classList.add("hero-ticket-banner");
+    hero.innerHTML = `
+      <img class="hero-media" src="${heroImage}" alt="Setup gamer completo de PC BOX" />
+      <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
+      <div class="container hero-content">
+        <span class="eyebrow">✦ SORTEO ACTIVO · PC BOX</span>
+        <h1>El próximo <span class="gradient-text">setup gamer</span> puede ser tuyo</h1>
+        <p class="hero-copy">Participa por una laptop, silla gamer, impresora y más premios. Compra tus tickets por Yape y recibe tus números después de la validación.</p>
+        <div class="hero-pills"><span>S/ 5 por ticket</span><span>23 de septiembre</span><span>Pago por Yape</span></div>
+        <div class="hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
+        <div class="actions"><a class="button" href="#sorteos" data-nav>Ver sorteo activo <span>→</span></a><a class="button secondary" href="#mis-tickets" data-nav>Mis tickets</a></div>
+      </div>`;
+  }
+  const ticketsSection = document.querySelector("#participantes");
+  if (ticketsSection) ticketsSection.id = "mis-tickets";
+  document.querySelectorAll('a[href="#participantes"]').forEach((link) => {
+    link.href = "#mis-tickets";
+    link.textContent = "Mis tickets";
+  });
+  document.querySelector('a[href="#notificaciones"]')?.remove();
+  document.querySelector("#notificaciones")?.remove();
+  const nav = document.querySelector("#site-nav");
+  if (nav && !nav.querySelector('a[href="#soporte"]')) {
+    const supportLink = document.createElement("a");
+    supportLink.href = "#soporte";
+    supportLink.dataset.nav = "";
+    supportLink.textContent = "Soporte";
+    supportLink.addEventListener("click", () => nav.classList.remove("open"));
+    nav.append(supportLink);
+  }
+  const stepsSection = document.querySelector("#como-participar");
+  if (stepsSection && !document.querySelector("#pagos")) {
+    stepsSection.insertAdjacentHTML(
+      "afterend",
+      `
+      <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR o sigue las instrucciones dentro de tu inscripción. El monto exacto depende de la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><span class="payment-step">01</span><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>PC BOX</span></div><span class="payment-label">PAGA CON YAPE</span><strong class="payment-number">QR PC BOX</strong>${makeQrSvg("PCBOX-PAGO-2026", 21)}<span class="payment-hint">El total aparecerá al momento de participar.</span></div></div></div></section>
+      <section class="section participate-cta"><div class="container"><div class="cta-panel"><div><span class="showcase-kicker">¿Listo para participar?</span><h2>Tu número puede estar aquí</h2><p>Entra al sorteo activo y completa tu inscripción en pocos pasos.</p></div><a class="button cta-button" href="#sorteos" data-nav>PARTICIPAR AHORA <span>→</span></a></div></div></section>`,
+    );
+  }
+  const storeSection = document.querySelector("#tienda");
+  const creditCard = storeSection?.querySelector(".credit-card");
+  if (storeSection && creditCard && !document.querySelector("#credito")) {
+    const creditSection = document.createElement("section");
+    creditSection.className = "section credit-section";
+    creditSection.id = "credito";
+    creditSection.innerHTML = '<div class="container"></div>';
+    creditSection.firstElementChild.append(creditCard);
+    storeSection.after(creditSection);
+  }
+  const footer = document.querySelector(".site-footer");
+  if (footer) {
+    footer.innerHTML = `
+      <div class="container footer-inner"><div class="footer-copy"><span class="brand-mark footer-mark">PB</span><span>Tecnología smart, sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
+      <div class="policy-bar"><div class="container"><a href="#politicas" data-policy="terms">Términos y condiciones</a><a href="#politicas" data-policy="privacy">Política de privacidad</a><a href="#politicas" data-policy="refunds">Política de devoluciones</a><a href="#politicas" data-policy="news">Noticias</a><a href="#politicas" data-policy="complaints">Libro de reclamaciones</a><a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a></div></div>
+      <div class="copyright">© ${new Date().getFullYear()} PC BOX Tecnología Smart. Todos los derechos reservados.</div>`;
+    footer.querySelectorAll("[data-policy]").forEach((link) =>
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        showPolicyModal(link.dataset.policy);
+      }),
+    );
+  }
+  if (!document.querySelector("#soporte")) {
+    document
+      .querySelector("main")
+      .insertAdjacentHTML(
+        "beforeend",
+        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención PC BOX</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51973604479?text=Hola%20PC%20BOX%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
+      );
+  }
+  renderRaffleCardsV2();
+  startCountdown();
 }
 
 function showInfoModal(raffle) {
@@ -580,7 +782,7 @@ function renderRegistrationResult(item) {
 async function loadData() {
   if (!supabase) {
     state.dataError = "Modo visual: conecta Supabase para cargar sorteos y permitir inscripciones.";
-    renderRaffles();
+    renderRaffleCardsV2();
     return;
   }
   const { data, error } = await supabase
@@ -592,7 +794,7 @@ async function loadData() {
   if (error) {
     state.dataError =
       "No se pudo conectar con Supabase. Revisa las variables VITE_ y las políticas públicas.";
-    renderRaffles();
+    renderRaffleCardsV2();
     return;
   }
   state.raffles = (data || []).map((raffle) => ({
@@ -601,9 +803,11 @@ async function loadData() {
     prizes: (raffle.prizes || []).sort((a, b) => a.position - b.position),
   }));
   state.dataError = "";
-  renderRaffles();
+  renderRaffleCardsV2();
   renderWinners();
+  updateCountdown();
 }
 
 renderApp();
+enhancePublicLayout();
 loadData();
