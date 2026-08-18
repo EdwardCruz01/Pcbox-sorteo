@@ -2055,3 +2055,19 @@ p {
 #tienda .flyer.is-rotated:hover img {
   transform: rotate(-90deg) scale(1.04);
 }
+
+/* Distribuidores: logos transparentes sobre una superficie gris suave. */
+#marcas {
+  background: linear-gradient(180deg, rgba(148, 163, 184, 0.2), rgba(71, 85, 105, 0.24));
+}
+#marcas h2 {
+  color: #101827;
+}
+#marcas .section-heading p {
+  color: rgba(16, 24, 39, 0.72);
+}
+#marcas .brands-list li {
+  border-color: rgba(16, 24, 39, 0.18);
+  background: transparent;
+  box-shadow: none;
+}
