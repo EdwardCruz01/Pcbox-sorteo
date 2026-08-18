@@ -33,15 +33,15 @@ const FIXED_DRAW_DATE = "2026-09-23T23:59:59-05:00";
 let countdownTimer = null;
 
 const flyers = [
-  [flyer042, "Tablets PC BOX"],
-  [flyer048, "Silla gaming premium RGB"],
-  [flyer054, "Cámaras de vigilancia"],
-  [flyer071, "Crédito a sola firma en PC BOX"],
-  [flyer001, "Epson"],
-  [flyer003, "Impresora Epson L3250 multifuncional"],
-  [flyer007, "Tu DNI te regala un crédito"],
-  [flyer028, "Tarjeta de video ROG Strix RTX 4090"],
-  [flyer033, "Enfriamiento líquido"],
+  [flyer042, "Tablets PC BOX", true],
+  [flyer048, "Silla gaming premium RGB", true],
+  [flyer054, "Cámaras de vigilancia", true],
+  [flyer071, "Crédito a sola firma en PC BOX", true],
+  [flyer001, "Epson", false],
+  [flyer003, "Impresora Epson L3250 multifuncional", false],
+  [flyer007, "Tu DNI te regala un crédito", true],
+  [flyer028, "Tarjeta de video ROG Strix RTX 4090", true],
+  [flyer033, "Enfriamiento líquido", true],
 ];
 const distributorLogos = [
   [asset("logo-epson.png"), "Epson"],
@@ -210,8 +210,8 @@ function renderApp() {
       <section class="section" id="tienda"><div class="container"><div class="section-heading"><div><h2>Nuestra tienda</h2><p>Flyers destacados que rotan suavemente para mostrar nuestras categorías.</p></div></div><div class="store-grid"><div class="flyer-grid flyer-rotator">${flyers
         .slice(0, 3)
         .map(
-          ([src, alt], index) =>
-            `<figure class="flyer" data-flyer-slot="${index}"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy" /></figure>`,
+          ([src, alt, rotated], index) =>
+            `<figure class="flyer${rotated ? " is-rotated" : ""}" data-flyer-slot="${index}"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy" /></figure>`,
         )
         .join(
           "",
@@ -309,13 +309,14 @@ function startFlyerRotation() {
     rotation += 1;
     document.querySelectorAll("[data-flyer-slot]").forEach((slot) => {
       const slotIndex = Number(slot.dataset.flyerSlot || 0);
-      const [source, alt] = flyers[(rotation + slotIndex) % flyers.length];
+      const [source, alt, rotated] = flyers[(rotation + slotIndex) % flyers.length];
       const image = slot.querySelector("img");
       if (!image) return;
       slot.classList.add("is-changing");
       window.setTimeout(() => {
         image.src = source;
         image.alt = alt;
+        slot.classList.toggle("is-rotated", Boolean(rotated));
         slot.classList.remove("is-changing");
       }, 650);
     });

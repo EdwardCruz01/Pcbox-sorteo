@@ -2036,3 +2036,22 @@ p {
     padding: 9px 12px;
   }
 }
+
+/* Los flyers horizontales rotan dentro de la tarjeta vertical sin recortarse. */
+#tienda .flyer {
+  display: grid;
+  place-items: center;
+}
+#tienda .flyer.is-rotated img {
+  width: 150%;
+  height: auto;
+  max-width: none;
+  object-fit: contain;
+  transform: rotate(-90deg);
+}
+#tienda .flyer.is-changing.is-rotated img {
+  transform: rotate(-90deg) scale(1.035);
+}
+#tienda .flyer.is-rotated:hover img {
+  transform: rotate(-90deg) scale(1.04);
+}
