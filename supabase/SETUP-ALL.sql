@@ -81,6 +81,8 @@ CREATE TABLE IF NOT EXISTS public.registrations (
   quantity int NOT NULL DEFAULT 1,
   amount numeric(10,2) NOT NULL DEFAULT 0,
   receipt_url text,
+  terms_accepted boolean NOT NULL DEFAULT false,
+  terms_accepted_at timestamptz,
   status text NOT NULL DEFAULT 'pendiente',
   admin_note text,
   created_at timestamptz NOT NULL DEFAULT now(),
@@ -175,15 +177,11 @@ CREATE POLICY "products admin write" ON public.products FOR ALL TO authenticated
 USING (public.has_role(auth.uid(), 'admin')) WITH CHECK (public.has_role(auth.uid(), 'admin'));
 
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-VALUES ('comprobantes', 'comprobantes', false, 10485760,
+VALUES ('comprobantes', 'comprobantes', false, 5242880,
   ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf']::text[])
-ON CONFLICT (id) DO UPDATE SET public = false, file_size_limit = 10485760,
+ON CONFLICT (id) DO UPDATE SET public = false, file_size_limit = 5242880,
   allowed_mime_types = EXCLUDED.allowed_mime_types;
 DROP POLICY IF EXISTS "comprobantes upload" ON storage.objects;
-CREATE POLICY "comprobantes upload" ON storage.objects FOR INSERT TO anon, authenticated
-WITH CHECK (bucket_id = 'comprobantes'
-  AND name ~ '^\d{8}/[a-fA-F0-9-]{8,64}\.(jpg|jpeg|png|webp|heic|pdf)$'
-  AND COALESCE((metadata->>'mimetype') IN ('image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf'), false));
 DROP POLICY IF EXISTS "comprobantes admin read" ON storage.objects;
 CREATE POLICY "comprobantes admin read" ON storage.objects FOR SELECT TO authenticated
 USING (bucket_id = 'comprobantes' AND public.has_role(auth.uid(), 'admin'));
@@ -257,16 +255,17 @@ GRANT EXECUTE ON FUNCTION public.aprobar_inscripcion(uuid, text), public.rechaza
 -- Sorteo inicial y premios. Si ya existe por título, no duplica datos.
 DO $$ DECLARE v_raffle uuid;
 BEGIN
-  SELECT id INTO v_raffle FROM public.raffles WHERE title = 'Gran Sorteo Laptop Gamer ASUS ROG' LIMIT 1;
+  SELECT id INTO v_raffle FROM public.raffles WHERE title = '1° Gran Sorteo del Shucuy Regalon' LIMIT 1;
   IF v_raffle IS NULL THEN
     INSERT INTO public.raffles (title, description, details, ticket_price, status, draw_date)
-    VALUES ('Gran Sorteo Laptop Gamer ASUS ROG', 'Participa por una laptop gamer de última generación y más premios tecnológicos.', 'Sorteo con 5 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.', 5, 'activo', '2026-09-23 23:59:59-05:00') RETURNING id INTO v_raffle;
+    VALUES ('1° Gran Sorteo del Shucuy Regalon', 'El próximo PC profesional puede ser tuyo junto a cinco premios tecnológicos.', 'Sorteo con 6 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.', 5, 'activo', '2026-09-23 23:59:59-05:00') RETURNING id INTO v_raffle;
     INSERT INTO public.prizes (raffle_id, position, name) VALUES
-      (v_raffle, 1, 'Laptop Gamer ASUS ROG RTX 4060'),
-      (v_raffle, 2, 'Monitor Gamer 27" 165Hz'),
-      (v_raffle, 3, 'Teclado mecánico RGB + Mouse'),
-      (v_raffle, 4, 'Audífonos Gamer 7.1'),
-      (v_raffle, 5, 'Vale de compra S/ 300');
+      (v_raffle, 1, 'PC Gamer profesional + silla gaming + mesa elevable'),
+      (v_raffle, 2, 'Impresora Epson L3310'),
+      (v_raffle, 3, 'Tablet Samsung Tab A11'),
+      (v_raffle, 4, 'Audífono profesional Logitech G635'),
+      (v_raffle, 5, 'Teclado gamer mecánico Antryx Zigra Evo'),
+      (v_raffle, 6, 'Parlante Halion Fiesta HA-R63');
   ELSE
     UPDATE public.raffles SET ticket_price = 5 WHERE id = v_raffle;
   END IF;

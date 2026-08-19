@@ -11,20 +11,25 @@ BEGIN;
 ALTER TABLE public.raffles ALTER COLUMN ticket_price SET DEFAULT 5;
 UPDATE public.raffles SET ticket_price = 5 WHERE status = 'activo';
 UPDATE public.raffles SET draw_date = '2026-09-23 23:59:59-05:00' WHERE status = 'activo';
+ALTER TABLE public.registrations
+  ADD COLUMN IF NOT EXISTS terms_accepted boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS terms_accepted_at timestamptz;
 
--- Comprobantes privados, máximo 10 MB y solo formatos permitidos.
+-- Comprobantes privados, máximo 5 MB y solo formatos permitidos.
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
   'comprobantes',
   'comprobantes',
   false,
-  10485760,
+  5242880,
   ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'application/pdf']::text[]
 )
 ON CONFLICT (id) DO UPDATE SET
   public = false,
-  file_size_limit = 10485760,
+  file_size_limit = 5242880,
   allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+DROP POLICY IF EXISTS "comprobantes upload" ON storage.objects;
 
 DROP POLICY IF EXISTS "comprobantes admin read" ON storage.objects;
 CREATE POLICY "comprobantes admin read"

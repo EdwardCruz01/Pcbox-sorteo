@@ -16,6 +16,170 @@
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   --radius: 22px;
 }
+
+/* Actualización El Shucuy Regalon: QR oficial, premios e inscripción segura. */
+.hero-countdown-centered {
+  width: min(100%, 440px);
+  margin: 22px auto 0;
+  padding: 11px 13px 13px;
+  background: rgba(7, 11, 24, 0.52);
+  transform: scale(0.92);
+  transform-origin: top center;
+}
+.official-qr,
+.registration-qr {
+  display: block;
+  width: min(100%, 238px);
+  aspect-ratio: 1;
+  margin: 14px auto;
+  border-radius: 18px;
+  object-fit: contain;
+  background: transparent;
+}
+.registration-qr {
+  width: 210px;
+  margin: 14px auto 16px;
+}
+.payment-card .official-qr {
+  width: min(100%, 250px);
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
+}
+.participate-button {
+  position: relative;
+  display: flex;
+  width: min(100%, 430px);
+  min-height: 68px;
+  align-items: center;
+  justify-content: center;
+  margin: 28px auto 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 22px;
+  color: #171522;
+  background: linear-gradient(105deg, #ffb13d, #ff851c, #ffbd55, #ff851c);
+  background-size: 300% 100%;
+  box-shadow:
+    0 0 0 1px rgba(255, 192, 89, 0.2),
+    0 18px 42px rgba(255, 133, 28, 0.3);
+  font-size: 21px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  animation: participateGlow 5s ease infinite;
+}
+.participate-button::after {
+  position: absolute;
+  top: -80%;
+  left: -35%;
+  width: 25%;
+  height: 260%;
+  content: "";
+  background: rgba(255, 255, 255, 0.55);
+  filter: blur(13px);
+  transform: rotate(22deg);
+  animation: participateSweep 3.8s ease-in-out infinite;
+}
+@keyframes participateGlow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+@keyframes participateSweep {
+  0%,
+  35% {
+    left: -35%;
+    opacity: 0;
+  }
+  48% {
+    opacity: 0.75;
+  }
+  72%,
+  100% {
+    left: 125%;
+    opacity: 0;
+  }
+}
+.prize-card {
+  position: relative;
+  align-items: flex-start;
+  min-height: 74px;
+}
+.prize-card .prize-card-number {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 1;
+  width: 23px;
+  height: 23px;
+}
+.prize-card img {
+  width: 70px;
+  height: 58px;
+  flex: 0 0 70px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+}
+.prize-card > div {
+  min-width: 0;
+}
+.prize-card strong {
+  display: block;
+  line-height: 1.25;
+}
+.prize-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.35;
+}
+.text-link,
+.inline-policy-link {
+  padding: 0;
+  border: 0;
+  color: var(--primary);
+  background: transparent;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.inline-policy-link {
+  display: inline;
+  font-size: inherit;
+}
+.selected-file {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.policy-content h3 {
+  margin: 22px 0 8px;
+  color: var(--text);
+  font-size: 16px;
+}
+.policy-content p,
+.policy-content li {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.policy-content ol,
+.policy-content ul {
+  margin: 8px 0 0 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .participate-button,
+  .participate-button::after {
+    animation: none;
+  }
+}
 * {
   box-sizing: border-box;
 }
@@ -1547,7 +1711,7 @@ p {
   padding: 23px 23px 25px;
   border: 1px solid rgba(139, 92, 246, 0.52);
   border-radius: 24px;
-  background: linear-gradient(145deg, #6417b4, #a008ee 58%, #55189d);
+  background: #720e9e;
   box-shadow: 0 25px 65px rgba(97, 24, 180, 0.25);
   color: #fff;
 }
@@ -1591,9 +1755,6 @@ p {
   color: rgba(255, 255, 255, 0.78);
   font-size: 11px;
   text-align: center;
-}
-.participate-cta {
-  padding-top: 20px;
 }
 .cta-panel,
 .support-panel {

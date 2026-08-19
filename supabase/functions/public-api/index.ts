@@ -13,6 +13,16 @@ const admin = createClient(supabaseUrl, serviceRoleKey, {
 });
 const apiPeruToken = Deno.env.get("APIPERU_TOKEN") ?? "";
 const apiPeruDniUrl = "https://api.apiperu.dev/dni";
+const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
+const RECEIPT_TYPES: Record<string, string> = {
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+  heic: "image/heic",
+  pdf: "application/pdf",
+};
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -42,6 +52,47 @@ function validEmail(email: unknown) {
 }
 function validPhone(phone: unknown) {
   return typeof phone === "string" && /^\+?\d[\d\s-]{7,18}$/.test(phone);
+}
+
+function requestAddress(request: Request) {
+  return (
+    request.headers.get("cf-connecting-ip") ||
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    "unknown"
+  );
+}
+
+function enforceRateLimit(
+  request: Request,
+  scope: string,
+  limit: number,
+  windowMs = 10 * 60 * 1000,
+) {
+  const key = `${scope}:${requestAddress(request)}`;
+  const now = Date.now();
+  const current = rateBuckets.get(key);
+  if (!current || current.resetAt <= now) {
+    rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    return;
+  }
+  if (current.count >= limit)
+    throw new Error("Demasiadas solicitudes. Intenta nuevamente en unos minutos.");
+  current.count += 1;
+}
+
+async function createReceiptUpload(data: Record<string, unknown>, request: Request) {
+  enforceRateLimit(request, "receipt-upload", 12);
+  if (!validDni(data.dni)) throw new Error("El DNI debe tener 8 dígitos.");
+  const extension = typeof data.extension === "string" ? data.extension.toLowerCase() : "";
+  const contentType = typeof data.contentType === "string" ? data.contentType.toLowerCase() : "";
+  if (!/^(jpg|jpeg|png|webp|heic|pdf)$/.test(extension) || RECEIPT_TYPES[extension] !== contentType)
+    throw new Error("Formato de comprobante no permitido.");
+  const path = `${data.dni}/${crypto.randomUUID()}.${extension}`;
+  const { data: signed, error } = await admin.storage
+    .from("comprobantes")
+    .createSignedUploadUrl(path);
+  if (error || !signed?.token) throw new Error("No pudimos preparar la subida del comprobante.");
+  return { path, token: signed.token };
 }
 
 async function consultDni(dni: string) {
@@ -75,6 +126,7 @@ async function createRegistration(data: Record<string, unknown>) {
     typeof data.fullName !== "string" ||
     typeof data.birthDate !== "string" ||
     data.adultConfirmed !== true ||
+    data.termsAccepted !== true ||
     !validPhone(data.phone) ||
     !validEmail(data.email) ||
     typeof data.quantity !== "number" ||
@@ -107,7 +159,18 @@ async function createRegistration(data: Record<string, unknown>) {
   const { data: files, error: fileError } = await admin.storage
     .from("comprobantes")
     .list(data.dni, { search: fileName });
-  if (fileError || !files?.some((file) => file.name === fileName))
+  const receipt = files?.find((file) => file.name === fileName);
+  const receiptSize = Number(receipt?.metadata?.size ?? receipt?.metadata?.sizeBytes ?? 0);
+  if (fileError || !receipt) throw new Error("No encontramos el comprobante subido.");
+  if (receiptSize > MAX_RECEIPT_BYTES) {
+    await admin.storage.from("comprobantes").remove([data.receiptPath]);
+    throw new Error("El comprobante supera los 5 MB.");
+  }
+  if (
+    !receipt?.metadata?.mimetype ||
+    RECEIPT_TYPES[data.receiptPath.split(".").pop()?.toLowerCase() || ""] !==
+      receipt.metadata.mimetype
+  )
     throw new Error("No encontramos el comprobante subido.");
 
   const amount = Number(raffle.ticket_price) * data.quantity;
@@ -123,11 +186,16 @@ async function createRegistration(data: Record<string, unknown>) {
       quantity: data.quantity,
       amount,
       receipt_url: data.receiptPath,
+      terms_accepted: true,
+      terms_accepted_at: new Date().toISOString(),
       status: "pendiente",
     })
     .select("id, status, amount, quantity")
     .single();
-  if (error) throw error;
+  if (error) {
+    await admin.storage.from("comprobantes").remove([data.receiptPath]);
+    throw error;
+  }
   return registration;
 }
 
@@ -175,10 +243,14 @@ async function handle(request: Request) {
     const body = (await request.json()) as Record<string, unknown>;
     switch (body.action) {
       case "consultar-dni": {
+        enforceRateLimit(request, "consult-dni", 20);
         if (!validDni(body.dni)) throw new Error("El DNI debe tener 8 dígitos.");
         return json(await consultDni(body.dni));
       }
+      case "crear-upload":
+        return json(await createReceiptUpload(body, request));
       case "crear-inscripcion":
+        enforceRateLimit(request, "create-registration", 10);
         return json(await createRegistration(body));
       case "consultar-inscripciones":
         return json({ inscripciones: await findRegistrations(String(body.dni ?? "")) });
