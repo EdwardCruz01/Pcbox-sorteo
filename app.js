@@ -14,6 +14,7 @@ const prizeTabletImage = asset("premio-tablet-samsung-tab-a11.png");
 const prizeHeadsetImage = asset("premio-audifono-logitech-g635.png");
 const prizeKeyboardImage = asset("premio-teclado-antryx-zigra-evo.png");
 const prizeSpeakerImage = asset("premio-parlante-hal-fiesta-ha-r63.png");
+const majorPrizeImage = asset("premio-mayor-setup-antryx.png");
 const flyer001 = asset("flyer-001.jpg");
 const flyer003 = asset("flyer-003.jpg");
 const flyer007 = asset("flyer-007-1.jpg");
@@ -53,7 +54,7 @@ const flyers = [
 ];
 const prizePresentation = {
   1: {
-    image: heroImage,
+    image: majorPrizeImage,
     description: "Un espacio completo para trabajar, estudiar y jugar con comodidad.",
   },
   2: {
@@ -98,14 +99,14 @@ const defaultRaffle = {
   ticket_price: 5,
   draw_date: FIXED_DRAW_DATE,
   status: "activo",
-  image_url: heroImage,
+  image_url: officialBannerImage,
   prizes: [
     {
       id: "1",
       position: 1,
       name: "PC Gamer profesional + silla gaming + mesa elevable",
       description: "Un espacio completo para trabajar, estudiar y jugar con comodidad.",
-      image_url: heroImage,
+      image_url: majorPrizeImage,
       winner_ticket_number: null,
       winner_name: null,
     },
@@ -476,7 +477,7 @@ function renderRaffleCardsV2() {
       return `
         <article class="card raffle-showcase">
           <div class="raffle-showcase-visual">
-            <img src="${escapeHtml(raffle.image_url || heroImage)}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
+            <img src="${officialBannerImage}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
           </div>
           <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
           <div class="raffle-showcase-body">
@@ -491,7 +492,7 @@ function renderRaffleCardsV2() {
               <div class="prize-cards">${prizes
                 .map((prize) => {
                   const presentation = prizePresentation[prize.position] || {};
-                  return `<article class="prize-card"><span class="prize-card-number">${prize.position}</span><img src="${escapeHtml(prize.image_url || presentation.image || heroImage)}" alt="${escapeHtml(prize.name)}" loading="lazy" /><div><strong>${escapeHtml(prize.name)}</strong><p>${escapeHtml(prize.description || presentation.description || "Premio tecnológico incluido en este sorteo.")}</p></div></article>`;
+                  return `<article class="prize-card"><span class="prize-card-number">${prize.position}</span><img src="${escapeHtml(prize.position === 1 ? majorPrizeImage : prize.image_url || presentation.image || heroImage)}" alt="${escapeHtml(prize.name)}" loading="lazy" /><div><strong>${escapeHtml(prize.name)}</strong></div></article>`;
                 })
                 .join("")}</div>
             </div>

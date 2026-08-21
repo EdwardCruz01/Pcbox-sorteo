@@ -249,7 +249,7 @@ p {
   backdrop-filter: blur(18px);
 }
 .header-inner {
-  min-height: 68px;
+  min-height: 62px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2315,7 +2315,7 @@ p {
   border-bottom: 0;
 }
 .header-inner {
-  min-height: 68px;
+  min-height: 62px;
 }
 .brand-copy {
   display: grid;
@@ -2333,8 +2333,8 @@ p {
   text-transform: none;
 }
 .brand-logo {
-  width: 60px;
-  height: 60px;
+  width: 52px;
+  height: 52px;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -2395,5 +2395,97 @@ p {
     bottom: 4px;
     width: min(100%, 300px);
     transform: translateX(-50%) scale(0.64);
+  }
+}
+
+/* Premios ampliados, con nombre e imagen únicamente. */
+.raffle-showcase .prize-panel {
+  max-height: none;
+  overflow: visible;
+  padding: 20px;
+}
+.raffle-showcase .prize-cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.raffle-showcase .prize-card {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(255, 244, 228, 0.16);
+  border-radius: 16px;
+  background: rgba(9, 13, 26, 0.92);
+  font-size: 14px;
+}
+.raffle-showcase .prize-card:first-child {
+  grid-column: 1 / -1;
+}
+.raffle-showcase .prize-card .prize-card-number {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  color: #171522;
+  background: linear-gradient(135deg, #ffbd55, #ff851c);
+  font-size: 18px;
+  box-shadow: 0 8px 18px rgba(255, 133, 28, 0.3);
+}
+.raffle-showcase .prize-card img {
+  width: 100%;
+  height: 190px;
+  flex: 0 0 190px;
+  border-radius: 0;
+  object-fit: contain;
+  background: #fff;
+}
+.raffle-showcase .prize-card:first-child img {
+  height: 350px;
+  flex-basis: 350px;
+}
+.raffle-showcase .prize-card > div {
+  padding: 13px 15px 15px;
+}
+.raffle-showcase .prize-card strong {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.2;
+}
+.raffle-showcase .prize-card p {
+  display: none;
+}
+@media (max-width: 700px) {
+  .raffle-showcase .prize-panel {
+    padding: 14px;
+  }
+  .raffle-showcase .prize-cards {
+    gap: 10px;
+  }
+  .raffle-showcase .prize-card img {
+    height: 125px;
+    flex-basis: 125px;
+  }
+  .raffle-showcase .prize-card:first-child img {
+    height: 225px;
+    flex-basis: 225px;
+  }
+  .raffle-showcase .prize-card .prize-card-number {
+    top: 8px;
+    left: 8px;
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+  }
+  .raffle-showcase .prize-card > div {
+    padding: 10px 11px 12px;
+  }
+  .raffle-showcase .prize-card strong {
+    font-size: 12px;
   }
 }
