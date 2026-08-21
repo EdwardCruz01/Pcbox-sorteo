@@ -255,7 +255,6 @@ function renderApp() {
     <main>
       <section class="hero" id="inicio">
         <img class="hero-media" src="${officialBannerImage}" alt="Gran sorteo de setup gamer completo de El Shucuy Regalon" />
-        <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
         <div class="container hero-content">
           <span class="eyebrow">✦ El Shucuy Regalon</span>
           <p class="hero-copy">Participa por un PC gamer profesional y cinco premios tecnológicos adicionales. Compra tus tickets por Yape y recibe tus números después de la validación.</p>
@@ -563,7 +562,6 @@ function enhancePublicLayout() {
     hero.classList.add("hero-ticket-banner");
     hero.innerHTML = `
       <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de El Shucuy Regalon" />
-      <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
       <div class="container hero-content">
         <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
       </div>`;
