@@ -240,7 +240,7 @@ function renderApp() {
   app.innerHTML = `
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span>El <span class="gradient-text">Shucuy Regalon</span></span></a>
+        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span class="brand-copy">El <span class="gradient-text">Shucuy Regalon</span><small class="brand-slogan">Pa salado mi causa, Yo no</small></span></a>
         <button class="menu-button" id="menu-button" aria-label="Abrir menú" aria-expanded="false">☰</button>
         <nav class="nav" id="site-nav" aria-label="Navegación principal">
           <a href="#inicio" data-nav>Inicio</a>
@@ -258,7 +258,6 @@ function renderApp() {
         <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
         <div class="container hero-content">
           <span class="eyebrow">✦ El Shucuy Regalon</span>
-          <h1>El próximo <span class="gradient-text">PC profesional</span> puede ser tuyo</h1>
           <p class="hero-copy">Participa por un PC gamer profesional y cinco premios tecnológicos adicionales. Compra tus tickets por Yape y recibe tus números después de la validación.</p>
           <div class="actions"><a class="button" href="#sorteos" data-nav>Participar ahora →</a><a class="button secondary" href="#mis-tickets" data-nav>Mis tickets</a></div>
         </div>
@@ -566,7 +565,6 @@ function enhancePublicLayout() {
       <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de El Shucuy Regalon" />
       <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
       <div class="container hero-content">
-        <h1>El próximo <span class="gradient-text">PC profesional</span> puede ser tuyo</h1>
         <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
       </div>`;
   }

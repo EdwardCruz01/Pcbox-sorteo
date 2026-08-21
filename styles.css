@@ -1435,6 +1435,7 @@ p {
     font-size: clamp(26px, 8vw, 38px);
   }
 }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -2309,10 +2310,31 @@ p {
   }
 }
 
-/* Overrides finales del banner y del logo. */
+/* Prioridad final: banner completo y marca sin marco. */
+.site-header {
+  border-bottom: 0;
+}
+.header-inner {
+  min-height: 78px;
+}
+.brand-copy {
+  display: grid;
+  gap: 3px;
+  line-height: 1.02;
+}
+.brand-slogan {
+  display: block;
+  margin: 0;
+  color: rgba(245, 247, 255, 0.62);
+  font:
+    500 9px Inter,
+    sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
 .brand-logo {
-  width: 58px;
-  height: 58px;
+  width: 70px;
+  height: 70px;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -2325,7 +2347,9 @@ p {
   height: 50px;
 }
 .hero-ticket-banner {
-  min-height: 720px;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 1920 / 1024;
 }
 .hero-ticket-banner .hero-media {
   object-fit: contain;
@@ -2334,45 +2358,38 @@ p {
   background: #070b18;
 }
 .hero-ticket-banner .hero-content {
-  height: 720px;
+  height: 100%;
+  min-height: 0;
   box-sizing: border-box;
-  max-width: 760px;
-  padding: 42px 0 0;
-}
-.hero-ticket-banner h1 {
-  max-width: 520px;
-  margin: 0 auto;
-  font-size: clamp(20px, 3vw, 34px);
-  line-height: 1.05;
+  padding: 0;
 }
 .hero-ticket-banner .hero-countdown-centered {
   position: absolute;
   right: auto;
-  bottom: 16px;
   left: 50%;
+  bottom: 12px;
   width: min(100%, 380px);
   margin: 0;
-  transform: translateX(-50%) scale(0.82);
+  transform: translateX(-50%) scale(0.74);
   transform-origin: center bottom;
 }
 @media (max-width: 700px) {
+  .header-inner {
+    min-height: 70px;
+  }
   .brand-logo {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
+  }
+  .brand-slogan {
+    font-size: 8px;
   }
   .hero-ticket-banner {
-    min-height: 560px;
-  }
-  .hero-ticket-banner .hero-content {
-    height: 560px;
-    padding: 28px 20px 0;
-  }
-  .hero-ticket-banner h1 {
-    font-size: clamp(18px, 5.8vw, 27px);
+    aspect-ratio: 1920 / 1024;
   }
   .hero-ticket-banner .hero-countdown-centered {
-    bottom: 10px;
-    width: min(100%, 340px);
-    transform: translateX(-50%) scale(0.78);
+    bottom: 4px;
+    width: min(100%, 300px);
+    transform: translateX(-50%) scale(0.64);
   }
 }
