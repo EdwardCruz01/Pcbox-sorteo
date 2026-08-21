@@ -15,15 +15,6 @@ const prizeHeadsetImage = asset("premio-audifono-logitech-g635.png");
 const prizeKeyboardImage = asset("premio-teclado-antryx-zigra-evo.png");
 const prizeSpeakerImage = asset("premio-parlante-hal-fiesta-ha-r63.png");
 const majorPrizeImage = asset("premio-mayor-setup-antryx.png");
-const flyer001 = asset("flyer-001.jpg");
-const flyer003 = asset("flyer-003.jpg");
-const flyer007 = asset("flyer-007-1.jpg");
-const flyer028 = asset("flyer-028.jpg");
-const flyer033 = asset("flyer-033.jpg");
-const flyer042 = asset("flyer-042.jpg");
-const flyer048 = asset("flyer-048.jpg");
-const flyer054 = asset("flyer-054-1.jpg");
-const flyer071 = asset("flyer-071.jpg");
 
 const SUPABASE_URL =
   runtimeEnv.VITE_SUPABASE_URL ||
@@ -41,17 +32,44 @@ const RECEIPT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "a
 const FIXED_DRAW_DATE = "2026-09-23T23:59:59-05:00";
 let countdownTimer = null;
 
-const flyers = [
-  [flyer042, "Tablets PC BOX", true],
-  [flyer048, "Silla gaming premium RGB", true],
-  [flyer054, "Cámaras de vigilancia", true],
-  [flyer071, "Crédito a sola firma en PC BOX", true],
-  [flyer001, "Epson", false],
-  [flyer003, "Impresora Epson L3250 multifuncional", false],
-  [flyer007, "Tu DNI te regala un crédito", true],
-  [flyer028, "Tarjeta de video ROG Strix RTX 4090", true],
-  [flyer033, "Enfriamiento líquido", true],
+const officialFlyerFiles = [
+  "001.jpg",
+  "002.jpg",
+  "004.jpg",
+  "007-1.jpg",
+  "007.jpg",
+  "008.jpg",
+  "010.jpg",
+  "012.jpg",
+  "013.jpg",
+  "018.jpg",
+  "020.jpg",
+  "025.jpg",
+  "029.jpg",
+  "031.jpg",
+  "033.jpg",
+  "034.jpg",
+  "039.jpg",
+  "041.jpg",
+  "042.jpg",
+  "044.jpg",
+  "046.jpg",
+  "049.jpg",
+  "051.jpg",
+  "052.jpg",
+  "054-1.jpg",
+  "054.jpg",
+  "056.jpg",
+  "061.jpg",
+  "064.jpg",
+  "065.jpg",
+  "067.jpg",
+  "071.jpg",
 ];
+const flyers = officialFlyerFiles.map((filename) => [
+  asset(`Banners oficiales/${filename}`),
+  `Banner oficial ${filename}`,
+]);
 const prizePresentation = {
   1: {
     image: majorPrizeImage,
@@ -283,8 +301,8 @@ function renderApp() {
       <section class="section" id="tienda"><div class="container"><div class="section-heading"><div><h2>Nuestra tienda</h2><p>Flyers destacados que rotan suavemente para mostrar nuestras categorías.</p></div></div><div class="store-grid"><div class="flyer-grid flyer-rotator">${flyers
         .slice(0, 3)
         .map(
-          ([src, alt, rotated], index) =>
-            `<figure class="flyer${rotated ? " is-rotated" : ""}" data-flyer-slot="${index}"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy" /></figure>`,
+          ([src, alt], index) =>
+            `<figure class="flyer" data-flyer-slot="${index}"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy" /></figure>`,
         )
         .join(
           "",
@@ -382,18 +400,18 @@ function startFlyerRotation() {
     rotation += 1;
     document.querySelectorAll("[data-flyer-slot]").forEach((slot) => {
       const slotIndex = Number(slot.dataset.flyerSlot || 0);
-      const [source, alt, rotated] = flyers[(rotation + slotIndex) % flyers.length];
+      const [source, alt] = flyers[(rotation + slotIndex) % flyers.length];
       const image = slot.querySelector("img");
       if (!image) return;
       slot.classList.add("is-changing");
       window.setTimeout(() => {
         image.src = source;
         image.alt = alt;
-        slot.classList.toggle("is-rotated", Boolean(rotated));
+        slot.classList.remove("is-rotated");
         slot.classList.remove("is-changing");
-      }, 650);
+      }, 900);
     });
-  }, 6500);
+  }, 3000);
 }
 
 function findRaffle(id) {
