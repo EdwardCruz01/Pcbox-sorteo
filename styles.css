@@ -2315,7 +2315,7 @@ p {
   border-bottom: 0;
 }
 .header-inner {
-  min-height: 62px;
+  min-height: 74px;
 }
 .brand-copy {
   display: grid;
@@ -2333,8 +2333,8 @@ p {
   text-transform: none;
 }
 .brand-logo {
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   padding: 0;
   border: 0;
   border-radius: 0;
@@ -2349,7 +2349,7 @@ p {
 .hero-ticket-banner {
   height: auto;
   min-height: 0;
-  aspect-ratio: 1920 / 1024;
+  aspect-ratio: 1915 / 821;
 }
 .hero-ticket-banner .hero-media {
   object-fit: contain;
@@ -2487,5 +2487,65 @@ p {
   }
   .raffle-showcase .prize-card strong {
     font-size: 12px;
+  }
+}
+
+/* Tarjeta del sorteo: banner superior y ambiente neon desenfocado inferior. */
+.raffle-showcase .raffle-showcase-visual {
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 26% 72%, rgba(0, 183, 255, 0.48), transparent 31%),
+    radial-gradient(ellipse at 76% 74%, rgba(92, 55, 255, 0.42), transparent 34%),
+    linear-gradient(160deg, #071329 0%, #0b1e45 52%, #050b1d 100%);
+}
+.raffle-showcase .raffle-showcase-visual::before {
+  content: "";
+  position: absolute;
+  inset: 47% -8% -14%;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse at 24% 60%, rgba(0, 208, 255, 0.7), transparent 26%),
+    radial-gradient(ellipse at 72% 58%, rgba(117, 55, 255, 0.66), transparent 30%),
+    linear-gradient(110deg, transparent 36%, rgba(0, 184, 255, 0.4) 48%, transparent 58%);
+  filter: blur(24px);
+  opacity: 0.9;
+  transform: scale(1.08);
+}
+.raffle-showcase .raffle-showcase-visual img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 58%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 1;
+  filter: saturate(1.04) contrast(1.03);
+  mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+}
+.raffle-showcase .raffle-showcase-visual::after {
+  z-index: 2;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 34%,
+      rgba(7, 13, 32, 0.08) 48%,
+      rgba(7, 13, 32, 0.84) 67%,
+      rgba(5, 10, 27, 0.28) 100%
+    ),
+    linear-gradient(90deg, rgba(0, 188, 255, 0.08), transparent 42%, rgba(116, 65, 255, 0.08));
+}
+@media (max-width: 700px) {
+  .raffle-showcase .raffle-showcase-visual img {
+    height: 49%;
+    object-fit: contain;
+    object-position: center top;
+    background: #071329;
+  }
+  .raffle-showcase .raffle-showcase-visual::before {
+    inset: 38% -14% -18%;
+    filter: blur(18px);
   }
 }
