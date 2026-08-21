@@ -6,6 +6,8 @@ const siteBase =
   (window.location.pathname.startsWith("/Pcbox-sorteo/") ? "/Pcbox-sorteo/" : "/");
 const asset = (name) => `${siteBase}assets/${name}`;
 const heroImage = asset("hero-sorteo.jpg");
+const logoImage = asset("logo-shucuy-regalon.png");
+const officialBannerImage = asset("banner-shucuy-regalon.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
 const prizeTabletImage = asset("premio-tablet-samsung-tab-a11.png");
@@ -238,7 +240,7 @@ function renderApp() {
   app.innerHTML = `
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="#inicio" data-nav><span class="brand-mark">SR</span><span>El <span class="gradient-text">Shucuy Regalon</span><small>Sorteos</small></span></a>
+        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span>El <span class="gradient-text">Shucuy Regalon</span></span></a>
         <button class="menu-button" id="menu-button" aria-label="Abrir menú" aria-expanded="false">☰</button>
         <nav class="nav" id="site-nav" aria-label="Navegación principal">
           <a href="#inicio" data-nav>Inicio</a>
@@ -252,7 +254,7 @@ function renderApp() {
 
     <main>
       <section class="hero" id="inicio">
-        <img class="hero-media" src="${heroImage}" alt="Premio: setup gamer completo con silla, laptop e impresora" />
+        <img class="hero-media" src="${officialBannerImage}" alt="Gran sorteo de setup gamer completo de El Shucuy Regalon" />
         <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
         <div class="container hero-content">
           <span class="eyebrow">✦ El Shucuy Regalon</span>
@@ -298,7 +300,7 @@ function renderApp() {
       <section class="section compact" id="ganadores"><div class="container"><div class="section-heading"><div><h2>Ganadores</h2><p>Resultados publicados de nuestros sorteos realizados.</p></div></div><div id="winner-results"></div></div></section>
     </main>
 
-    <footer class="site-footer"><div class="container footer-inner"><div class="footer-copy"><span class="brand-mark footer-mark">SR</span><span>El Shucuy Regalon: sorteos verificados y atención cercana para nuestros clientes.</span></div><nav class="footer-nav"><a href="#sorteos" data-nav>Sorteos activos</a><a href="#participantes" data-nav>Consultar mi inscripción</a><a href="#ganadores" data-nav>Ganadores</a><span>Pagos únicamente por Yape</span></nav></div><div class="copyright">© ${new Date().getFullYear()} El Shucuy Regalon. Todos los derechos reservados.</div></footer>
+    <footer class="site-footer"><div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span>El Shucuy Regalon: sorteos verificados y atención cercana para nuestros clientes.</span></div><nav class="footer-nav"><a href="#sorteos" data-nav>Sorteos activos</a><a href="#participantes" data-nav>Consultar mi inscripción</a><a href="#ganadores" data-nav>Ganadores</a><span>Pagos únicamente por Yape</span></nav></div><div class="copyright">© ${new Date().getFullYear()} El Shucuy Regalon. Todos los derechos reservados.</div></footer>
     <div id="modal-root"></div>`;
 
   document.querySelector("#menu-button").addEventListener("click", () => {
@@ -561,7 +563,7 @@ function enhancePublicLayout() {
   if (hero) {
     hero.classList.add("hero-ticket-banner");
     hero.innerHTML = `
-      <img class="hero-media" src="${heroImage}" alt="Premio profesional de El Shucuy Regalon" />
+      <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de El Shucuy Regalon" />
       <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
       <div class="container hero-content">
         <span class="eyebrow">✦ SORTEO ACTIVO · EL SHUCUY REGALON</span>
@@ -608,7 +610,7 @@ function enhancePublicLayout() {
   const footer = document.querySelector(".site-footer");
   if (footer) {
     footer.innerHTML = `
-       <div class="container footer-inner"><div class="footer-copy"><span class="brand-mark footer-mark">SR</span><span>El Shucuy Regalon: sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
+       <div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span>El Shucuy Regalon: sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
       <div class="policy-bar"><div class="container"><a href="#politicas" data-policy="terms">Términos y condiciones</a><a href="#politicas" data-policy="privacy">Política de privacidad</a><a href="#politicas" data-policy="refunds">Política de devoluciones</a><a href="#politicas" data-policy="news">Noticias</a><a href="#politicas" data-policy="complaints">Libro de reclamaciones</a><a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a></div></div>
        <div class="copyright">© ${new Date().getFullYear()} El Shucuy Regalon. Todos los derechos reservados.</div>`;
     footer.querySelectorAll("[data-policy]").forEach((link) =>

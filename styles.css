@@ -1390,6 +1390,51 @@ p {
     font-size: 24px;
   }
 }
+
+/* Identidad visual oficial del sorteo. */
+.brand-logo {
+  display: block;
+  width: 42px;
+  height: 46px;
+  border-radius: 10px;
+  object-fit: contain;
+  object-position: center;
+}
+.footer-logo {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+}
+.hero-ticket-banner .hero-media {
+  object-position: center center;
+  opacity: 0.9;
+}
+.hero-ticket-banner .hero-content {
+  max-width: 760px;
+  padding: 78px 0 68px;
+}
+.hero-ticket-banner .eyebrow {
+  padding: 4px 10px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.hero-ticket-banner h1 {
+  max-width: 680px;
+  font-size: clamp(30px, 4.8vw, 54px);
+  line-height: 1.04;
+}
+@media (max-width: 700px) {
+  .brand-logo {
+    width: 36px;
+    height: 40px;
+  }
+  .hero-ticket-banner .hero-content {
+    padding: 62px 0 52px;
+  }
+  .hero-ticket-banner h1 {
+    font-size: clamp(26px, 8vw, 38px);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
