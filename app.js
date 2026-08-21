@@ -566,7 +566,6 @@ function enhancePublicLayout() {
       <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de El Shucuy Regalon" />
       <span class="neon left" aria-hidden="true"></span><span class="neon right" aria-hidden="true"></span>
       <div class="container hero-content">
-        <span class="eyebrow">✦ SORTEO ACTIVO · EL SHUCUY REGALON</span>
         <h1>El próximo <span class="gradient-text">PC profesional</span> puede ser tuyo</h1>
         <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
       </div>`;
