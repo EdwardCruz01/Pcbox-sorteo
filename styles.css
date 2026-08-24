@@ -2341,31 +2341,50 @@ p {
   height: 50px;
 }
 .hero-ticket-banner {
+  display: flex;
+  flex-direction: column;
   height: auto;
   min-height: 0;
-  aspect-ratio: 1915 / 821;
+  aspect-ratio: auto;
+  overflow: visible;
+  background: #070b18;
+}
+.hero-ticket-banner::before {
+  display: none;
 }
 .hero-ticket-banner .hero-media {
-  object-fit: contain;
+  position: relative;
+  inset: auto;
+  display: block;
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
   object-position: center;
   opacity: 1;
   background: #070b18;
 }
 .hero-ticket-banner .hero-content {
-  height: 100%;
+  display: flex;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  align-items: center;
+  justify-content: center;
   min-height: 0;
   box-sizing: border-box;
-  padding: 0;
+  padding: 0 0 16px;
 }
 .hero-ticket-banner .hero-countdown-centered {
-  position: absolute;
+  position: relative;
   right: auto;
-  left: 50%;
-  bottom: 12px;
-  width: min(100%, 380px);
-  margin: 0;
-  transform: translateX(-50%) scale(0.74);
-  transform-origin: center bottom;
+  bottom: auto;
+  left: auto;
+  width: min(calc(100% - 32px), 380px);
+  margin: 0 auto;
+  transform: none;
+  transform-origin: center;
 }
 @media (max-width: 700px) {
   .header-inner {
@@ -2379,16 +2398,18 @@ p {
     font-size: 8px;
   }
   .hero-ticket-banner {
-    height: 310px;
+    height: auto;
+    min-height: 0;
     aspect-ratio: auto;
   }
   .hero-ticket-banner .hero-media {
-    object-position: center top;
+    aspect-ratio: 16 / 9;
+    object-position: center;
   }
   .hero-ticket-banner .hero-countdown-centered {
-    bottom: 4px;
-    width: min(100%, 300px);
-    transform: translateX(-50%) scale(0.64);
+    width: min(calc(100% - 24px), 320px);
+    transform: scale(0.9);
+    transform-origin: top center;
   }
 }
 
