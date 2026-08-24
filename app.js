@@ -7,7 +7,7 @@ const siteBase =
 const asset = (name) => `${siteBase}assets/${name}`;
 const heroImage = asset("hero-sorteo.jpg");
 const logoImage = asset("logo-shucuy-regalon.png");
-const officialBannerImage = asset("banner-shucuy-regalon.png");
+const officialBannerImage = asset("banner-gran-sorteo.jpg");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
 const prizeTabletImage = asset("premio-tablet-samsung-tab-a11.png");
@@ -607,7 +607,7 @@ function enhancePublicLayout() {
     stepsSection.insertAdjacentHTML(
       "afterend",
       `
-       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><span class="payment-step">01</span><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>El Shucuy Regalon</span></div><span class="payment-label">PAGA CON YAPE</span><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape de El Shucuy Regalon" /><span class="payment-hint">El total aparecerá al momento de participar.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
+       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Grupo Big Store</span></div><span class="payment-label">PAGA CON YAPE</span><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape de Grupo Big Store" /><span class="payment-hint">El total aparecerá al momento de participar.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
        `,
     );
   }
