@@ -8,6 +8,7 @@ const asset = (name) => `${siteBase}assets/${name}`;
 const heroImage = asset("hero-sorteo.jpg");
 const logoImage = asset("logo-shucuy-regalon.png");
 const officialBannerImage = asset("banner-gran-sorteo.jpg");
+const raffleCardBannerImage = asset("flyer-tarjeta-sorteo.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
 const prizeTabletImage = asset("premio-tablet-samsung-tab-a11.png");
@@ -495,7 +496,7 @@ function renderRaffleCardsV2() {
       return `
         <article class="card raffle-showcase">
           <div class="raffle-showcase-visual">
-            <img src="${officialBannerImage}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
+            <img src="${raffleCardBannerImage}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
           </div>
           <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
           <div class="raffle-showcase-body">
