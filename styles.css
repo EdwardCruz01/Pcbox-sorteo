@@ -2505,6 +2505,46 @@ p {
   }
 }
 
+/* Identidad Pa salado mi causa y jerarquía de la ficha activa. */
+.brand-logo {
+  width: 68px;
+  height: 68px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  object-fit: contain;
+}
+.raffle-showcase .raffle-title-row {
+  justify-content: center;
+}
+.raffle-showcase .raffle-showcase-body h3 {
+  width: 100%;
+  max-width: none;
+  text-align: center;
+}
+.raffle-showcase .showcase-kicker {
+  color: #c8ccd6;
+}
+.raffle-showcase .showcase-meta {
+  color: #0b1020;
+  text-shadow: none;
+}
+.raffle-showcase .raffle-card-countdown {
+  align-self: center;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (max-width: 700px) {
+  .brand-logo {
+    width: 58px;
+    height: 58px;
+  }
+  .raffle-showcase .raffle-showcase-body h3 {
+    max-width: none;
+  }
+}
+
 /* Tarjeta del sorteo: banner superior y ambiente neon desenfocado inferior. */
 .raffle-showcase .raffle-showcase-visual {
   overflow: hidden;

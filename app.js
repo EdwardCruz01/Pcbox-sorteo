@@ -5,10 +5,10 @@ const siteBase =
   runtimeEnv.BASE_URL ||
   (window.location.pathname.startsWith("/Pcbox-sorteo/") ? "/Pcbox-sorteo/" : "/");
 const asset = (name) => `${siteBase}assets/${name}`;
-const heroImage = asset("hero-sorteo.jpg");
-const logoImage = asset("logo-shucuy-regalon.png");
-const officialBannerImage = asset("banner-gran-sorteo.jpg");
-const raffleCardBannerImage = asset("flyer-tarjeta-sorteo.png");
+const heroImage = asset("banner-pa-salado-mi-causa.jpg");
+const logoImage = asset("logo-pa-salado-mi-causa.png");
+const officialBannerImage = asset("banner-pa-salado-mi-causa.jpg");
+const raffleCardBannerImage = asset("flyer-tarjeta-pa-salado.jpg");
 const productsLogoImage = asset("logo-pcbox-productos.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
@@ -112,7 +112,7 @@ const distributorLogos = [
 const defaultRaffle = {
   id: "demo",
   demo: true,
-  title: "1° Gran Sorteo del Shucuy Regalon",
+  title: "1° Gran Sorteo",
   description: "El próximo PC profesional puede ser tuyo junto a cinco premios tecnológicos.",
   details:
     "Sorteo con 6 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.",
@@ -212,6 +212,13 @@ function escapeHtml(value = "") {
 function money(value) {
   return `S/ ${Number(value || 0).toFixed(2)}`;
 }
+function displayRaffleTitle(value) {
+  const title = String(value || "").trim();
+  return (
+    title.replace(/\s+del\s+(?:El\s+)?Shucuy\s+Regalon\s*$/i, "").trim() ||
+    "1° Gran Sorteo"
+  );
+}
 
 function receiptExtension(file) {
   const extension = file.name.split(".").pop()?.toLowerCase() || "";
@@ -261,7 +268,7 @@ function renderApp() {
   app.innerHTML = `
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span class="brand-copy">El <span class="gradient-text">Shucuy Regalon</span><small class="brand-slogan">Pa salado mi causa, Yo no</small></span></a>
+        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="Pa salado mi causa" /><span class="brand-copy"><span class="gradient-text">Pa salado mi causa</span><small class="brand-slogan">Sorteos de tecnología</small></span></a>
         <button class="menu-button" id="menu-button" aria-label="Abrir menú" aria-expanded="false">☰</button>
         <nav class="nav" id="site-nav" aria-label="Navegación principal">
           <a href="#inicio" data-nav>Inicio</a>
@@ -275,9 +282,9 @@ function renderApp() {
 
     <main>
       <section class="hero" id="inicio">
-        <img class="hero-media" src="${officialBannerImage}" alt="Gran sorteo de setup gamer completo de El Shucuy Regalon" />
+        <img class="hero-media" src="${officialBannerImage}" alt="Gran sorteo de setup gamer completo de Pa salado mi causa" />
         <div class="container hero-content">
-          <span class="eyebrow">✦ El Shucuy Regalon</span>
+          <span class="eyebrow">✦ Pa salado mi causa</span>
           <p class="hero-copy">Participa por un PC gamer profesional y cinco premios tecnológicos adicionales. Compra tus tickets por Yape y recibe tus números después de la validación.</p>
           <div class="actions"><a class="button" href="#sorteos" data-nav>Participar ahora →</a><a class="button secondary" href="#mis-tickets" data-nav>Mis tickets</a></div>
         </div>
@@ -319,7 +326,7 @@ function renderApp() {
       <section class="section compact" id="ganadores"><div class="container"><div class="section-heading"><div><h2>Ganadores</h2><p>Resultados publicados de nuestros sorteos realizados.</p></div></div><div id="winner-results"></div></div></section>
     </main>
 
-    <footer class="site-footer"><div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span>El Shucuy Regalon: sorteos verificados y atención cercana para nuestros clientes.</span></div><nav class="footer-nav"><a href="#sorteos" data-nav>Sorteos activos</a><a href="#participantes" data-nav>Consultar mi inscripción</a><a href="#ganadores" data-nav>Ganadores</a><span>Pagos únicamente por Yape</span></nav></div><div class="copyright">© ${new Date().getFullYear()} El Shucuy Regalon. Todos los derechos reservados.</div></footer>
+    <footer class="site-footer"><div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: sorteos verificados y atención cercana para nuestros clientes.</span></div><nav class="footer-nav"><a href="#sorteos" data-nav>Sorteos activos</a><a href="#participantes" data-nav>Consultar mi inscripción</a><a href="#ganadores" data-nav>Ganadores</a><span>Pagos únicamente por Yape</span></nav></div><div class="copyright">© ${new Date().getFullYear()} Pa salado mi causa. Todos los derechos reservados.</div></footer>
     <div id="modal-root"></div>`;
 
   document.querySelector("#menu-button").addEventListener("click", () => {
@@ -363,8 +370,8 @@ function renderRaffles() {
         .map(
           (raffle) => `
     <article class="card raffle-card">
-      <img class="raffle-image" src="${escapeHtml(raffle.image_url || heroImage)}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
-      <div class="raffle-body"><div class="raffle-title-row"><h3>${escapeHtml(raffle.title)}</h3><span class="price">${money(raffle.ticket_price)}</span></div>
+      <img class="raffle-image" src="${escapeHtml(raffle.image_url || heroImage)}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
+      <div class="raffle-body"><div class="raffle-title-row"><h3>${escapeHtml(displayRaffleTitle(raffle.title))}</h3><span class="price">${money(raffle.ticket_price)}</span></div>
       <p class="raffle-description">${escapeHtml(raffle.description || "Participa en este sorteo verificado de PC BOX.")}</p>
       <ul class="prize-list">${(raffle.prizes || [])
         .slice(0, 5)
@@ -389,7 +396,7 @@ function renderWinners() {
     ? winners
         .map(
           (raffle) =>
-            `<article class="card result-card"><div class="result-header"><div><h3>${escapeHtml(raffle.title)}</h3><p class="muted">Sorteado el ${formatDate(raffle.draw_date)}</p></div></div><ul class="prize-list">${raffle.prizes
+            `<article class="card result-card"><div class="result-header"><div><h3>${escapeHtml(displayRaffleTitle(raffle.title))}</h3><p class="muted">Sorteado el ${formatDate(raffle.draw_date)}</p></div></div><ul class="prize-list">${raffle.prizes
               .filter((prize) => prize.winner_ticket_number)
               .map(
                 (prize) =>
@@ -513,12 +520,12 @@ function renderRaffleCardsV2() {
       return `
         <article class="card raffle-showcase">
           <div class="raffle-showcase-visual">
-            <img src="${raffleCardBannerImage}" alt="${escapeHtml(raffle.title)}" loading="lazy" />
+            <img src="${raffleCardBannerImage}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
           </div>
           <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
           <div class="raffle-showcase-body">
             <span class="showcase-kicker">✦ Sorteo activo</span>
-            <div class="raffle-title-row"><h3>${escapeHtml(raffle.title)}</h3></div>
+            <div class="raffle-title-row"><h3>${escapeHtml(displayRaffleTitle(raffle.title))}</h3></div>
             <p class="raffle-description">${escapeHtml(raffle.description || "Participa por tecnología y premios increíbles para tu hogar.")}</p>
             <div class="showcase-meta"><span>◷ 23 de septiembre</span><span>✓ Tickets verificados</span></div>
             <div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
@@ -580,7 +587,7 @@ function showPolicyModal(policy) {
   };
   const selected = content[policy] || content.terms;
   const root = document.querySelector("#modal-root");
-  root.innerHTML = `<div class="modal-backdrop policy-backdrop" data-close-policy><section class="modal policy-modal" role="dialog" aria-modal="true" aria-labelledby="policy-title"><button class="modal-close" data-close-policy aria-label="Cerrar">×</button><span class="showcase-kicker">El Shucuy Regalon · Información</span><h2 id="policy-title">${selected[0]}</h2><div class="policy-content">${selected[1]}</div><button class="button full" data-close-policy>Entendido</button></section></div>`;
+  root.innerHTML = `<div class="modal-backdrop policy-backdrop" data-close-policy><section class="modal policy-modal" role="dialog" aria-modal="true" aria-labelledby="policy-title"><button class="modal-close" data-close-policy aria-label="Cerrar">×</button><span class="showcase-kicker">Pa salado mi causa · Información</span><h2 id="policy-title">${selected[0]}</h2><div class="policy-content">${selected[1]}</div><button class="button full" data-close-policy>Entendido</button></section></div>`;
   const closePolicy = () => {
     if (state.registration.open) renderRegistrationModal();
     else root.innerHTML = "";
@@ -598,7 +605,7 @@ function enhancePublicLayout() {
   if (hero) {
     hero.classList.add("hero-ticket-banner");
     hero.innerHTML = `
-      <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de El Shucuy Regalon" />
+      <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de Pa salado mi causa" />
       <div class="container hero-content">
         <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
       </div>`;
@@ -642,9 +649,9 @@ function enhancePublicLayout() {
   const footer = document.querySelector(".site-footer");
   if (footer) {
     footer.innerHTML = `
-       <div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="El Shucuy Regalon" /><span>El Shucuy Regalon: sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
+       <div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
       <div class="policy-bar"><div class="container"><a href="#politicas" data-policy="terms">Términos y condiciones</a><a href="#politicas" data-policy="privacy">Política de privacidad</a><a href="#politicas" data-policy="refunds">Política de devoluciones</a><a href="#politicas" data-policy="news">Noticias</a><a href="#politicas" data-policy="complaints">Libro de reclamaciones</a><a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a></div></div>
-       <div class="copyright">© ${new Date().getFullYear()} El Shucuy Regalon. Todos los derechos reservados.</div>`;
+       <div class="copyright">© ${new Date().getFullYear()} Pa salado mi causa. Todos los derechos reservados.</div>`;
     footer.querySelectorAll("[data-policy]").forEach((link) =>
       link.addEventListener("click", (event) => {
         event.preventDefault();
@@ -657,7 +664,7 @@ function enhancePublicLayout() {
       .querySelector("main")
       .insertAdjacentHTML(
         "beforeend",
-        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención El Shucuy Regalon</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 973 604 479</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51973604479?text=Hola%20El%20Shucuy%20Regalon%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
+        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención Pa salado mi causa</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 973 604 479</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51973604479?text=Hola%20Pa%20salado%20mi%20causa%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
       );
   }
   renderRaffleCardsV2();
@@ -666,7 +673,7 @@ function enhancePublicLayout() {
 
 function showInfoModal(raffle) {
   const modalRoot = document.querySelector("#modal-root");
-  modalRoot.innerHTML = `<div class="modal-backdrop" data-close-modal><section class="modal" role="dialog" aria-modal="true" aria-labelledby="info-title"><button class="modal-close" data-close-modal aria-label="Cerrar">×</button><h2 id="info-title">${escapeHtml(raffle.title)}</h2><p class="muted" style="margin-top:13px">${escapeHtml(raffle.details || raffle.description || "Conoce los detalles de este sorteo.")}</p><div class="person-box"><div class="total-row"><span>Precio por ticket</span><strong>${money(raffle.ticket_price)}</strong></div><div class="total-row"><span>Fecha del sorteo</span><strong>${formatDate(raffle.draw_date)}</strong></div></div><ol class="info-list">${(raffle.prizes || []).map((prize) => `<li>${escapeHtml(prize.name)}</li>`).join("")}</ol><p class="notice">El comprobante se revisa antes de asignar los números de ticket.</p><button class="button full" data-close-modal>Entendido</button></section></div>`;
+  modalRoot.innerHTML = `<div class="modal-backdrop" data-close-modal><section class="modal" role="dialog" aria-modal="true" aria-labelledby="info-title"><button class="modal-close" data-close-modal aria-label="Cerrar">×</button><h2 id="info-title">${escapeHtml(displayRaffleTitle(raffle.title))}</h2><p class="muted" style="margin-top:13px">${escapeHtml(raffle.details || raffle.description || "Conoce los detalles de este sorteo.")}</p><div class="person-box"><div class="total-row"><span>Precio por ticket</span><strong>${money(raffle.ticket_price)}</strong></div><div class="total-row"><span>Fecha del sorteo</span><strong>${formatDate(raffle.draw_date)}</strong></div></div><ol class="info-list">${(raffle.prizes || []).map((prize) => `<li>${escapeHtml(prize.name)}</li>`).join("")}</ol><p class="notice">El comprobante se revisa antes de asignar los números de ticket.</p><button class="button full" data-close-modal>Entendido</button></section></div>`;
   bindModalClose();
 }
 
@@ -702,7 +709,7 @@ function renderRegistrationModal() {
   const { activeRaffle: raffle, registration: form } = state;
   const root = document.querySelector("#modal-root");
   const title =
-    form.step === 5 ? "¡Inscripción enviada!" : `Inscripción · ${escapeHtml(raffle.title)}`;
+    form.step === 5 ? "¡Inscripción enviada!" : `Inscripción · ${escapeHtml(displayRaffleTitle(raffle.title))}`;
   let content = "";
   if (form.step === 0)
     content = `<div class="terms"><strong>Términos y condiciones</strong><p>Revisa el documento completo antes de continuar con tu inscripción.</p><button class="text-link" type="button" data-open-terms>Leer términos y condiciones</button></div><label class="check-row"><input type="checkbox" id="terms-check" ${form.accepted ? "checked" : ""} /> Confirmo que soy mayor de 18 años y acepto los <button class="inline-policy-link" type="button" data-open-terms>términos y condiciones</button>.</label><button class="button full" id="continue-terms" ${form.accepted ? "" : "disabled"}>Continuar</button>`;
