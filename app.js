@@ -9,6 +9,7 @@ const heroImage = asset("hero-sorteo.jpg");
 const logoImage = asset("logo-shucuy-regalon.png");
 const officialBannerImage = asset("banner-gran-sorteo.jpg");
 const raffleCardBannerImage = asset("flyer-tarjeta-sorteo.png");
+const productsLogoImage = asset("logo-pcbox-productos.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
 const prizeTabletImage = asset("premio-tablet-samsung-tab-a11.png");
@@ -299,7 +300,7 @@ function renderApp() {
         </ol></div>
       </section>
 
-      <section class="section" id="tienda"><div class="container"><div class="section-heading"><div><h2>Nuestra tienda</h2><p>Flyers destacados que rotan suavemente para mostrar nuestras categorías.</p></div></div><div class="store-grid"><div class="flyer-grid flyer-rotator">${flyers
+      <section class="section" id="tienda"><div class="container"><div class="section-heading"><div class="store-heading"><img class="store-logo" src="${productsLogoImage}" alt="PCBOX Tecnología Smart" /><h2>Nuestros Productos</h2></div></div><div class="store-grid"><div class="flyer-grid flyer-rotator">${flyers
         .slice(0, 3)
         .map(
           ([src, alt], index) =>
@@ -307,9 +308,9 @@ function renderApp() {
         )
         .join(
           "",
-        )}</div><aside class="card credit-card"><span class="credit-label">Crédito directo</span><h3>Solicita tu <span class="gradient-text">crédito a sola firma</span></h3><p>Llévate tu laptop, PC gamer o impresora hoy mismo. Escríbenos por WhatsApp.</p><a class="button success" href="https://wa.me/51973604479?text=Hola%20PC%20BOX%2C%20quiero%20solicitar%20mi%20cr%C3%A9dito%20a%20sola%20firma." target="_blank" rel="noopener">◉ Solicitar por WhatsApp</a><p class="phone">+51 973 604 479</p></aside></div></div></section>
+        )}</div><aside class="card credit-card"><h3>Solicita tu <span class="gradient-text">catálogo</span></h3><p>Tenemos crédito a sola firma. Escríbenos por WhatsApp.</p><a class="button success" href="https://wa.me/51973604479?text=Hola%20PC%20BOX%2C%20quiero%20solicitar%20el%20cat%C3%A1logo.%20Tengo%20inter%C3%A9s%20en%20el%20cr%C3%A9dito%20a%20sola%20firma." target="_blank" rel="noopener">◉ Solicitar por WhatsApp</a><p class="phone">+51 973 604 479</p></aside></div></div></section>
 
-      <section class="section compact border" id="marcas"><div class="container"><div class="section-heading"><div><h2>Distribuidores Autorizados</h2><p>Trabajamos con las marcas líderes en tecnología.</p></div></div></div><div class="brands"><div class="brands-track"><ul class="brands-list">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul><ul class="brands-list" aria-hidden="true">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul></div></div></section>
+      <section class="section compact border" id="marcas"><div class="container"><div class="section-heading"><div><h2>Distribuidores Autorizados</h2></div></div></div><div class="brands"><div class="brands-track"><ul class="brands-list">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul><ul class="brands-list" aria-hidden="true">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul></div></div></section>
 
       <section class="section compact" id="notificaciones"><div class="container notify-wrap"><div><p class="notify-title">♧ Recibir notificaciones</p><h2 style="margin-top:8px">No te pierdas el próximo sorteo</h2><p class="muted" style="margin-top:7px">Déjanos un correo o celular y te avisaremos de nuevos sorteos, resultados y ofertas.</p></div><form class="notify-form" id="notify-form"><input class="field" name="fullName" placeholder="Tu nombre" required /><input class="field" name="email" type="email" placeholder="Correo" /><input class="field" name="phone" inputmode="tel" placeholder="Celular" /><button class="button" type="submit">Avisarme</button></form></div></section>
 
@@ -338,6 +339,12 @@ function renderApp() {
   document.querySelector("#raffle-grid").addEventListener("click", handleRaffleAction);
   renderRaffles();
   renderWinners();
+  document.querySelector(".participate-button")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    if (!state.activeRaffle || state.activeRaffle.demo)
+      return showToast("El sorteo todavía no está publicado.", "error");
+    openRegistration(state.activeRaffle);
+  });
   startFlyerRotation();
 }
 
@@ -396,22 +403,32 @@ function renderWinners() {
 
 function startFlyerRotation() {
   if (state.flyerTimer) window.clearInterval(state.flyerTimer);
-  let rotation = 0;
+  let currentSet = flyers.slice(0, 3);
   state.flyerTimer = window.setInterval(() => {
-    rotation += 1;
-    document.querySelectorAll("[data-flyer-slot]").forEach((slot) => {
-      const slotIndex = Number(slot.dataset.flyerSlot || 0);
-      const [source, alt] = flyers[(rotation + slotIndex) % flyers.length];
+    const slots = [...document.querySelectorAll("[data-flyer-slot]")];
+    if (!slots.length) return;
+    const previousSources = new Set(currentSet.map(([source]) => source));
+    const available = flyers.filter(([source]) => !previousSources.has(source));
+    const pool = [...(available.length >= slots.length ? available : flyers)];
+    for (let index = pool.length - 1; index > 0; index -= 1) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [pool[index], pool[randomIndex]] = [pool[randomIndex], pool[index]];
+    }
+    const nextSet = pool.slice(0, slots.length);
+    slots.forEach((slot) => {
       const image = slot.querySelector("img");
-      if (!image) return;
-      slot.classList.add("is-changing");
-      window.setTimeout(() => {
-        image.src = source;
-        image.alt = alt;
-        slot.classList.remove("is-rotated");
-        slot.classList.remove("is-changing");
-      }, 900);
+      if (image) slot.classList.add("is-changing");
     });
+    window.setTimeout(() => {
+      slots.forEach((slot, index) => {
+        const image = slot.querySelector("img");
+        if (!image || !nextSet[index]) return;
+        image.src = nextSet[index][0];
+        image.alt = nextSet[index][1];
+        slot.classList.remove("is-changing");
+      });
+      currentSet = nextSet;
+    }, 900);
   }, 3000);
 }
 
@@ -608,7 +625,7 @@ function enhancePublicLayout() {
     stepsSection.insertAdjacentHTML(
       "afterend",
       `
-       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Grupo Big Store</span></div><span class="payment-label">PAGA CON YAPE</span><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape de Grupo Big Store" /><span class="payment-hint">El total aparecerá al momento de participar.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
+       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><strong class="payment-number">902330511</strong><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin de Grupo Big Store" /><span class="payment-hint">GRUPO BIG STORE E.I.R.L.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
        `,
     );
   }
@@ -640,7 +657,7 @@ function enhancePublicLayout() {
       .querySelector("main")
       .insertAdjacentHTML(
         "beforeend",
-        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención El Shucuy Regalon</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51973604479?text=Hola%20El%20Shucuy%20Regalon%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
+        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención El Shucuy Regalon</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 973 604 479</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51973604479?text=Hola%20El%20Shucuy%20Regalon%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
       );
   }
   renderRaffleCardsV2();
@@ -696,7 +713,7 @@ function renderRegistrationModal() {
   if (form.step === 3)
     content = `<div class="total-box"><p class="muted" style="text-align:center;text-transform:uppercase;font-size:11px;letter-spacing:.12em">Cantidad de tickets</p><div class="quantity"><button class="round-button" data-quantity="minus" type="button">−</button><strong>${form.quantity}</strong><button class="round-button" data-quantity="plus" type="button">+</button></div><div class="total-row"><span>Precio por ticket</span><span>${money(raffle.ticket_price)}</span></div><div class="total-row"><span>Tickets</span><span>× ${form.quantity}</span></div><div class="total-row final"><span>Total</span><span class="gradient-text">${money(Number(raffle.ticket_price) * form.quantity)}</span></div></div><button class="button full" id="go-payment">Pagar ${money(Number(raffle.ticket_price) * form.quantity)}</button>`;
   if (form.step === 4)
-    content = `<div class="qr-card"><div class="qr-title">YAPE</div><p style="font-size:11px;opacity:.75">GRUPO BIG STORE EIRL</p><img class="registration-qr" src="${officialQrImage}" alt="QR oficial de Yape" /><strong style="font-size:24px">${money(Number(raffle.ticket_price) * form.quantity)}</strong><p style="font-size:11px;opacity:.7">Realiza el pago exacto y luego sube tu comprobante.</p></div><form id="receipt-form"><label class="upload-label" for="receipt"><strong>Subir</strong><span class="selected-file">${form.file ? escapeHtml(form.file.name) : "Selecciona tu comprobante"}</span></label><input class="sr-only" id="receipt" type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required /><button class="button full" type="submit">Enviar comprobante</button></form>`;
+    content = `<div class="qr-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><p class="payment-account">GRUPO BIG STORE E.I.R.L.</p><strong class="payment-number">902330511</strong><img class="registration-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin" /><strong style="font-size:24px">${money(Number(raffle.ticket_price) * form.quantity)}</strong><p style="font-size:11px;opacity:.7">Realiza el pago exacto y luego sube tu comprobante.</p></div><form id="receipt-form"><label class="upload-label" for="receipt"><strong>Subir</strong><span class="selected-file">${form.file ? escapeHtml(form.file.name) : "Selecciona tu comprobante"}</span></label><input class="sr-only" id="receipt" type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required /><button class="button full" type="submit">Enviar comprobante</button></form>`;
   if (form.step === 5)
     content = `<div class="success"><strong>Inscripción en revisión</strong><p>Tu comprobante fue enviado. Cuando el administrador lo apruebe recibirás tus tickets desde el 100.</p></div><p class="muted" style="margin-top:15px;text-align:center">Consulta tu estado con el DNI <strong>${escapeHtml(form.dni)}</strong>.</p><a class="button full" href="#participantes" data-close-modal>Ver mi inscripción</a>`;
   root.innerHTML = `<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="registration-title"><button class="modal-close" data-close-registration aria-label="Cerrar">×</button><h2 id="registration-title">${title}</h2>${form.step < 5 ? `<div class="progress">${[0, 1, 2, 3, 4].map((step) => `<span class="${step <= form.step ? "on" : ""}"></span>`).join("")}</div>` : ""}${content}</section></div>`;

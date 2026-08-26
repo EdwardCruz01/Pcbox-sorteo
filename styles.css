@@ -2564,3 +2564,204 @@ p {
     filter: blur(18px);
   }
 }
+
+/* Ajuste final de espacios, pagos, productos y distribuidores. */
+#sorteos {
+  padding-bottom: 38px;
+}
+#sorteos #raffle-grid {
+  margin-top: 20px;
+}
+#como-participar {
+  padding-top: 38px;
+  padding-bottom: 34px;
+}
+#pagos {
+  padding-top: 34px;
+  padding-bottom: 36px;
+}
+#pagos .section-heading h2 {
+  font-size: clamp(25px, 3.5vw, 36px);
+}
+#pagos .payment-layout {
+  gap: 28px;
+  margin-top: 20px;
+}
+#pagos .payment-copy h3 {
+  margin-top: 0;
+}
+#pagos .payment-copy ul {
+  gap: 6px;
+  margin-top: 14px;
+}
+.payment-tabs strong,
+.payment-tabs span {
+  color: #720e9e;
+  background: #fff;
+}
+.payment-number {
+  display: block;
+  margin-top: 7px;
+  color: #fff;
+  font-size: 24px;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+.payment-account {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.qr-card .payment-tabs {
+  margin-bottom: 7px;
+}
+.qr-card .payment-tabs strong,
+.qr-card .payment-tabs span {
+  padding: 7px;
+}
+.qr-card .payment-number {
+  margin-top: 5px;
+}
+#tienda {
+  padding-top: 38px;
+  padding-bottom: 34px;
+}
+#tienda .section-heading {
+  align-items: center;
+}
+.store-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.store-heading h2 {
+  color: var(--text);
+}
+.store-logo {
+  display: block;
+  width: clamp(105px, 13vw, 150px);
+  height: auto;
+  filter: invert(1) brightness(1.18);
+  object-fit: contain;
+}
+#tienda .store-grid {
+  gap: 16px;
+  margin-top: 20px;
+}
+#tienda .flyer-grid {
+  gap: 14px;
+}
+#credito {
+  padding-top: 24px;
+  padding-bottom: 28px;
+}
+.credit-section .credit-card {
+  gap: 14px;
+  padding: 17px 21px;
+}
+.credit-section .credit-card h3 {
+  font-size: 21px;
+}
+.credit-section .credit-card p {
+  font-size: 12px;
+}
+#marcas {
+  padding-top: 27px;
+  padding-bottom: 18px;
+}
+#marcas .brands {
+  margin-top: 14px;
+}
+#marcas .brands-list {
+  gap: 18px;
+  padding-inline: 10px;
+}
+#marcas .brands-list li {
+  width: 148px;
+  height: 70px;
+  padding: 8px 12px;
+}
+#marcas .brands-list li img {
+  max-height: 54px;
+}
+#ganadores,
+#mis-tickets {
+  padding-top: 34px;
+  padding-bottom: 34px;
+}
+#soporte {
+  padding-top: 25px;
+  padding-bottom: 30px;
+}
+#soporte .support-panel {
+  padding: 22px 26px;
+}
+@media (max-width: 700px) {
+  #sorteos {
+    padding-bottom: 28px;
+  }
+  #como-participar {
+    padding-top: 30px;
+    padding-bottom: 28px;
+  }
+  #pagos {
+    padding-top: 28px;
+    padding-bottom: 30px;
+  }
+  #pagos .payment-layout {
+    gap: 18px;
+    margin-top: 15px;
+  }
+  #pagos .payment-card {
+    padding: 17px 17px 19px;
+  }
+  #tienda {
+    padding-top: 30px;
+    padding-bottom: 26px;
+  }
+  .store-heading {
+    gap: 10px;
+  }
+  .store-heading h2 {
+    font-size: 25px;
+  }
+  #tienda .store-grid {
+    margin-top: 15px;
+  }
+  #credito {
+    padding-top: 18px;
+    padding-bottom: 22px;
+  }
+  .credit-section .credit-card {
+    gap: 8px;
+    padding: 16px 17px;
+  }
+  #marcas {
+    padding-top: 23px;
+    padding-bottom: 13px;
+  }
+  #marcas .brands-list li {
+    width: 130px;
+    height: 62px;
+    padding: 7px 10px;
+  }
+  #marcas .brands-list li img {
+    max-height: 47px;
+  }
+  #ganadores,
+  #mis-tickets {
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+  #soporte {
+    padding-top: 20px;
+    padding-bottom: 24px;
+  }
+  #soporte .support-panel {
+    padding: 19px 16px;
+  }
+}
