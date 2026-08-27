@@ -31,8 +31,24 @@ const API_URL =
 const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
 const RECEIPT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
-const FIXED_DRAW_DATE = "2026-09-23T23:59:59-05:00";
+const FIXED_DRAW_DATE = "2026-08-27T22:00:00-05:00";
 let countdownTimer = null;
+
+function raffleImagePath(value, fallback) {
+  const normalized = String(value || "").trim();
+  if (!normalized) return fallback;
+  if (/^(https?:)?\/\//i.test(normalized) || normalized.startsWith("/")) return normalized;
+  if (normalized.startsWith("assets/")) return asset(normalized.slice("assets/".length));
+  return normalized;
+}
+
+function raffleDateLabel(value) {
+  if (!value) return "Por anunciar";
+  return new Date(value).toLocaleDateString("es-PE", {
+    day: "numeric",
+    month: "long",
+  });
+}
 
 const officialFlyerFiles = [
   "001.jpg",
@@ -214,10 +230,7 @@ function money(value) {
 }
 function displayRaffleTitle(value) {
   const title = String(value || "").trim();
-  return (
-    title.replace(/\s+del\s+(?:El\s+)?Shucuy\s+Regalon\s*$/i, "").trim() ||
-    "1° Gran Sorteo"
-  );
+  return title.replace(/\s+del\s+(?:El\s+)?Shucuy\s+Regalon\s*$/i, "").trim() || "1° Gran Sorteo";
 }
 
 function receiptExtension(file) {
@@ -495,12 +508,7 @@ function handleRaffleAction(event) {
 
 function countdownTarget() {
   const configured = state.activeRaffle?.draw_date ? new Date(state.activeRaffle.draw_date) : null;
-  if (
-    configured &&
-    !Number.isNaN(configured.getTime()) &&
-    configured.getMonth() === 8 &&
-    configured.getDate() === 23
-  ) {
+  if (configured && !Number.isNaN(configured.getTime())) {
     return configured;
   }
   return new Date(FIXED_DRAW_DATE);
@@ -533,8 +541,8 @@ function startCountdown() {
 }
 
 function renderRaffleCardsV2() {
-  const active = state.raffles.filter((raffle) => raffle.status === "activo");
-  const list = active.length ? [active[0]] : [defaultRaffle];
+  const list = state.raffles.filter((raffle) => ["activo", "inactivo"].includes(raffle.status));
+  if (!list.length) list.push(defaultRaffle);
   state.activeRaffle = list[0];
   const grid = document.querySelector("#raffle-grid");
   const notice = document.querySelector("#data-notice");
@@ -547,20 +555,22 @@ function renderRaffleCardsV2() {
   grid.innerHTML = list
     .map((raffle) => {
       const prizes = (raffle.prizes || []).slice(0, 10);
+      const cardImage = raffleImagePath(raffle.image_url, raffleCardBannerImage);
+      const canRegister = raffle.status === "activo" && !raffle.demo;
       return `
         <article class="card raffle-showcase">
           <div class="raffle-showcase-visual">
-            <img src="${raffleCardBannerImage}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
+            <img src="${escapeHtml(cardImage)}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
           </div>
           <div class="raffle-showcase-body">
             <div class="raffle-showcase-facts" aria-label="Datos del sorteo">
               <div class="raffle-showcase-fact">
                 <span class="raffle-showcase-fact-label">Precio</span>
-                <strong class="raffle-showcase-fact-value">S/.5 <small>por ticket</small></strong>
+                <strong class="raffle-showcase-fact-value">S/.${Number(raffle.ticket_price || 0).toFixed(0)} <small>por ticket</small></strong>
               </div>
               <div class="raffle-showcase-fact">
                 <span class="raffle-showcase-fact-label">Fecha</span>
-                <strong class="raffle-showcase-fact-value">8 de Octubre</strong>
+                <strong class="raffle-showcase-fact-value">${escapeHtml(raffleDateLabel(raffle.draw_date))}</strong>
               </div>
               <div class="raffle-showcase-fact">
                 <span class="raffle-showcase-fact-label raffle-showcase-fact-live"><i aria-hidden="true"></i>Sorteo en Vivo</span>
@@ -581,7 +591,7 @@ function renderRaffleCardsV2() {
                 })
                 .join("")}</div>
             </div>
-            <div class="card-actions"><button class="button full" data-action="register" data-id="${escapeHtml(raffle.id)}" ${raffle.demo ? "disabled" : ""}>PARTICIPAR <span>→</span></button><button class="button secondary full" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div>
+            <div class="card-actions"><button class="button full" data-action="register" data-id="${escapeHtml(raffle.id)}" ${canRegister ? "" : "disabled"}>${canRegister ? "PARTICIPAR" : "PARTICIPACIÓN CERRADA"} <span>${canRegister ? "→" : ""}</span></button><button class="button secondary full" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div>
           </div>
         </article>`;
     })
@@ -751,7 +761,9 @@ function renderRegistrationModal() {
   const { activeRaffle: raffle, registration: form } = state;
   const root = document.querySelector("#modal-root");
   const title =
-    form.step === 5 ? "¡Inscripción enviada!" : `Inscripción · ${escapeHtml(displayRaffleTitle(raffle.title))}`;
+    form.step === 5
+      ? "¡Inscripción enviada!"
+      : `Inscripción · ${escapeHtml(displayRaffleTitle(raffle.title))}`;
   let content = "";
   if (form.step === 0)
     content = `<div class="terms"><strong>Términos y condiciones</strong><p>Revisa el documento completo antes de continuar con tu inscripción.</p><button class="text-link" type="button" data-open-terms>Leer términos y condiciones</button></div><label class="check-row"><input type="checkbox" id="terms-check" ${form.accepted ? "checked" : ""} /> Confirmo que soy mayor de 18 años y acepto los <button class="inline-policy-link" type="button" data-open-terms>términos y condiciones</button>.</label><button class="button full" id="continue-terms" ${form.accepted ? "" : "disabled"}>Continuar</button>`;
@@ -764,7 +776,7 @@ function renderRegistrationModal() {
   if (form.step === 4)
     content = `<div class="qr-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><p class="payment-account">GRUPO BIG STORE E.I.R.L.</p><div class="payment-number-row"><strong class="payment-number">902330511</strong><button class="copy-payment-number" type="button" data-copy-number="902330511">Copiar número</button></div><img class="registration-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin" /><strong style="font-size:24px">${money(Number(raffle.ticket_price) * form.quantity)}</strong><p style="font-size:11px;opacity:.7">Realiza el pago exacto y luego sube tu comprobante.</p></div><form id="receipt-form"><label class="upload-label" for="receipt"><strong>Subir</strong><span class="selected-file">${form.file ? escapeHtml(form.file.name) : "Selecciona tu comprobante"}</span></label><input class="sr-only" id="receipt" type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required /><button class="button full" type="submit">Enviar comprobante</button></form>`;
   if (form.step === 5)
-    content = `<div class="success"><strong>Inscripción en revisión</strong><p>Tu comprobante fue enviado. Cuando el administrador lo apruebe recibirás tus tickets desde el 100.</p></div><p class="muted" style="margin-top:15px;text-align:center">Consulta tu estado con el DNI <strong>${escapeHtml(form.dni)}</strong>.</p><a class="button full" href="#participantes" data-close-modal>Ver mi inscripción</a>`;
+    content = `<div class="success"><strong>Inscripción en revisión</strong><p>Tu comprobante fue enviado. Cuando el administrador lo apruebe recibirás tu número de ticket.</p></div><p class="muted" style="margin-top:15px;text-align:center">Consulta tu estado con el DNI <strong>${escapeHtml(form.dni)}</strong>.</p><a class="button full" href="#participantes" data-close-modal>Ver mi inscripción</a>`;
   root.innerHTML = `<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="registration-title"><button class="modal-close" data-close-registration aria-label="Cerrar">×</button><h2 id="registration-title">${title}</h2>${form.step < 5 ? `<div class="progress">${[0, 1, 2, 3, 4].map((step) => `<span class="${step <= form.step ? "on" : ""}"></span>`).join("")}</div>` : ""}${content}</section></div>`;
   bindRegistrationEvents();
 }
