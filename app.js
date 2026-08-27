@@ -50,6 +50,12 @@ function raffleDateLabel(value) {
   });
 }
 
+function isPcboxRaffle(raffle) {
+  return String(raffle?.title || "")
+    .toLocaleLowerCase("es-PE")
+    .includes("pc box");
+}
+
 const officialFlyerFiles = [
   "001.jpg",
   "002.jpg",
@@ -557,6 +563,7 @@ function renderRaffleCardsV2() {
       const prizes = (raffle.prizes || []).slice(0, 10);
       const cardImage = raffleImagePath(raffle.image_url, raffleCardBannerImage);
       const canRegister = raffle.status === "activo" && !raffle.demo;
+      const showCountdown = !isPcboxRaffle(raffle);
       return `
         <article class="card raffle-showcase">
           <div class="raffle-showcase-visual">
@@ -580,7 +587,7 @@ function renderRaffleCardsV2() {
                 </div>
               </div>
             </div>
-            <div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
+            ${showCountdown ? `<div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>` : ""}
             <button class="prize-toggle" data-action="toggle-prizes" data-id="${escapeHtml(raffle.id)}" data-count="${prizes.length}" aria-expanded="false">Ver premios (${prizes.length}) <span>⌄</span></button>
             <div class="prize-panel" data-prizes-panel="${escapeHtml(raffle.id)}" hidden>
               <p class="prize-panel-title">Premios incluidos</p>
@@ -596,6 +603,9 @@ function renderRaffleCardsV2() {
         </article>`;
     })
     .join("");
+  document.querySelectorAll(".hero-ticket-banner [data-countdown]").forEach((countdown) => {
+    countdown.hidden = isPcboxRaffle(state.activeRaffle);
+  });
   updateCountdown();
 }
 
