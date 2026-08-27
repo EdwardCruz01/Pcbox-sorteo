@@ -5,10 +5,10 @@ const siteBase =
   runtimeEnv.BASE_URL ||
   (window.location.pathname.startsWith("/Pcbox-sorteo/") ? "/Pcbox-sorteo/" : "/");
 const asset = (name) => `${siteBase}assets/${name}`;
-const heroImage = asset("banner-pa-salado-mi-causa.jpg");
+const heroImage = asset("banner-pa-salado-mi-causa.png");
 const logoImage = asset("logo-pa-salado-mi-causa.png");
-const officialBannerImage = asset("banner-pa-salado-mi-causa.jpg");
-const raffleCardBannerImage = asset("flyer-tarjeta-pa-salado.jpg");
+const officialBannerImage = asset("banner-pa-salado-mi-causa.png");
+const raffleCardBannerImage = asset("flyer-tarjeta-pa-salado.png");
 const productsLogoImage = asset("logo-pcbox-productos.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
