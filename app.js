@@ -247,6 +247,32 @@ function showToast(message, type = "") {
   window.setTimeout(() => toast.remove(), 4200);
 }
 
+async function copyPaymentNumber(button) {
+  const number = button.dataset.copyNumber || "";
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(number);
+    } else {
+      const input = document.createElement("input");
+      input.value = number;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.opacity = "0";
+      document.body.append(input);
+      input.select();
+      if (!document.execCommand("copy")) throw new Error("No se pudo copiar");
+      input.remove();
+    }
+    button.textContent = "Número copiado";
+    showToast("Número de Yape copiado.", "success");
+    window.setTimeout(() => {
+      button.textContent = "Copiar número";
+    }, 1800);
+  } catch {
+    showToast(`Copia este número: ${number}`, "error");
+  }
+}
+
 async function publicApi(action, payload) {
   if (!API_URL)
     throw new Error("Falta configurar VITE_SUPABASE_URL y VITE_SUPABASE_PUBLISHABLE_KEY.");
@@ -344,6 +370,10 @@ function renderApp() {
   document.querySelector("#notify-form").addEventListener("submit", handleNotify);
   document.querySelector("#participant-form").addEventListener("submit", handleParticipantSearch);
   document.querySelector("#raffle-grid").addEventListener("click", handleRaffleAction);
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-copy-number]");
+    if (button) copyPaymentNumber(button);
+  });
   renderRaffles();
   renderWinners();
   document.querySelector(".participate-button")?.addEventListener("click", (event) => {
@@ -522,12 +552,24 @@ function renderRaffleCardsV2() {
           <div class="raffle-showcase-visual">
             <img src="${raffleCardBannerImage}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
           </div>
-          <span class="showcase-price"><small>S/</small> ${Number(raffle.ticket_price || 5).toFixed(0)}<em>por ticket</em></span>
           <div class="raffle-showcase-body">
-            <span class="showcase-kicker">✦ Sorteo activo</span>
-            <div class="raffle-title-row"><h3>${escapeHtml(displayRaffleTitle(raffle.title))}</h3></div>
-            <p class="raffle-description">${escapeHtml(raffle.description || "Participa por tecnología y premios increíbles para tu hogar.")}</p>
-            <div class="showcase-meta"><span>◷ 23 de septiembre</span><span>✓ Tickets verificados</span></div>
+            <div class="raffle-showcase-facts" aria-label="Datos del sorteo">
+              <div class="raffle-showcase-fact">
+                <span class="raffle-showcase-fact-label">Precio</span>
+                <strong class="raffle-showcase-fact-value">S/.5 <small>por ticket</small></strong>
+              </div>
+              <div class="raffle-showcase-fact">
+                <span class="raffle-showcase-fact-label">Fecha</span>
+                <strong class="raffle-showcase-fact-value">8 de Octubre</strong>
+              </div>
+              <div class="raffle-showcase-fact">
+                <span class="raffle-showcase-fact-label raffle-showcase-fact-live"><i aria-hidden="true"></i>Sorteo en Vivo</span>
+                <div class="raffle-showcase-socials">
+                  <a class="raffle-showcase-social" href="https://www.facebook.com/pcboxsmart" target="_blank" rel="noopener" aria-label="Facebook PC BOX">f</a>
+                  <a class="raffle-showcase-social" href="https://www.tiktok.com/@pc.box.smart?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener" aria-label="TikTok PC BOX">♪</a>
+                </div>
+              </div>
+            </div>
             <div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
             <button class="prize-toggle" data-action="toggle-prizes" data-id="${escapeHtml(raffle.id)}" data-count="${prizes.length}" aria-expanded="false">Ver premios (${prizes.length}) <span>⌄</span></button>
             <div class="prize-panel" data-prizes-panel="${escapeHtml(raffle.id)}" hidden>
@@ -632,7 +674,7 @@ function enhancePublicLayout() {
     stepsSection.insertAdjacentHTML(
       "afterend",
       `
-       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><strong class="payment-number">902330511</strong><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin de Grupo Big Store" /><span class="payment-hint">GRUPO BIG STORE E.I.R.L.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
+       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><div class="payment-number-row"><strong class="payment-number">902330511</strong><button class="copy-payment-number" type="button" data-copy-number="902330511">Copiar número</button></div><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin de Grupo Big Store" /><span class="payment-hint">GRUPO BIG STORE E.I.R.L.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
        `,
     );
   }
@@ -720,7 +762,7 @@ function renderRegistrationModal() {
   if (form.step === 3)
     content = `<div class="total-box"><p class="muted" style="text-align:center;text-transform:uppercase;font-size:11px;letter-spacing:.12em">Cantidad de tickets</p><div class="quantity"><button class="round-button" data-quantity="minus" type="button">−</button><strong>${form.quantity}</strong><button class="round-button" data-quantity="plus" type="button">+</button></div><div class="total-row"><span>Precio por ticket</span><span>${money(raffle.ticket_price)}</span></div><div class="total-row"><span>Tickets</span><span>× ${form.quantity}</span></div><div class="total-row final"><span>Total</span><span class="gradient-text">${money(Number(raffle.ticket_price) * form.quantity)}</span></div></div><button class="button full" id="go-payment">Pagar ${money(Number(raffle.ticket_price) * form.quantity)}</button>`;
   if (form.step === 4)
-    content = `<div class="qr-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><p class="payment-account">GRUPO BIG STORE E.I.R.L.</p><strong class="payment-number">902330511</strong><img class="registration-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin" /><strong style="font-size:24px">${money(Number(raffle.ticket_price) * form.quantity)}</strong><p style="font-size:11px;opacity:.7">Realiza el pago exacto y luego sube tu comprobante.</p></div><form id="receipt-form"><label class="upload-label" for="receipt"><strong>Subir</strong><span class="selected-file">${form.file ? escapeHtml(form.file.name) : "Selecciona tu comprobante"}</span></label><input class="sr-only" id="receipt" type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required /><button class="button full" type="submit">Enviar comprobante</button></form>`;
+    content = `<div class="qr-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><p class="payment-account">GRUPO BIG STORE E.I.R.L.</p><div class="payment-number-row"><strong class="payment-number">902330511</strong><button class="copy-payment-number" type="button" data-copy-number="902330511">Copiar número</button></div><img class="registration-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin" /><strong style="font-size:24px">${money(Number(raffle.ticket_price) * form.quantity)}</strong><p style="font-size:11px;opacity:.7">Realiza el pago exacto y luego sube tu comprobante.</p></div><form id="receipt-form"><label class="upload-label" for="receipt"><strong>Subir</strong><span class="selected-file">${form.file ? escapeHtml(form.file.name) : "Selecciona tu comprobante"}</span></label><input class="sr-only" id="receipt" type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required /><button class="button full" type="submit">Enviar comprobante</button></form>`;
   if (form.step === 5)
     content = `<div class="success"><strong>Inscripción en revisión</strong><p>Tu comprobante fue enviado. Cuando el administrador lo apruebe recibirás tus tickets desde el 100.</p></div><p class="muted" style="margin-top:15px;text-align:center">Consulta tu estado con el DNI <strong>${escapeHtml(form.dni)}</strong>.</p><a class="button full" href="#participantes" data-close-modal>Ver mi inscripción</a>`;
   root.innerHTML = `<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="registration-title"><button class="modal-close" data-close-registration aria-label="Cerrar">×</button><h2 id="registration-title">${title}</h2>${form.step < 5 ? `<div class="progress">${[0, 1, 2, 3, 4].map((step) => `<span class="${step <= form.step ? "on" : ""}"></span>`).join("")}</div>` : ""}${content}</section></div>`;

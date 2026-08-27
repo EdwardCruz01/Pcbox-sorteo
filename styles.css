@@ -2805,3 +2805,234 @@ p {
     padding: 19px 16px;
   }
 }
+
+/* Datos compactos de la tarjeta activa y controles de copia del pago. */
+.raffle-showcase,
+.raffle-showcase-body {
+  min-height: 700px;
+}
+
+.raffle-showcase-body {
+  padding: 30px 38px 22px;
+}
+
+.raffle-showcase-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 590px);
+  gap: 10px;
+  margin: 0 auto;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(10, 15, 30, 0.68);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.raffle-showcase-fact {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-width: 0;
+  gap: 3px;
+  color: #fff;
+  text-align: center;
+}
+
+.raffle-showcase-fact + .raffle-showcase-fact {
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.raffle-showcase-fact-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.raffle-showcase-fact-value {
+  color: #fff;
+  font-size: clamp(13px, 1.6vw, 17px);
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.raffle-showcase-fact-value small {
+  display: block;
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.raffle-showcase-fact-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #ff9aa8;
+  white-space: nowrap;
+}
+
+.raffle-showcase-fact-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff526a;
+  box-shadow: 0 0 10px rgba(255, 82, 106, 0.9);
+}
+
+.raffle-showcase-socials {
+  display: flex;
+  gap: 6px;
+  margin-top: 3px;
+}
+
+.raffle-showcase-social {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.raffle-showcase-social:hover,
+.raffle-showcase-social:focus-visible {
+  color: #fff;
+  background: rgba(84, 173, 255, 0.42);
+  transform: translateY(-1px);
+}
+
+.raffle-showcase .raffle-card-countdown {
+  width: min(100%, 500px);
+  margin: 12px auto 0;
+  padding: 9px 11px 11px;
+}
+
+.raffle-showcase .raffle-card-countdown .countdown-grid {
+  gap: 8px;
+}
+
+.raffle-showcase .raffle-card-countdown .countdown-grid div {
+  min-height: 54px;
+}
+
+.raffle-showcase .raffle-card-countdown .countdown-grid strong {
+  font-size: 23px;
+}
+
+.raffle-showcase .prize-toggle {
+  margin-top: 9px;
+}
+
+.raffle-showcase .card-actions {
+  margin-top: 8px;
+  padding-top: 0;
+}
+
+.payment-number-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+}
+
+.payment-number-row .payment-number {
+  margin-top: 7px;
+}
+
+.copy-payment-number {
+  align-self: center;
+  padding: 6px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 9px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.copy-payment-number:hover,
+.copy-payment-number:focus-visible {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.qr-card .payment-number-row {
+  margin-bottom: 3px;
+}
+
+@media (max-width: 700px) {
+  .raffle-showcase,
+  .raffle-showcase-body {
+    min-height: 690px;
+  }
+
+  .raffle-showcase-body {
+    padding: 24px 16px 18px;
+  }
+
+  .raffle-showcase-facts {
+    gap: 5px;
+    padding: 9px 5px;
+    border-radius: 14px;
+  }
+
+  .raffle-showcase-fact-label {
+    font-size: 7px;
+    letter-spacing: 0.06em;
+  }
+
+  .raffle-showcase-fact-value {
+    font-size: 12px;
+  }
+
+  .raffle-showcase-fact-value small {
+    font-size: 7px;
+  }
+
+  .raffle-showcase-fact-live {
+    gap: 3px;
+    font-size: 7px;
+  }
+
+  .raffle-showcase-socials {
+    gap: 4px;
+  }
+
+  .raffle-showcase-social {
+    width: 21px;
+    height: 21px;
+    font-size: 11px;
+  }
+
+  .raffle-showcase .raffle-card-countdown {
+    margin-top: 10px;
+  }
+
+  .payment-number-row {
+    gap: 6px;
+  }
+
+  .payment-number-row .payment-number {
+    font-size: 21px;
+  }
+
+  .copy-payment-number {
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+}
