@@ -2813,7 +2813,7 @@ p {
 }
 
 .raffle-showcase-body {
-  padding: 30px 38px 22px;
+  padding: clamp(410px, 48vw, 430px) 38px 22px;
 }
 
 .raffle-showcase-facts {
@@ -2982,7 +2982,7 @@ p {
   }
 
   .raffle-showcase-body {
-    padding: 24px 16px 18px;
+    padding: 350px 16px 18px;
   }
 
   .raffle-showcase-facts {
