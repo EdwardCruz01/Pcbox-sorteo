@@ -354,7 +354,7 @@ function renderApp() {
         )
         .join(
           "",
-        )}</div><aside class="card credit-card"><h3>Solicita tu <span class="gradient-text">catálogo</span></h3><p>Tenemos crédito a sola firma. Escríbenos por WhatsApp.</p><a class="button success" href="https://wa.me/51973604479?text=Hola%20PC%20BOX%2C%20quiero%20solicitar%20el%20cat%C3%A1logo.%20Tengo%20inter%C3%A9s%20en%20el%20cr%C3%A9dito%20a%20sola%20firma." target="_blank" rel="noopener">◉ Solicitar por WhatsApp</a><p class="phone">+51 973 604 479</p></aside></div></div></section>
+        )}</div><aside class="card credit-card"><h3>Solicita tu <span class="gradient-text">catálogo</span></h3><p>Tenemos crédito a sola firma. Escríbenos por WhatsApp.</p><a class="button success" href="https://wa.me/51902330511?text=Hola%20PC%20BOX%2C%20quiero%20solicitar%20el%20cat%C3%A1logo.%20Tengo%20inter%C3%A9s%20en%20el%20cr%C3%A9dito%20a%20sola%20firma." target="_blank" rel="noopener">◉ Solicitar por WhatsApp</a><p class="phone">+51 902 330 511</p></aside></div></div></section>
 
       <section class="section compact border" id="marcas"><div class="container"><div class="section-heading"><div><h2>Distribuidores Autorizados</h2></div></div></div><div class="brands"><div class="brands-track"><ul class="brands-list">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul><ul class="brands-list" aria-hidden="true">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul></div></div></section>
 
@@ -600,9 +600,9 @@ function renderRaffleCardsV2() {
 }
 
 const TERMS_AND_CONDITIONS_HTML = `
-  <p><strong>Documento legal que regula la participación en las promociones comerciales y sorteos organizados por CONSORCIO MORALES E &amp; L S.A.C. (RUC: 20614625989 ) a través del sitio premioslorenzo.com.</strong></p>
+  <p><strong>Documento legal que regula la participación en las promociones comerciales y sorteos organizados por GRUPO BIG STORE E.I.R.L. (RUC: 20612521396).</strong></p>
   <h3>1. Organización y Marco Legal</h3>
-  <p>Razón social: CONSORCIO MORALES E &amp; L S.A.C.</p><p>RUC: 20614625989</p><p>Sitio oficial: premioslorenzo.com</p><p>Periodicidad: El lanzamiento de los sorteos será publicada y anunciada a través de nuestra red social oficial de Facebook: premioslorenzo.oficial. Todos los sorteos y promociones comerciales organizados por la empresa se rigen bajo la legislación peruana vigente, garantizando la equidad y transparencia en cada evento.</p>
+  <p>Razón social: GRUPO BIG STORE E.I.R.L.</p><p>RUC: 20612521396</p><p>Sitio oficial: pcbox-sorteo.vercel.app</p><p>Periodicidad: El lanzamiento de los sorteos será publicado y anunciado a través de nuestros canales oficiales. Todos los sorteos y promociones comerciales organizados por la empresa se rigen bajo la legislación peruana vigente, garantizando la equidad y transparencia en cada evento.</p>
   <h3>2. Participación y Registro</h3>
   <p>La participación es voluntaria y está sujeta al cumplimiento de los siguientes pasos:</p><ol><li>Realizar el pago previo del ticket (S/ 40.00 o S/ 60.00) dependiendo del tipo de sorteo.</li><li>Tomar una captura de pantalla o guardar el voucher físico del pago emitido por la entidad financiera.</li><li>Completar el formulario en la web oficial con datos reales, exactos y actualizados.</li><li>Al momento de darle click en &quot;SUBIR COMPROBANTE&quot;, usted está aceptando el cumplimientos de los presentes Términos y Condiciones y la Política de Privacidad.</li></ol><p>La participación está estrictamente limitada a personas mayores de 18 años. De comprobarse la falsedad en la declaración de edad o identidad, el ticket será invalidado sin derecho a reclamo o reembolso.</p>
   <h3>3. Validación y Seguridad de Tickets</h3>
@@ -611,22 +611,36 @@ const TERMS_AND_CONDITIONS_HTML = `
   <h3>5. Condiciones de Pagos</h3><ul><li>El valor oficial de cada ticket, según el tipo de sorteo, es de S/ 40.00 (Cuarenta y 00/100 Soles) o S/ 60.00 (Sesenta y 00/100 Soles), incluyendo los impuestos de ley.</li><li>Los comprobantes falsos, ilegibles o adulterados serán rechazados de inmediato y el participante será bloqueado de la plataforma.</li><li>No se realizan devoluciones por desistimiento, errores en la transferencia o equivocaciones en el registro cometidos por el participante.</li><li>La adquisición de un mayor número de tickets incrementa las probabilidades matemáticas, pero no garantiza bajo ninguna circunstancia la obtención de un premio.</li></ul>
   <h3>6. Premios y Reglas Especiales</h3><p>Los premios consisten en vehículos automotores y dinero en efectivo, cuyas especificaciones se publican previamente en la web oficial.</p><p><strong>Reglas de Asignación y Entrega:</strong></p><ul><li>🚫 Restricción de Premio Consuelo: El participante que tenga más tickets a su nombre y no ganó ningún otro premio exceptuando los premios en efectivo, será considerado ganador del &quot;PREMIO CONSUELO&quot;. Caso contrario, se pasa automáticamente al siguiente participante con mayor cantidad de tickets válidos.</li><li>⚖️ Caso de Empate: En caso de empate en la mayor cantidad de tickets adquiridos para una bonificación específica, el premio será dividido en dos partes iguales y entregado en efectivo a ambos participantes.</li><li>Naturaleza del Premio: Los premios son de carácter estrictamente personal e intransferible. No podrán ser endosados a terceros.</li></ul>
   <h3>7. Dinámica del Sorteo</h3><ul><li>Los sorteos se llevan a cabo de forma pública y cuentan con la presencia de un notario público, quien da fe y legalidad de los resultados.</li><li>La transmisión se realiza en vivo y en directo a través de la página oficial de Facebook de Premios Lorenzo.</li><li>⚖️ Decisión Final: La decisión del organizador, avalada por el notario público, respecto a la validez de los tickets y la declaración de los ganadores será final e inapelable.</li></ul>
-  <h3>8. Protección de Datos Personales</h3><p>En estricto cumplimiento de la Ley N° 29733, Ley de Protección de Datos Personales, y su Reglamento (Decreto Supremo N° 003-2013-JUS), CONSORCIO MORALES E &amp; L S.A.C. garantiza la confidencialidad y seguridad de la información proporcionada:</p><ul><li>Consentimiento: Al registrarse, el participante otorga su consentimiento libre, previo, expreso, inequívoco e informado para el tratamiento de sus datos.</li><li>Finalidad: La información recopilada será utilizada exclusivamente para la validación de identidad, gestión del sorteo, contacto en caso de resultar ganador y fines estadísticos internos.</li><li>Almacenamiento: Los datos personales se almacenan de forma segura en nuestro banco de datos por un plazo legal de cinco (5) años.</li><li>Derechos ARCO: El usuario titular de los datos puede ejercer en cualquier momento sus derechos de Acceso, Rectificación, Cancelación y Oposición, enviando una solicitud formal a través de nuestros canales de contacto oficiales.</li></ul>
+  <h3>8. Protección de Datos Personales</h3><p>En estricto cumplimiento de la Ley N° 29733, Ley de Protección de Datos Personales, y su Reglamento (Decreto Supremo N° 003-2013-JUS), GRUPO BIG STORE E.I.R.L. garantiza la confidencialidad y seguridad de la información proporcionada:</p><ul><li>Consentimiento: Al registrarse, el participante otorga su consentimiento libre, previo, expreso, inequívoco e informado para el tratamiento de sus datos.</li><li>Finalidad: La información recopilada será utilizada exclusivamente para la validación de identidad, gestión del sorteo, contacto en caso de resultar ganador y fines estadísticos internos.</li><li>Almacenamiento: Los datos personales se almacenan de forma segura en nuestro banco de datos por un plazo legal de cinco (5) años.</li><li>Derechos ARCO: El usuario titular de los datos puede ejercer en cualquier momento sus derechos de Acceso, Rectificación, Cancelación y Oposición, enviando una solicitud formal a través de nuestros canales de contacto oficiales.</li></ul>
   <h3>9. Protección al Consumidor</h3><ul><li>Información Clara: Las reglas, fechas, costos y descripciones de los premios son exhibidas de manera clara, veraz y oportuna, evitando cualquier práctica engañosa.</li><li>Atención de Reclamos: Contamos con un Libro de Reclamaciones Virtual, conforme a la normativa de INDECOPI, a disposición de los usuarios para registrar cualquier insatisfacción o queja sobre el desarrollo del sorteo.</li><li>Publicidad: Toda publicidad emitida respecto a los sorteos respeta los principios de lealtad y veracidad comercial exigidos por la ley peruana.</li></ul>
-  <h3>10. Responsabilidad y Prevención de Fraude</h3><ul><li>⚠️ Descalificación: Cualquier intento de fraude, suplantación de identidad, uso de bots, alteraciones de sistema o manipulación de datos resultará en la descalificación automática e inmediata del participante.</li><li>Acciones Legales: CONSORCIO MORALES E &amp; L S.A.C. se reserva el derecho absoluto de utilizar los datos recopilados para iniciar acciones legales, civiles o penales, ante las autoridades competentes (Ministerio Público, PNP) frente a indicios de fraude, estafa o lavado de activos.</li><li>Exoneración: La empresa no asume responsabilidad civil por interrupciones de conectividad, caídas del sistema bancario o errores tipográficos cometidos por el usuario durante su inscripción.</li></ul>
-  <h3>11. Contacto y Atención al Cliente</h3><p>Para consultas, soporte técnico, ejercicio de derechos ARCO o acceso al Libro de Reclamaciones, por favor comuníquese mediante los canales oficiales publicados permanentemente en nuestra plataforma web: premioslorenzo.com.</p>
+  <h3>10. Responsabilidad y Prevención de Fraude</h3><ul><li>⚠️ Descalificación: Cualquier intento de fraude, suplantación de identidad, uso de bots, alteraciones de sistema o manipulación de datos resultará en la descalificación automática e inmediata del participante.</li><li>Acciones Legales: GRUPO BIG STORE E.I.R.L. se reserva el derecho absoluto de utilizar los datos recopilados para iniciar acciones legales, civiles o penales ante las autoridades competentes frente a indicios de fraude, estafa o lavado de activos.</li><li>Exoneración: La empresa no asume responsabilidad civil por interrupciones de conectividad, caídas del sistema bancario o errores tipográficos cometidos por el usuario durante su inscripción.</li></ul>
+  <h3>11. Contacto y Atención al Cliente</h3><p>Para consultas, soporte técnico, ejercicio de derechos ARCO o acceso al Libro de Reclamaciones, comuníquese al WhatsApp oficial: +51 902 330 511.</p>
   <h3>12. Política de Entrega, Recojo y Envíos de Premios</h3><p>Premios Para garantizar la correcta adjudicación de los premios y establecer los parámetros de responsabilidad entre la empresa organizadora y los ganadores, se establecen los siguientes tres (3) puntos de obligatorio cumplimiento:</p><p><strong>• 12.1. Recojo presencial de premios de menor valor (Bienes Físicos):</strong></p><p>Para la entrega de premios físicos en especie, tales como teléfonos móviles (iPhones, smartphones), computadoras portátiles (laptops) u otros bienes equivalentes de menor denominación, el participante ganador titular deberá acercarse obligatoria y personalmente a la ubicación indicada por CONSORCIO MORALES E &amp; L S.A.C. La entrega se efectuará previa coordinación, siendo indispensable la presentación física de su Documento Nacional de Identidad (DNI) vigente y original para la firma del acta de recepción conforme.</p><p><strong>• 12.2. Exención de responsabilidad por envío de premios a domicilio (Uso de Courier):</strong></p><p>En el caso de que el ganador solicite voluntariamente y por conveniencia propia que un premio físico (iPhones, laptops, etc.) sea enviado a su domicilio, el ganador asume la total y absoluta responsabilidad sobre el estado, contenido e integridad física en el cual llegue el paquete. Consorcio Morales E &amp; L S.A.C. no asume, bajo ninguna circunstancia, la logística, plazos ni operatividad del servicio de courier o mensajería seleccionado. El ganador reconoce y acepta expresamente que, una vez que el premio es entregado a la empresa de transporte o courier en Lima, nuestra organización queda liberada de forma total y definitiva de cualquier tipo de responsabilidad civil o administrativa por robos, pérdidas, demoras, averías, daños o sustracciones que pudiera sufrir el paquete durante el trayecto, no habiendo lugar a reclamo o reposición por parte de la empresa organizadora.</p><p><strong>• 12.3. Trámite de cobro y firma presencial para premios mayores en efectivo (Superiores a S/ 5,000.00):</strong></p><p>Tratándose de premios en dinero en efectivo donde el monto a entregar sea igual o mayor a los S/ 5,000.00 (Cinco mil y 00/100 Soles), el participante ganador tendrá la obligación ineludible de acercarse presencialmente a la ubicación indicada por el área de atención al cliente de Premios Lorenzo). En dicha ubicación, se requerirá su presencia física (con DNI en mano) para efectuar el cobro, validar su identidad frente a la organización y realizar la firma obligatoria del documento legal o acta notarial correspondiente, en el cual se estipula de forma fehaciente que el participante ha recibido el premio en su totalidad. No se aceptarán firmas digitales o terceros sin representación notarial legalmente formalizada para este tipo de montos.</p>`;
 
-function showPolicyModal(policy) {
+const TERMS_AND_CONDITIONS_FINAL_HTML = TERMS_AND_CONDITIONS_HTML.replaceAll(
+  "CONSORCIO MORALES E &amp; L S.A.C.",
+  "GRUPO BIG STORE E.I.R.L.",
+)
+  .replaceAll("Consorcio Morales E &amp; L S.A.C.", "GRUPO BIG STORE E.I.R.L.")
+  .replaceAll("Premios Lorenzo", "GRUPO BIG STORE E.I.R.L.")
+  .replaceAll("20614625989", "20612521396")
+  .replaceAll("premioslorenzo.com", "pcbox-sorteo.vercel.app")
+  .replaceAll("S/ 40.00 o S/ 60.00", "S/ 1.00 o S/ 5.00")
+  .replaceAll(
+    "S/ 40.00 (Cuarenta y 00/100 Soles) o S/ 60.00 (Sesenta y 00/100 Soles)",
+    "S/ 1.00 (un sol) o S/ 5.00 (cinco soles), según el sorteo",
+  );
+
+function showPolicyPage(policy) {
   const content = {
-    terms: ["Términos y condiciones", TERMS_AND_CONDITIONS_HTML],
+    terms: ["Términos y condiciones", TERMS_AND_CONDITIONS_FINAL_HTML],
     privacy: [
       "Política de privacidad",
-      "<p>Usamos los datos entregados —DNI, nombre, celular, correo y comprobante— para validar la inscripción, asignar tickets, atender consultas y publicar resultados.</p><p>No vendemos tus datos. El acceso queda limitado al personal autorizado y a los servicios necesarios para operar la plataforma. Puedes solicitar actualización o eliminación de tus datos mediante Soporte.</p>",
+      "<p>En GRUPO BIG STORE E.I.R.L. protegemos tus datos personales conforme a la Ley N.° 29733, Ley de Protección de Datos Personales del Perú, y su reglamento.</p><h3>1. Datos que recopilamos</h3><ul><li>DNI, nombres y apellidos (validados con fuentes oficiales para confirmar identidad).</li><li>Número de WhatsApp, para contactarte en caso de resultar ganador.</li><li>Comprobante de pago: monto, fecha, número de operación y titular.</li></ul><h3>2. Finalidad</h3><ul><li>Validar tu pago y generar tus tickets.</li><li>Identificar y contactar a los ganadores.</li><li>Prevenir fraudes (comprobantes duplicados o adulterados).</li></ul><h3>3. Conservación y seguridad</h3><p>Tus datos se almacenan de forma segura y se conservan por el tiempo necesario para la ejecución del sorteo y el cumplimiento de obligaciones legales. Aplicamos medidas técnicas razonables para protegerlos.</p><h3>4. Compartir información</h3><p>No vendemos ni cedemos tus datos a terceros con fines comerciales. Solo podrían compartirse con autoridades cuando la ley lo exija.</p><h3>5. Tus derechos (ARCO)</h3><p>Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiéndonos por WhatsApp: +51 902 330 511.</p>",
     ],
     refunds: [
       "Política de devoluciones",
-      "<p>Si el comprobante es rechazado antes de asignar tickets, la participación no se considera confirmada. Las solicitudes relacionadas con pagos duplicados, errores de monto o incidencias se revisan caso por caso con el comprobante correspondiente.</p><p>Escríbenos por Soporte antes de la fecha de cierre de ventas para que podamos revisar tu caso.</p>",
+      "<p>La compra de tickets para los sorteos de GRUPO BIG STORE E.I.R.L. corresponde a la participación en un juego de azar. A continuación se detalla nuestra política de devoluciones.</p><h3>1. Naturaleza de la compra</h3><p>Una vez generados los tickets y confirmado el pago, la participación se considera efectiva. Por la naturaleza del sorteo, los tickets no son reembolsables salvo los casos señalados a continuación.</p><h3>2. Casos en que procede una devolución</h3><ul><li>Cobro duplicado comprobable por un error técnico del sistema de pago.</li><li>Cancelación del sorteo por parte del organizador antes de su realización.</li><li>Pago validado pero tickets no generados por una falla atribuible a la plataforma.</li></ul><h3>3. Casos en que no procede</h3><ul><li>No haber resultado ganador.</li><li>Datos ingresados incorrectamente por el participante.</li><li>Comprobantes rechazados por ser duplicados, adulterados o de un periodo no vigente.</li></ul><h3>4. Cómo solicitarla</h3><p>Escríbenos por WhatsApp (+51 902 330 511) dentro de los 7 días del pago, adjuntando tu comprobante y número de operación. Evaluaremos tu caso y, de proceder, la devolución se realizará por el mismo medio de pago (Yape).</p>",
     ],
     news: [
       "Noticias",
@@ -634,22 +648,62 @@ function showPolicyModal(policy) {
     ],
     complaints: [
       "Libro de reclamaciones",
-      "<p>Si deseas presentar una queja o reclamo, comunícate con Soporte indicando tu nombre, DNI, fecha de la operación y una descripción clara del caso. Te responderemos por el canal de atención de PC BOX.</p><p>Soporte: lunes a sábado por WhatsApp.</p>",
+      "<p>Conforme al Código de Protección y Defensa del Consumidor. GRUPO BIG STORE E.I.R.L. · RUC 20612521396. Completa el formulario y te responderemos.</p>",
     ],
   };
   const selected = content[policy] || content.terms;
+  const main = document.querySelector("main");
   const root = document.querySelector("#modal-root");
-  root.innerHTML = `<div class="modal-backdrop policy-backdrop" data-close-policy><section class="modal policy-modal" role="dialog" aria-modal="true" aria-labelledby="policy-title"><button class="modal-close" data-close-policy aria-label="Cerrar">×</button><span class="showcase-kicker">Pa salado mi causa · Información</span><h2 id="policy-title">${selected[0]}</h2><div class="policy-content">${selected[1]}</div><button class="button full" data-close-policy>Entendido</button></section></div>`;
-  const closePolicy = () => {
+  if (!main) return;
+  root.innerHTML = "";
+  document.body.classList.add("policy-view");
+  let policyPage = document.querySelector("#politicas");
+  if (!policyPage) {
+    policyPage = document.createElement("section");
+    policyPage.className = "section policy-page";
+    policyPage.id = "politicas";
+    main.prepend(policyPage);
+  }
+  const complaintForm =
+    policy === "complaints"
+      ? `<form class="complaint-form" id="complaint-form"><div class="complaint-types"><label><input type="radio" name="caseType" value="Reclamo" checked /> <strong>Reclamo</strong><small>(disconformidad del servicio)</small></label><label><input type="radio" name="caseType" value="Queja" /> <strong>Queja</strong><small>(malestar en la atención)</small></label></div><h3>1. Tus datos</h3><div class="form-grid"><label class="form-label">Nombre *<input class="field" name="name" required /></label><label class="form-label">Apellido<input class="field" name="lastName" /></label><label class="form-label">Tipo de documento<select class="field" name="documentType"><option>DNI</option><option>CE</option><option>RUC</option></select></label><label class="form-label">N° de documento *<input class="field" name="documentNumber" required /></label><label class="form-label">Correo electrónico<input class="field" type="email" name="email" /></label><label class="form-label">Teléfono<input class="field" name="phone" required /></label><label class="form-label full">Domicilio (opcional)<input class="field" name="address" /></label></div><label class="check-row"><input type="checkbox" name="minor" /> Soy menor de edad (responde un padre/madre o apoderado)</label><h3>2. Bien contratado</h3><div class="form-grid"><label class="form-label">Tipo<select class="field" name="serviceType"><option>Servicio</option><option>Producto</option><option>Ticket de sorteo</option></select></label><label class="form-label">Monto reclamado (S/) (opcional)<input class="field" name="amount" inputmode="decimal" /></label><label class="form-label full">Descripción del bien / servicio<input class="field" name="serviceDescription" placeholder="Ej. Ticket de sorteo, recarga, etc." /></label></div><h3>3. Detalle</h3><label class="form-label">Detalle del reclamo *<textarea class="field" name="details" rows="5" placeholder="Cuéntanos qué ocurrió..." required></textarea></label><label class="form-label">Pedido del consumidor<textarea class="field" name="request" rows="4" placeholder="¿Qué solicitas que hagamos?"></textarea></label><button class="button full" type="submit">✉ Enviar reclamo</button><p class="complaint-legal">Al enviar aceptas que usemos tus datos para atender tu solicitud, conforme a nuestra Política de privacidad.</p></form>`
+      : "";
+  policyPage.innerHTML = `<div class="container policy-page-inner"><button class="policy-back" type="button" data-policy-back>← Volver</button><span class="showcase-kicker">Pa salado mi causa · Información</span><h1>${escapeHtml(selected[0])}</h1><div class="policy-content">${selected[1]}</div>${complaintForm}</div>`;
+  window.location.hash = "politicas";
+  policyPage.scrollIntoView({ behavior: "smooth", block: "start" });
+  policyPage.querySelector("[data-policy-back]").addEventListener("click", () => {
+    document.body.classList.remove("policy-view");
+    policyPage.innerHTML = "";
     if (state.registration.open) renderRegistrationModal();
-    else root.innerHTML = "";
-  };
-  root.querySelectorAll("[data-close-policy]").forEach((element) =>
-    element.addEventListener("click", (event) => {
-      if (!element.classList.contains("modal-backdrop") || event.target === element) closePolicy();
-    }),
-  );
-  root.querySelector(".policy-modal").addEventListener("click", (event) => event.stopPropagation());
+    window.location.hash = "inicio";
+  });
+  const form = policyPage.querySelector("#complaint-form");
+  if (form)
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const values = Object.fromEntries(new FormData(form).entries());
+      const message = [
+        "LIBRO DE RECLAMACIONES - GRUPO BIG STORE E.I.R.L.",
+        `Tipo: ${values.caseType}`,
+        `Nombre: ${values.name || "-"} ${values.lastName || "-"}`,
+        `Documento: ${values.documentType || "-"} ${values.documentNumber || "-"}`,
+        `Correo: ${values.email || "-"}`,
+        `Teléfono: ${values.phone || "-"}`,
+        `Domicilio: ${values.address || "-"}`,
+        `Menor de edad: ${values.minor ? "Sí" : "No"}`,
+        `Bien/servicio: ${values.serviceType || "-"}`,
+        `Monto: ${values.amount || "-"}`,
+        `Descripción: ${values.serviceDescription || "-"}`,
+        `Detalle: ${values.details || "-"}`,
+        `Pedido: ${values.request || "-"}`,
+      ].join("\\n");
+      window.open(
+        `https://wa.me/51902330511?text=${encodeURIComponent(message)}`,
+        "_blank",
+        "noopener",
+      );
+      showToast("Se abrió WhatsApp con los datos de tu reclamo.", "success");
+    });
 }
 
 function enhancePublicLayout() {
@@ -702,12 +756,12 @@ function enhancePublicLayout() {
   if (footer) {
     footer.innerHTML = `
        <div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
-      <div class="policy-bar"><div class="container"><a href="#politicas" data-policy="terms">Términos y condiciones</a><a href="#politicas" data-policy="privacy">Política de privacidad</a><a href="#politicas" data-policy="refunds">Política de devoluciones</a><a href="#politicas" data-policy="news">Noticias</a><a href="#politicas" data-policy="complaints">Libro de reclamaciones</a><a href="https://www.facebook.com/" target="_blank" rel="noopener">Facebook</a></div></div>
+      <div class="policy-bar"><div class="container"><a href="#politicas" data-policy="terms">Términos y condiciones</a><a href="#politicas" data-policy="privacy">Política de privacidad</a><a href="#politicas" data-policy="refunds">Política de devoluciones</a><a href="#politicas" data-policy="news">Noticias</a><a href="#politicas" data-policy="complaints">Libro de reclamaciones</a><a href="https://www.facebook.com/pcboxsmart" target="_blank" rel="noopener">Facebook</a></div></div>
        <div class="copyright">© ${new Date().getFullYear()} Pa salado mi causa. Todos los derechos reservados.</div>`;
     footer.querySelectorAll("[data-policy]").forEach((link) =>
       link.addEventListener("click", (event) => {
         event.preventDefault();
-        showPolicyModal(link.dataset.policy);
+        showPolicyPage(link.dataset.policy);
       }),
     );
   }
@@ -716,7 +770,7 @@ function enhancePublicLayout() {
       .querySelector("main")
       .insertAdjacentHTML(
         "beforeend",
-        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención Pa salado mi causa</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 973 604 479</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51973604479?text=Hola%20Pa%20salado%20mi%20causa%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
+        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención Pa salado mi causa</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 902 330 511</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51902330511?text=Hola%20Pa%20salado%20mi%20causa%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
       );
   }
   renderRaffleCardsV2();
@@ -799,7 +853,7 @@ function bindRegistrationEvents() {
     });
     root
       .querySelectorAll("[data-open-terms]")
-      .forEach((link) => link.addEventListener("click", () => showPolicyModal("terms")));
+      .forEach((link) => link.addEventListener("click", () => showPolicyPage("terms")));
   }
   const dniForm = root.querySelector("#dni-form");
   if (dniForm) dniForm.addEventListener("submit", handleDniValidation);
