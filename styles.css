@@ -2565,6 +2565,10 @@ p {
   flex-basis: 350px;
 }
 .raffle-showcase .prize-card > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   padding: 13px 15px 15px;
 }
 .raffle-showcase .prize-card strong {
@@ -2574,6 +2578,19 @@ p {
 }
 .raffle-showcase .prize-card p {
   display: none;
+}
+.raffle-showcase .prize-card .prize-card-quantity {
+  display: inline-flex;
+  width: auto;
+  height: auto;
+  min-width: 30px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #171522;
+  background: linear-gradient(135deg, #ffbd55, #ff851c);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
 }
 @media (max-width: 700px) {
   .raffle-showcase .prize-panel {
@@ -3003,7 +3020,9 @@ p {
   font-size: 13px;
   font-weight: 900;
   text-decoration: none;
-  transition: transform 180ms ease, background 180ms ease;
+  transition:
+    transform 180ms ease,
+    background 180ms ease;
 }
 
 .raffle-showcase-social:hover,
@@ -3062,7 +3081,9 @@ p {
   font-size: 10px;
   font-weight: 800;
   cursor: pointer;
-  transition: background 180ms ease, transform 180ms ease;
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
 }
 
 .copy-payment-number:hover,

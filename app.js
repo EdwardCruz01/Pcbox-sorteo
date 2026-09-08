@@ -541,6 +541,32 @@ function startCountdown() {
   countdownTimer = window.setInterval(updateCountdown, 1000);
 }
 
+function groupPrizesForDisplay(prizes) {
+  const groups = [];
+  const byName = new Map();
+  prizes.forEach((prize) => {
+    const originalName = String(prize.name || "Premio").trim();
+    const repeated = originalName.match(/^(.*?)(?:\s+\((\d+)\s+de\s+(\d+)\))$/i);
+    let name = repeated ? repeated[1].trim() : originalName;
+    let quantity = repeated ? Number(repeated[3]) : 1;
+    const leadingQuantity = name.match(/^(\d+)\s+(.+)$/);
+    if (!repeated && leadingQuantity) {
+      quantity = Number(leadingQuantity[1]);
+      name = leadingQuantity[2].trim();
+    }
+    const key = name.toLocaleLowerCase("es-PE");
+    const existing = byName.get(key);
+    if (existing) {
+      existing.quantity = repeated ? Math.max(existing.quantity, quantity) : existing.quantity + 1;
+      return;
+    }
+    const group = { ...prize, name, quantity, position: groups.length + 1 };
+    groups.push(group);
+    byName.set(key, group);
+  });
+  return groups;
+}
+
 function renderRaffleCardsV2() {
   const list = state.raffles.filter((raffle) => ["activo", "inactivo"].includes(raffle.status));
   if (!list.length) list.push(defaultRaffle);
@@ -555,7 +581,7 @@ function renderRaffleCardsV2() {
       : "";
   grid.innerHTML = list
     .map((raffle) => {
-      const prizes = raffle.prizes || [];
+      const prizes = groupPrizesForDisplay(raffle.prizes || []);
       const cardImage = raffleImagePath(raffle.image_url, raffleCardBannerImage);
       const canRegister = raffle.status === "activo" && !raffle.demo;
       const showCountdown = !isPcboxRaffle(raffle);
@@ -589,7 +615,7 @@ function renderRaffleCardsV2() {
               <div class="prize-cards">${prizes
                 .map((prize) => {
                   const presentation = prizePresentation[prize.position] || {};
-                  return `<article class="prize-card"><span class="prize-card-number">${prize.position}</span><img src="${escapeHtml(prize.image_url || presentation.image || heroImage)}" alt="${escapeHtml(prize.name)}" loading="lazy" /><div><strong>${escapeHtml(prize.name)}</strong></div></article>`;
+                  return `<article class="prize-card"><span class="prize-card-number">${prize.position}</span><img src="${escapeHtml(prize.image_url || presentation.image || heroImage)}" alt="${escapeHtml(prize.name)}" loading="lazy" /><div><strong>${escapeHtml(prize.name)}</strong><span class="prize-card-quantity">x${prize.quantity}</span></div></article>`;
                 })
                 .join("")}</div>
             </div>
