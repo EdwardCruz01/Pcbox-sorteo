@@ -5,10 +5,10 @@ const siteBase =
   runtimeEnv.BASE_URL ||
   (window.location.pathname.startsWith("/Pcbox-sorteo/") ? "/Pcbox-sorteo/" : "/");
 const asset = (name) => `${siteBase}assets/${name}`;
-const heroImage = asset("banner-pa-salado-mi-causa.png");
+const heroImage = asset("banner-portada-primer-gran-sorteo.jpeg");
 const logoImage = asset("logo-pa-salado-mi-causa.png");
-const officialBannerImage = asset("banner-pa-salado-mi-causa.png");
-const raffleCardBannerImage = asset("flyer-tarjeta-pa-salado.png");
+const officialBannerImage = asset("banner-portada-primer-gran-sorteo.jpeg");
+const raffleCardBannerImage = asset("banner-tarjeta-primer-gran-sorteo.jpeg");
 const productsLogoImage = asset("logo-pcbox-productos.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
 const prizePrinterImage = asset("premio-impresora-epson-l3310.png");
@@ -17,6 +17,10 @@ const prizeHeadsetImage = asset("premio-audifono-logitech-g635.png");
 const prizeKeyboardImage = asset("premio-teclado-antryx-zigra-evo.png");
 const prizeSpeakerImage = asset("premio-parlante-hal-fiesta-ha-r63.png");
 const majorPrizeImage = asset("premio-mayor-setup-antryx.png");
+const prizeMotoImage = asset("premio-moto-pulsar-n125.png");
+const prizeLaptopImage = asset("premio-laptop-lenovo.png");
+const prizeTvImage = asset("premio-tv-lg-65.png");
+const prizeCashImage = asset("premio-fajos-300-soles.png");
 
 const SUPABASE_URL =
   runtimeEnv.VITE_SUPABASE_URL ||
@@ -31,7 +35,7 @@ const API_URL =
 const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
 const RECEIPT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
-const FIXED_DRAW_DATE = "2026-08-27T22:00:00-05:00";
+const FIXED_DRAW_DATE = "2026-10-15T23:59:59-05:00";
 let countdownTimer = null;
 
 function raffleImagePath(value, fallback) {
@@ -134,66 +138,57 @@ const distributorLogos = [
 const defaultRaffle = {
   id: "demo",
   demo: true,
-  title: "1° Gran Sorteo",
-  description: "El próximo PC profesional puede ser tuyo junto a cinco premios tecnológicos.",
+  title: "Primer Gran Sorteo",
+  description: "Participa por una moto, laptops Lenovo, televisores LG y fajos de dinero.",
   details:
-    "Sorteo con 6 premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.",
+    "Sorteo con grandes premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.",
   ticket_price: 5,
   draw_date: FIXED_DRAW_DATE,
   status: "activo",
-  image_url: officialBannerImage,
+  image_url: raffleCardBannerImage,
   prizes: [
     {
       id: "1",
       position: 1,
-      name: "PC Gamer profesional + silla gaming + mesa elevable",
-      description: "Un espacio completo para trabajar, estudiar y jugar con comodidad.",
-      image_url: majorPrizeImage,
+      name: "Moto Pulsar N125",
+      description: "Premio mayor del sorteo.",
+      image_url: prizeMotoImage,
       winner_ticket_number: null,
       winner_name: null,
     },
     {
       id: "2",
       position: 2,
-      name: "Impresora Epson L3310",
-      description: "Impresora multifuncional EcoTank para tus trabajos y proyectos.",
-      image_url: prizePrinterImage,
+      name: "2 Laptops Lenovo Core i5",
+      description: "Laptops Lenovo para trabajo y estudio.",
+      image_url: prizeLaptopImage,
       winner_ticket_number: null,
       winner_name: null,
     },
     {
       id: "3",
       position: 3,
-      name: "Tablet Samsung Tab A11",
-      description: "Tablet práctica para entretenimiento, estudio y navegación diaria.",
-      image_url: prizeTabletImage,
+      name: "3 Laptops Lenovo Core i3",
+      description: "Laptops Lenovo para trabajo y estudio.",
+      image_url: prizeLaptopImage,
       winner_ticket_number: null,
       winner_name: null,
     },
     {
       id: "4",
       position: 4,
-      name: "Audífono profesional Logitech G635",
-      description: "Audio inmersivo y micrófono para tus partidas y reuniones.",
-      image_url: prizeHeadsetImage,
+      name: "2 TV Smart LG de 65 pulgadas 4K",
+      description: "Televisores Smart LG 4K de 65 pulgadas.",
+      image_url: prizeTvImage,
       winner_ticket_number: null,
       winner_name: null,
     },
     {
       id: "5",
       position: 5,
-      name: "Teclado gamer mecánico Antryx Zigra Evo",
-      description: "Teclado mecánico con iluminación RGB para completar tu setup.",
-      image_url: prizeKeyboardImage,
-      winner_ticket_number: null,
-      winner_name: null,
-    },
-    {
-      id: "6",
-      position: 6,
-      name: "Parlante Halion Fiesta HA-R63",
-      description: "Sonido potente para disfrutar tus momentos favoritos.",
-      image_url: prizeSpeakerImage,
+      name: "10 Fajos de S/ 300",
+      description: "Premios en efectivo de S/ 300.",
+      image_url: prizeCashImage,
       winner_ticket_number: null,
       winner_name: null,
     },
@@ -594,7 +589,7 @@ function renderRaffleCardsV2() {
               <div class="prize-cards">${prizes
                 .map((prize) => {
                   const presentation = prizePresentation[prize.position] || {};
-                  return `<article class="prize-card"><span class="prize-card-number">${prize.position}</span><img src="${escapeHtml(prize.position === 1 ? majorPrizeImage : prize.image_url || presentation.image || heroImage)}" alt="${escapeHtml(prize.name)}" loading="lazy" /><div><strong>${escapeHtml(prize.name)}</strong></div></article>`;
+                  return `<article class="prize-card"><span class="prize-card-number">${prize.position}</span><img src="${escapeHtml(prize.image_url || presentation.image || heroImage)}" alt="${escapeHtml(prize.name)}" loading="lazy" /><div><strong>${escapeHtml(prize.name)}</strong></div></article>`;
                 })
                 .join("")}</div>
             </div>
