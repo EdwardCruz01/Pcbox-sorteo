@@ -555,7 +555,7 @@ function renderRaffleCardsV2() {
       : "";
   grid.innerHTML = list
     .map((raffle) => {
-      const prizes = (raffle.prizes || []).slice(0, 10);
+      const prizes = raffle.prizes || [];
       const cardImage = raffleImagePath(raffle.image_url, raffleCardBannerImage);
       const canRegister = raffle.status === "activo" && !raffle.demo;
       const showCountdown = !isPcboxRaffle(raffle);
