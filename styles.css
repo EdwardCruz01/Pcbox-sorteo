@@ -2457,12 +2457,12 @@ p {
   inset: auto;
   display: block;
   flex: 0 0 auto;
-  width: min(96%, 1450px);
+  width: min(100%, 1450px);
   height: auto;
-  margin: 8px auto 0;
-  aspect-ratio: auto;
-  object-fit: contain;
-  object-position: center top;
+  margin: 0 auto;
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+  object-position: center 46%;
   opacity: 1;
   background: #070b18;
 }
@@ -2504,9 +2504,9 @@ p {
     aspect-ratio: auto;
   }
   .hero-ticket-banner .hero-media {
-    width: 96%;
-    aspect-ratio: auto;
-    object-position: center top;
+    width: 100%;
+    aspect-ratio: 8 / 5;
+    object-position: center 46%;
   }
   .hero-ticket-banner .hero-countdown-centered {
     width: min(calc(100% - 24px), 320px);
