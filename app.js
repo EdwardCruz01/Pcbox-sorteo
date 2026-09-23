@@ -35,7 +35,8 @@ const API_URL =
 const supabase = SUPABASE_URL && SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
 const RECEIPT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "application/pdf"];
-const FIXED_DRAW_DATE = "2026-10-15T23:59:59-05:00";
+const FIXED_DRAW_DATE = "2026-10-31T21:00:00-05:00";
+const SALES_CLOSE_DATE = "2026-10-30T21:00:00-05:00";
 let countdownTimer = null;
 
 function raffleImagePath(value, fallback) {
@@ -508,11 +509,7 @@ function handleRaffleAction(event) {
 }
 
 function countdownTarget() {
-  const configured = state.activeRaffle?.draw_date ? new Date(state.activeRaffle.draw_date) : null;
-  if (configured && !Number.isNaN(configured.getTime())) {
-    return configured;
-  }
-  return new Date(FIXED_DRAW_DATE);
+  return new Date(SALES_CLOSE_DATE);
 }
 
 function updateCountdown() {
@@ -608,7 +605,7 @@ function renderRaffleCardsV2() {
                 </div>
               </div>
             </div>
-            ${showCountdown ? `<div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>` : ""}
+            ${showCountdown ? `<div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>` : ""}
             <button class="prize-toggle" data-action="toggle-prizes" data-id="${escapeHtml(raffle.id)}" data-count="${prizes.length}" aria-expanded="false">Ver premios (${prizes.length}) <span>⌄</span></button>
             <div class="prize-panel" data-prizes-panel="${escapeHtml(raffle.id)}" hidden>
               <p class="prize-panel-title">Premios incluidos</p>
@@ -744,7 +741,7 @@ function enhancePublicLayout() {
     hero.innerHTML = `
       <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de Pa salado mi causa" />
       <div class="container hero-content">
-        <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div></div>
+        <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>
       </div>`;
   }
   const ticketsSection = document.querySelector("#participantes");

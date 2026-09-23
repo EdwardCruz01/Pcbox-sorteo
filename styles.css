@@ -2457,11 +2457,12 @@ p {
   inset: auto;
   display: block;
   flex: 0 0 auto;
-  width: 100%;
+  width: min(96%, 1450px);
   height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  object-position: center;
+  margin: 8px auto 0;
+  aspect-ratio: auto;
+  object-fit: contain;
+  object-position: center top;
   opacity: 1;
   background: #070b18;
 }
@@ -2503,8 +2504,9 @@ p {
     aspect-ratio: auto;
   }
   .hero-ticket-banner .hero-media {
-    aspect-ratio: 16 / 9;
-    object-position: center;
+    width: 96%;
+    aspect-ratio: auto;
+    object-position: center top;
   }
   .hero-ticket-banner .hero-countdown-centered {
     width: min(calc(100% - 24px), 320px);
@@ -3048,6 +3050,16 @@ p {
 
 .raffle-showcase .raffle-card-countdown .countdown-grid strong {
   font-size: 23px;
+}
+
+.countdown-close-time {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 
 .raffle-showcase .prize-toggle {
