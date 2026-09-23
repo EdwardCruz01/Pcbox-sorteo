@@ -527,8 +527,6 @@ function updateCountdown() {
       const element = counter.querySelector(`[data-countdown-unit="${unit}"]`);
       if (element) element.textContent = String(value).padStart(2, "0");
     });
-    const label = counter.querySelector("[data-countdown-label]");
-    if (label) label.textContent = remaining ? "Cierre de ventas en" : "Sorteo en proceso";
   });
 }
 
@@ -605,7 +603,7 @@ function renderRaffleCardsV2() {
                 </div>
               </div>
             </div>
-            ${showCountdown ? `<div class="raffle-card-countdown hero-countdown" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>` : ""}
+            ${showCountdown ? `<div class="raffle-card-countdown hero-countdown" data-countdown><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>` : ""}
             <button class="prize-toggle" data-action="toggle-prizes" data-id="${escapeHtml(raffle.id)}" data-count="${prizes.length}" aria-expanded="false">Ver premios (${prizes.length}) <span>⌄</span></button>
             <div class="prize-panel" data-prizes-panel="${escapeHtml(raffle.id)}" hidden>
               <p class="prize-panel-title">Premios incluidos</p>
@@ -741,7 +739,7 @@ function enhancePublicLayout() {
     hero.innerHTML = `
       <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de Pa salado mi causa" />
       <div class="container hero-content">
-        <div class="hero-countdown hero-countdown-centered" data-countdown><span class="countdown-label" data-countdown-label>Cierre de ventas en</span><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>
+        <div class="hero-countdown hero-countdown-centered" data-countdown><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>
       </div>`;
   }
   const ticketsSection = document.querySelector("#participantes");
