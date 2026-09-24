@@ -139,10 +139,10 @@ const distributorLogos = [
 const defaultRaffle = {
   id: "demo",
   demo: true,
-  title: "Primer Gran Sorteo",
+  title: "Primer Gran Evento",
   description: "Participa por una moto, laptops Lenovo, televisores LG y fajos de dinero.",
   details:
-    "Sorteo con grandes premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.",
+    "Evento con grandes premios. Cada ticket cuesta S/ 5. La inscripción se valida tras la aprobación del comprobante de Yape.",
   ticket_price: 5,
   draw_date: FIXED_DRAW_DATE,
   status: "activo",
@@ -152,7 +152,7 @@ const defaultRaffle = {
       id: "1",
       position: 1,
       name: "Moto Pulsar N125",
-      description: "Premio mayor del sorteo.",
+      description: "Premio mayor del evento.",
       image_url: prizeMotoImage,
       winner_ticket_number: null,
       winner_name: null,
@@ -230,9 +230,20 @@ function escapeHtml(value = "") {
 function money(value) {
   return `S/ ${Number(value || 0).toFixed(2)}`;
 }
+
+function eventLanguage(value = "") {
+  return String(value).replace(/\bsorteos?\b/gi, (word) => {
+    const replacement = word.toLocaleLowerCase("es-PE").endsWith("s") ? "eventos" : "evento";
+    if (word === word.toLocaleUpperCase("es-PE")) return replacement.toLocaleUpperCase("es-PE");
+    if (word[0] === word[0].toLocaleUpperCase("es-PE"))
+      return replacement[0].toLocaleUpperCase("es-PE") + replacement.slice(1);
+    return replacement;
+  });
+}
+
 function displayRaffleTitle(value) {
-  const title = String(value || "").trim();
-  return title.replace(/\s+del\s+(?:El\s+)?Shucuy\s+Regalon\s*$/i, "").trim() || "1° Gran Sorteo";
+  const title = eventLanguage(value).trim();
+  return title.replace(/\s+del\s+(?:El\s+)?Shucuy\s+Regalon\s*$/i, "").trim() || "1° Gran Evento";
 }
 
 function receiptExtension(file) {
@@ -301,7 +312,8 @@ async function publicApi(action, payload) {
     body: JSON.stringify({ action, ...payload }),
   });
   const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || "No pudimos completar la operación.");
+  if (!response.ok)
+    throw new Error(eventLanguage(result.error || "No pudimos completar la operación."));
   return result;
 }
 
@@ -309,11 +321,11 @@ function renderApp() {
   app.innerHTML = `
     <header class="site-header">
       <div class="container header-inner">
-        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="Pa salado mi causa" /><span class="brand-copy"><span class="gradient-text">Pa salado mi causa</span><small class="brand-slogan">Sorteos de tecnología</small></span></a>
+        <a class="brand" href="#inicio" data-nav><img class="brand-logo" src="${logoImage}" alt="Pa salado mi causa" /><span class="brand-copy"><span class="gradient-text">Pa salado mi causa</span><small class="brand-slogan">Eventos de tecnología</small></span></a>
         <button class="menu-button" id="menu-button" aria-label="Abrir menú" aria-expanded="false">☰</button>
         <nav class="nav" id="site-nav" aria-label="Navegación principal">
           <a href="#inicio" data-nav>Inicio</a>
-          <a href="#sorteos" data-nav>Sorteos</a>
+          <a href="#sorteos" data-nav>Eventos</a>
           <a href="#participantes" data-nav>Participantes</a>
           <a href="#ganadores" data-nav>Ganadores</a>
           <a href="#notificaciones" data-nav>Notificaciones</a>
@@ -323,7 +335,7 @@ function renderApp() {
 
     <main>
       <section class="hero" id="inicio">
-        <img class="hero-media" src="${officialBannerImage}" alt="Gran sorteo de setup gamer completo de Pa salado mi causa" />
+        <img class="hero-media" src="${officialBannerImage}" alt="Gran evento de Pa salado mi causa" />
         <div class="container hero-content">
           <span class="eyebrow">✦ Pa salado mi causa</span>
           <p class="hero-copy">Participa por un PC gamer profesional y cinco premios tecnológicos adicionales. Compra tus tickets por Yape y recibe tus números después de la validación.</p>
@@ -333,7 +345,7 @@ function renderApp() {
 
       <section class="section" id="sorteos">
         <div class="container">
-          <div class="section-heading"><div><h2>Sorteo activo</h2><p>Conoce el sorteo vigente y asegura tus tickets antes del cierre.</p></div></div>
+          <div class="section-heading"><div><h2>Evento activo</h2><p>Conoce el evento vigente y asegura tus tickets antes del cierre.</p></div></div>
           <div id="data-notice"></div><div class="raffle-grid" id="raffle-grid"></div>
         </div>
       </section>
@@ -360,14 +372,14 @@ function renderApp() {
 
       <section class="section compact border" id="marcas"><div class="container"><div class="section-heading"><div><h2>Distribuidores Autorizados</h2></div></div></div><div class="brands"><div class="brands-track"><ul class="brands-list">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul><ul class="brands-list" aria-hidden="true">${distributorLogos.map(([src, name]) => `<li><img src="${src}" alt="${name}" loading="lazy" /></li>`).join("")}</ul></div></div></section>
 
-      <section class="section compact" id="notificaciones"><div class="container notify-wrap"><div><p class="notify-title">♧ Recibir notificaciones</p><h2 style="margin-top:8px">No te pierdas el próximo sorteo</h2><p class="muted" style="margin-top:7px">Déjanos un correo o celular y te avisaremos de nuevos sorteos, resultados y ofertas.</p></div><form class="notify-form" id="notify-form"><input class="field" name="fullName" placeholder="Tu nombre" required /><input class="field" name="email" type="email" placeholder="Correo" /><input class="field" name="phone" inputmode="tel" placeholder="Celular" /><button class="button" type="submit">Avisarme</button></form></div></section>
+      <section class="section compact" id="notificaciones"><div class="container notify-wrap"><div><p class="notify-title">♧ Recibir notificaciones</p><h2 style="margin-top:8px">No te pierdas el próximo evento</h2><p class="muted" style="margin-top:7px">Déjanos un correo o celular y te avisaremos de nuevos eventos, resultados y ofertas.</p></div><form class="notify-form" id="notify-form"><input class="field" name="fullName" placeholder="Tu nombre" required /><input class="field" name="email" type="email" placeholder="Correo" /><input class="field" name="phone" inputmode="tel" placeholder="Celular" /><button class="button" type="submit">Avisarme</button></form></div></section>
 
       <section class="section compact border" id="participantes"><div class="container"><div class="section-heading"><div><h2>Consulta tu inscripción</h2><p>Ingresa tu DNI para ver el estado de tu comprobante y tus tickets.</p></div></div><form class="actions" id="participant-form"><input class="field" style="max-width:290px;letter-spacing:.18em" name="dni" inputmode="numeric" maxlength="8" placeholder="Tu DNI" required /><button class="button" type="submit">Buscar</button></form><div id="participant-results"></div></div></section>
 
-      <section class="section compact" id="ganadores"><div class="container"><div class="section-heading"><div><h2>Ganadores</h2><p>Resultados publicados de nuestros sorteos realizados.</p></div></div><div id="winner-results"></div></div></section>
+      <section class="section compact" id="ganadores"><div class="container"><div class="section-heading"><div><h2>Ganadores</h2><p>Resultados publicados de nuestros eventos realizados.</p></div></div><div id="winner-results"></div></div></section>
     </main>
 
-    <footer class="site-footer"><div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: sorteos verificados y atención cercana para nuestros clientes.</span></div><nav class="footer-nav"><a href="#sorteos" data-nav>Sorteos activos</a><a href="#participantes" data-nav>Consultar mi inscripción</a><a href="#ganadores" data-nav>Ganadores</a><span>Pagos únicamente por Yape</span></nav></div><div class="copyright">© ${new Date().getFullYear()} Pa salado mi causa. Todos los derechos reservados.</div></footer>
+    <footer class="site-footer"><div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: eventos verificados y atención cercana para nuestros clientes.</span></div><nav class="footer-nav"><a href="#sorteos" data-nav>Eventos activos</a><a href="#participantes" data-nav>Consultar mi inscripción</a><a href="#ganadores" data-nav>Ganadores</a><span>Pagos únicamente por Yape</span></nav></div><div class="copyright">© ${new Date().getFullYear()} Pa salado mi causa. Todos los derechos reservados.</div></footer>
     <div id="modal-root"></div>`;
 
   document.querySelector("#menu-button").addEventListener("click", () => {
@@ -394,7 +406,7 @@ function renderApp() {
   document.querySelector(".participate-button")?.addEventListener("click", (event) => {
     event.preventDefault();
     if (!state.activeRaffle || state.activeRaffle.demo)
-      return showToast("El sorteo todavía no está publicado.", "error");
+      return showToast("El evento todavía no está publicado.", "error");
     openRegistration(state.activeRaffle);
   });
   startFlyerRotation();
@@ -408,7 +420,7 @@ function renderRaffles() {
   notice.innerHTML = state.dataError
     ? `<p class="notice">${escapeHtml(state.dataError)}</p>`
     : state.raffles.length === 0
-      ? `<p class="notice">Mostrando la ficha de ejemplo. El administrador todavía no ha publicado un sorteo activo.</p>`
+      ? `<p class="notice">Mostrando la ficha de ejemplo. El administrador todavía no ha publicado un evento activo.</p>`
       : "";
   grid.innerHTML = list.length
     ? list
@@ -417,7 +429,7 @@ function renderRaffles() {
     <article class="card raffle-card">
       <img class="raffle-image" src="${escapeHtml(raffle.image_url || heroImage)}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
       <div class="raffle-body"><div class="raffle-title-row"><h3>${escapeHtml(displayRaffleTitle(raffle.title))}</h3><span class="price">${money(raffle.ticket_price)}</span></div>
-      <p class="raffle-description">${escapeHtml(raffle.description || "Participa en este sorteo verificado de PC BOX.")}</p>
+      <p class="raffle-description">${escapeHtml(eventLanguage(raffle.description || "Participa en este evento verificado de PC BOX."))}</p>
       <ul class="prize-list">${(raffle.prizes || [])
         .slice(0, 5)
         .map(
@@ -425,12 +437,12 @@ function renderRaffles() {
             `<li><span class="prize-number">${prize.position}</span>${escapeHtml(prize.name)}</li>`,
         )
         .join("")}</ul>
-      <p class="draw-date">◷ ${raffle.draw_date ? `Sorteo: ${formatDate(raffle.draw_date)}` : "Fecha por anunciar"}</p>
+      <p class="draw-date">◷ ${raffle.draw_date ? `Evento: ${formatDate(raffle.draw_date)}` : "Fecha por anunciar"}</p>
       <div class="card-actions"><button class="button" data-action="register" data-id="${escapeHtml(raffle.id)}" ${raffle.demo ? "disabled" : ""}>Inscribirme</button><button class="button secondary" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div></div>
     </article>`,
         )
         .join("")
-    : `<p class="empty">No hay sorteos activos en este momento. ¡Vuelve pronto!</p>`;
+    : `<p class="empty">No hay eventos activos en este momento. ¡Vuelve pronto!</p>`;
 }
 
 function renderWinners() {
@@ -572,7 +584,7 @@ function renderRaffleCardsV2() {
   notice.innerHTML = state.dataError
     ? `<p class="notice">${escapeHtml(state.dataError)}</p>`
     : state.raffles.length === 0
-      ? `<p class="notice">El sorteo se activará cuando el administrador publique la fecha y sus premios.</p>`
+      ? `<p class="notice">El evento se activará cuando el administrador publique la fecha y sus premios.</p>`
       : "";
   grid.innerHTML = list
     .map((raffle) => {
@@ -586,7 +598,7 @@ function renderRaffleCardsV2() {
             <img src="${escapeHtml(cardImage)}" alt="${escapeHtml(displayRaffleTitle(raffle.title))}" loading="lazy" />
           </div>
           <div class="raffle-showcase-body">
-            <div class="raffle-showcase-facts" aria-label="Datos del sorteo">
+            <div class="raffle-showcase-facts" aria-label="Datos del evento">
               <div class="raffle-showcase-fact">
                 <span class="raffle-showcase-fact-label">Precio</span>
                 <strong class="raffle-showcase-fact-value">S/.${Number(raffle.ticket_price || 0).toFixed(0)} <small>por ticket</small></strong>
@@ -596,7 +608,7 @@ function renderRaffleCardsV2() {
                 <strong class="raffle-showcase-fact-value">${escapeHtml(raffleDateLabel(raffle.draw_date))}</strong>
               </div>
               <div class="raffle-showcase-fact">
-                <span class="raffle-showcase-fact-label raffle-showcase-fact-live"><i aria-hidden="true"></i>Sorteo en Vivo</span>
+                <span class="raffle-showcase-fact-label raffle-showcase-fact-live"><i aria-hidden="true"></i>Evento en Vivo</span>
                 <div class="raffle-showcase-socials">
                   <a class="raffle-showcase-social" href="https://www.facebook.com/pcboxsmart" target="_blank" rel="noopener" aria-label="Facebook PC BOX">f</a>
                   <a class="raffle-showcase-social" href="https://www.tiktok.com/@pc.box.smart?is_from_webapp=1&amp;sender_device=pc" target="_blank" rel="noopener" aria-label="TikTok PC BOX">♪</a>
@@ -626,51 +638,39 @@ function renderRaffleCardsV2() {
 }
 
 const TERMS_AND_CONDITIONS_HTML = `
-  <p><strong>Documento legal que regula la participación en las promociones comerciales y sorteos organizados por GRUPO BIG STORE E.I.R.L. (RUC: 20612521396).</strong></p>
+  <p><strong>Documento legal que regula la participación en las promociones comerciales y eventos organizados por GRUPO BIG STORE E.I.R.L. (RUC: 20612521396).</strong></p>
   <h3>1. Organización y Marco Legal</h3>
-  <p>Razón social: GRUPO BIG STORE E.I.R.L.</p><p>RUC: 20612521396</p><p>Sitio oficial: pcbox-sorteo.vercel.app</p><p>Periodicidad: El lanzamiento de los sorteos será publicado y anunciado a través de nuestros canales oficiales. Todos los sorteos y promociones comerciales organizados por la empresa se rigen bajo la legislación peruana vigente, garantizando la equidad y transparencia en cada evento.</p>
+  <p>Razón social: GRUPO BIG STORE E.I.R.L.</p><p>RUC: 20612521396</p><p>Sitio oficial: premiosmart.com</p><p>Periodicidad: El lanzamiento de los eventos será publicado y anunciado a través de nuestros canales oficiales. Todos los eventos y promociones comerciales organizados por la empresa se rigen bajo la legislación peruana vigente, garantizando la equidad y transparencia en cada evento.</p>
   <h3>2. Participación y Registro</h3>
-  <p>La participación es voluntaria y está sujeta al cumplimiento de los siguientes pasos:</p><ol><li>Realizar el pago previo del ticket (S/ 40.00 o S/ 60.00) dependiendo del tipo de sorteo.</li><li>Tomar una captura de pantalla o guardar el voucher físico del pago emitido por la entidad financiera.</li><li>Completar el formulario en la web oficial con datos reales, exactos y actualizados.</li><li>Al momento de darle click en &quot;SUBIR COMPROBANTE&quot;, usted está aceptando el cumplimientos de los presentes Términos y Condiciones y la Política de Privacidad.</li></ol><p>La participación está estrictamente limitada a personas mayores de 18 años. De comprobarse la falsedad en la declaración de edad o identidad, el ticket será invalidado sin derecho a reclamo o reembolso.</p>
+  <p>La participación es voluntaria y está sujeta al cumplimiento de los siguientes pasos:</p><ol><li>Realizar el pago previo del ticket (S/ 5.00 o S/ 10.00) dependiendo del tipo de evento.</li><li>Tomar una captura de pantalla o guardar el voucher físico del pago emitido por la entidad financiera.</li><li>Completar el formulario en la web oficial con datos reales, exactos y actualizados.</li><li>Al momento de darle click en &quot;SUBIR COMPROBANTE&quot;, usted está aceptando el cumplimiento de los presentes Términos y Condiciones y la Política de Privacidad.</li></ol><p>La participación está estrictamente limitada a personas mayores de 18 años. De comprobarse la falsedad en la declaración de edad o identidad, el ticket será invalidado sin derecho a reclamo o reembolso.</p>
   <h3>3. Validación y Seguridad de Tickets</h3>
-  <ul><li>✅ Registro Correcto: Los tickets deben estar correctamente registrados en nuestra base de datos y no presentar alteraciones de ningún tipo.</li><li>❌ Prohibición de Manipulación: No se permite la alteración, falsificación o manipulación de tickets físicos ni digitales (incluyendo comprobantes de pago).</li><li>🔍 Vigencia: Solo participarán tickets válidos que estén correctamente registrados en el sistema hasta la fecha del sorteo.</li><li>🧾 Verificación Obligatoria: El ganador acepta de manera irrevocable la verificación de su identidad, información proporcionada y tickets registrados, asi como también la muestra de los comprobantes de pago, o cualquier otra evidencia que demuestre su ingreso al sorteo correspondiente. Antes de la entrega de cualquier premio.</li></ul>
-  <h3>4. Cierre de Inscripciones</h3><p>El cierre de inscripciones y validación de tickets se realiza un (1) día antes de la fecha programada para el sorteo. Todo pago o registro posterior a este corte será asignado y registrado automáticamente para el sorteo del mes siguiente, sin excepciones.</p>
-  <h3>5. Condiciones de Pagos</h3><ul><li>El valor oficial de cada ticket, según el tipo de sorteo, es de S/ 40.00 (Cuarenta y 00/100 Soles) o S/ 60.00 (Sesenta y 00/100 Soles), incluyendo los impuestos de ley.</li><li>Los comprobantes falsos, ilegibles o adulterados serán rechazados de inmediato y el participante será bloqueado de la plataforma.</li><li>No se realizan devoluciones por desistimiento, errores en la transferencia o equivocaciones en el registro cometidos por el participante.</li><li>La adquisición de un mayor número de tickets incrementa las probabilidades matemáticas, pero no garantiza bajo ninguna circunstancia la obtención de un premio.</li></ul>
-  <h3>6. Premios y Reglas Especiales</h3><p>Los premios consisten en vehículos automotores y dinero en efectivo, cuyas especificaciones se publican previamente en la web oficial.</p><p><strong>Reglas de Asignación y Entrega:</strong></p><ul><li>🚫 Restricción de Premio Consuelo: El participante que tenga más tickets a su nombre y no ganó ningún otro premio exceptuando los premios en efectivo, será considerado ganador del &quot;PREMIO CONSUELO&quot;. Caso contrario, se pasa automáticamente al siguiente participante con mayor cantidad de tickets válidos.</li><li>⚖️ Caso de Empate: En caso de empate en la mayor cantidad de tickets adquiridos para una bonificación específica, el premio será dividido en dos partes iguales y entregado en efectivo a ambos participantes.</li><li>Naturaleza del Premio: Los premios son de carácter estrictamente personal e intransferible. No podrán ser endosados a terceros.</li></ul>
-  <h3>7. Dinámica del Sorteo</h3><ul><li>Los sorteos se llevan a cabo de forma pública y cuentan con la presencia de un notario público, quien da fe y legalidad de los resultados.</li><li>La transmisión se realiza en vivo y en directo a través de la página oficial de Facebook de Premios Lorenzo.</li><li>⚖️ Decisión Final: La decisión del organizador, avalada por el notario público, respecto a la validez de los tickets y la declaración de los ganadores será final e inapelable.</li></ul>
-  <h3>8. Protección de Datos Personales</h3><p>En estricto cumplimiento de la Ley N° 29733, Ley de Protección de Datos Personales, y su Reglamento (Decreto Supremo N° 003-2013-JUS), GRUPO BIG STORE E.I.R.L. garantiza la confidencialidad y seguridad de la información proporcionada:</p><ul><li>Consentimiento: Al registrarse, el participante otorga su consentimiento libre, previo, expreso, inequívoco e informado para el tratamiento de sus datos.</li><li>Finalidad: La información recopilada será utilizada exclusivamente para la validación de identidad, gestión del sorteo, contacto en caso de resultar ganador y fines estadísticos internos.</li><li>Almacenamiento: Los datos personales se almacenan de forma segura en nuestro banco de datos por un plazo legal de cinco (5) años.</li><li>Derechos ARCO: El usuario titular de los datos puede ejercer en cualquier momento sus derechos de Acceso, Rectificación, Cancelación y Oposición, enviando una solicitud formal a través de nuestros canales de contacto oficiales.</li></ul>
-  <h3>9. Protección al Consumidor</h3><ul><li>Información Clara: Las reglas, fechas, costos y descripciones de los premios son exhibidas de manera clara, veraz y oportuna, evitando cualquier práctica engañosa.</li><li>Atención de Reclamos: Contamos con un Libro de Reclamaciones Virtual, conforme a la normativa de INDECOPI, a disposición de los usuarios para registrar cualquier insatisfacción o queja sobre el desarrollo del sorteo.</li><li>Publicidad: Toda publicidad emitida respecto a los sorteos respeta los principios de lealtad y veracidad comercial exigidos por la ley peruana.</li></ul>
+  <ul><li>✅ Registro Correcto: Los tickets deben estar correctamente registrados en nuestra base de datos y no presentar alteraciones de ningún tipo.</li><li>❌ Prohibición de Manipulación: No se permite la alteración, falsificación o manipulación de tickets físicos ni digitales (incluyendo comprobantes de pago).</li><li>🔍 Vigencia: Solo participarán tickets válidos que estén correctamente registrados en el sistema hasta la fecha del evento.</li><li>🧾 Verificación Obligatoria: El ganador acepta de manera irrevocable la verificación de su identidad, información proporcionada y tickets registrados, así como también la muestra de los comprobantes de pago o cualquier otra evidencia que demuestre su ingreso al evento correspondiente, antes de la entrega de cualquier premio.</li></ul>
+  <h3>4. Cierre de Inscripciones</h3><p>El cierre de inscripciones y validación de tickets se realiza un (1) día antes de la fecha programada para el evento. Todo pago o registro posterior a este corte será asignado y registrado automáticamente para el evento del mes siguiente, sin excepciones.</p>
+  <h3>5. Condiciones de Pagos</h3><ul><li>El valor oficial de cada ticket, según el tipo de evento, es de S/ 5.00 (cinco soles) o S/ 10.00 (diez soles), según el evento, incluyendo los impuestos de ley.</li><li>Los comprobantes falsos, ilegibles o adulterados serán rechazados de inmediato y el participante será bloqueado de la plataforma.</li><li>No se realizan devoluciones por desistimiento, errores en la transferencia o equivocaciones en el registro cometidos por el participante.</li><li>La adquisición de un mayor número de tickets incrementa las probabilidades matemáticas, pero no garantiza bajo ninguna circunstancia la obtención de un premio.</li></ul>
+  <h3>6. Premios y Reglas Especiales</h3><p>Los premios consisten en vehículos automotores, laptops, productos smart y dinero en efectivo, cuyas especificaciones se publican previamente en la web oficial.</p>
+  <h3>7. Dinámica del Evento</h3><ul><li>Los eventos se llevan a cabo de forma pública y cuentan con la presencia de un notario público, quien da fe y legalidad de los resultados.</li><li>La transmisión se realiza en vivo y en directo a través de la página oficial de Facebook de GRUPO BIG STORE E.I.R.L.</li><li>⚖️ Decisión Final: La decisión del organizador, avalada por el notario público, respecto a la validez de los tickets y la declaración de los ganadores será final e inapelable.</li></ul>
+  <h3>8. Protección de Datos Personales</h3><p>En estricto cumplimiento de la Ley N° 29733, Ley de Protección de Datos Personales, y su Reglamento (Decreto Supremo N° 003-2013-JUS), GRUPO BIG STORE E.I.R.L. garantiza la confidencialidad y seguridad de la información proporcionada:</p><ul><li>Consentimiento: Al registrarse, el participante otorga su consentimiento libre, previo, expreso, inequívoco e informado para el tratamiento de sus datos.</li><li>Finalidad: La información recopilada será utilizada exclusivamente para la validación de identidad, gestión del evento, contacto en caso de resultar ganador y fines estadísticos internos.</li><li>Almacenamiento: Los datos personales se almacenan de forma segura en nuestro banco de datos por un plazo legal de cinco (5) años.</li><li>Derechos ARCO: El usuario titular de los datos puede ejercer en cualquier momento sus derechos de Acceso, Rectificación, Cancelación y Oposición, enviando una solicitud formal a través de nuestros canales de contacto oficiales.</li></ul>
+  <h3>9. Protección al Consumidor</h3><ul><li>Información Clara: Las reglas, fechas, costos y descripciones de los premios son exhibidas de manera clara, veraz y oportuna, evitando cualquier práctica engañosa.</li><li>Atención de Reclamos: Contamos con un Libro de Reclamaciones Virtual, conforme a la normativa de INDECOPI, a disposición de los usuarios para registrar cualquier insatisfacción o queja sobre el desarrollo del evento.</li><li>Publicidad: Toda publicidad emitida respecto a los eventos respeta los principios de lealtad y veracidad comercial exigidos por la ley peruana.</li></ul>
   <h3>10. Responsabilidad y Prevención de Fraude</h3><ul><li>⚠️ Descalificación: Cualquier intento de fraude, suplantación de identidad, uso de bots, alteraciones de sistema o manipulación de datos resultará en la descalificación automática e inmediata del participante.</li><li>Acciones Legales: GRUPO BIG STORE E.I.R.L. se reserva el derecho absoluto de utilizar los datos recopilados para iniciar acciones legales, civiles o penales ante las autoridades competentes frente a indicios de fraude, estafa o lavado de activos.</li><li>Exoneración: La empresa no asume responsabilidad civil por interrupciones de conectividad, caídas del sistema bancario o errores tipográficos cometidos por el usuario durante su inscripción.</li></ul>
   <h3>11. Contacto y Atención al Cliente</h3><p>Para consultas, soporte técnico, ejercicio de derechos ARCO o acceso al Libro de Reclamaciones, comuníquese al WhatsApp oficial: +51 902 330 511.</p>
-  <h3>12. Política de Entrega, Recojo y Envíos de Premios</h3><p>Premios Para garantizar la correcta adjudicación de los premios y establecer los parámetros de responsabilidad entre la empresa organizadora y los ganadores, se establecen los siguientes tres (3) puntos de obligatorio cumplimiento:</p><p><strong>• 12.1. Recojo presencial de premios de menor valor (Bienes Físicos):</strong></p><p>Para la entrega de premios físicos en especie, tales como teléfonos móviles (iPhones, smartphones), computadoras portátiles (laptops) u otros bienes equivalentes de menor denominación, el participante ganador titular deberá acercarse obligatoria y personalmente a la ubicación indicada por CONSORCIO MORALES E &amp; L S.A.C. La entrega se efectuará previa coordinación, siendo indispensable la presentación física de su Documento Nacional de Identidad (DNI) vigente y original para la firma del acta de recepción conforme.</p><p><strong>• 12.2. Exención de responsabilidad por envío de premios a domicilio (Uso de Courier):</strong></p><p>En el caso de que el ganador solicite voluntariamente y por conveniencia propia que un premio físico (iPhones, laptops, etc.) sea enviado a su domicilio, el ganador asume la total y absoluta responsabilidad sobre el estado, contenido e integridad física en el cual llegue el paquete. Consorcio Morales E &amp; L S.A.C. no asume, bajo ninguna circunstancia, la logística, plazos ni operatividad del servicio de courier o mensajería seleccionado. El ganador reconoce y acepta expresamente que, una vez que el premio es entregado a la empresa de transporte o courier en Lima, nuestra organización queda liberada de forma total y definitiva de cualquier tipo de responsabilidad civil o administrativa por robos, pérdidas, demoras, averías, daños o sustracciones que pudiera sufrir el paquete durante el trayecto, no habiendo lugar a reclamo o reposición por parte de la empresa organizadora.</p><p><strong>• 12.3. Trámite de cobro y firma presencial para premios mayores en efectivo (Superiores a S/ 5,000.00):</strong></p><p>Tratándose de premios en dinero en efectivo donde el monto a entregar sea igual o mayor a los S/ 5,000.00 (Cinco mil y 00/100 Soles), el participante ganador tendrá la obligación ineludible de acercarse presencialmente a la ubicación indicada por el área de atención al cliente de Premios Lorenzo). En dicha ubicación, se requerirá su presencia física (con DNI en mano) para efectuar el cobro, validar su identidad frente a la organización y realizar la firma obligatoria del documento legal o acta notarial correspondiente, en el cual se estipula de forma fehaciente que el participante ha recibido el premio en su totalidad. No se aceptarán firmas digitales o terceros sin representación notarial legalmente formalizada para este tipo de montos.</p>`;
+  <h3>12. Política de Entrega, Recojo y Envíos de Premios</h3><p>Para garantizar la correcta adjudicación de los premios y establecer los parámetros de responsabilidad entre la empresa organizadora y los ganadores, se establecen los siguientes tres (3) puntos de obligatorio cumplimiento:</p><p><strong>12.1. Recojo presencial de premios de menor valor (Bienes Físicos):</strong></p><p>Para la entrega de premios físicos en especie, tales como teléfonos móviles (iPhones, smartphones), computadoras portátiles (laptops) u otros bienes equivalentes de menor denominación, el participante ganador titular deberá acercarse obligatoria y personalmente a la ubicación indicada por GRUPO BIG STORE E.I.R.L. La entrega se efectuará previa coordinación, siendo indispensable la presentación física de su Documento Nacional de Identidad (DNI) vigente y original para la firma del acta de recepción conforme.</p><p><strong>12.2. Exención de responsabilidad por envío de premios a domicilio (Uso de Courier):</strong></p><p>En el caso de que el ganador solicite voluntariamente y por conveniencia propia que un premio físico (iPhones, laptops, etc.) sea enviado a su domicilio, el ganador asume la total y absoluta responsabilidad sobre el estado, contenido e integridad física en el cual llegue el paquete. GRUPO BIG STORE E.I.R.L. no asume, bajo ninguna circunstancia, la logística, plazos ni operatividad del servicio de courier o mensajería seleccionada. El ganador reconoce y acepta expresamente que, una vez que el premio es entregado a la empresa de transporte o courier, nuestra organización queda liberada de forma total y definitiva de cualquier tipo de responsabilidad civil o administrativa por robos, pérdidas, demoras, averías, daños o sustracciones que pudiera sufrir el paquete durante el trayecto, no habiendo lugar a reclamo o reposición por parte de la empresa organizadora. El premio se enviará únicamente a nombre del ganador.</p><p><strong>12.3. Trámite de cobro y firma presencial para premios mayores en efectivo (Superiores a S/ 5,000.00):</strong></p><p>Tratándose de premios en dinero en efectivo donde el monto a entregar sea igual o mayor a los S/ 5,000.00 (Cinco mil y 00/100 Soles), el participante ganador tendrá la obligación ineludible de acercarse presencialmente a la ubicación indicada por el área de atención al cliente de GRUPO BIG STORE E.I.R.L. En dicha ubicación, se requerirá su presencia física (con DNI en mano) para efectuar el cobro, validar su identidad frente a la organización y realizar la firma obligatoria del documento legal o acta notarial correspondiente, en el cual se estipula de forma fehaciente que el participante ha recibido el premio en su totalidad. No se aceptarán firmas digitales o terceros sin representación notarial legalmente formalizada para este tipo de montos.</p>`;
 
-const TERMS_AND_CONDITIONS_FINAL_HTML = TERMS_AND_CONDITIONS_HTML.replaceAll(
-  "CONSORCIO MORALES E &amp; L S.A.C.",
-  "GRUPO BIG STORE E.I.R.L.",
-)
-  .replaceAll("Consorcio Morales E &amp; L S.A.C.", "GRUPO BIG STORE E.I.R.L.")
-  .replaceAll("Premios Lorenzo", "GRUPO BIG STORE E.I.R.L.")
-  .replaceAll("20614625989", "20612521396")
-  .replaceAll("premioslorenzo.com", "pcbox-sorteo.vercel.app")
-  .replaceAll("S/ 40.00 o S/ 60.00", "S/ 1.00 o S/ 5.00")
-  .replaceAll(
-    "S/ 40.00 (Cuarenta y 00/100 Soles) o S/ 60.00 (Sesenta y 00/100 Soles)",
-    "S/ 1.00 (un sol) o S/ 5.00 (cinco soles), según el sorteo",
-  );
+const TERMS_AND_CONDITIONS_FINAL_HTML = TERMS_AND_CONDITIONS_HTML;
 
 function showPolicyPage(policy) {
   const content = {
     terms: ["Términos y condiciones", TERMS_AND_CONDITIONS_FINAL_HTML],
     privacy: [
       "Política de privacidad",
-      "<p>En GRUPO BIG STORE E.I.R.L. protegemos tus datos personales conforme a la Ley N.° 29733, Ley de Protección de Datos Personales del Perú, y su reglamento.</p><h3>1. Datos que recopilamos</h3><ul><li>DNI, nombres y apellidos (validados con fuentes oficiales para confirmar identidad).</li><li>Número de WhatsApp, para contactarte en caso de resultar ganador.</li><li>Comprobante de pago: monto, fecha, número de operación y titular.</li></ul><h3>2. Finalidad</h3><ul><li>Validar tu pago y generar tus tickets.</li><li>Identificar y contactar a los ganadores.</li><li>Prevenir fraudes (comprobantes duplicados o adulterados).</li></ul><h3>3. Conservación y seguridad</h3><p>Tus datos se almacenan de forma segura y se conservan por el tiempo necesario para la ejecución del sorteo y el cumplimiento de obligaciones legales. Aplicamos medidas técnicas razonables para protegerlos.</p><h3>4. Compartir información</h3><p>No vendemos ni cedemos tus datos a terceros con fines comerciales. Solo podrían compartirse con autoridades cuando la ley lo exija.</p><h3>5. Tus derechos (ARCO)</h3><p>Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiéndonos por WhatsApp: +51 902 330 511.</p>",
+      "<p>En GRUPO BIG STORE E.I.R.L. protegemos tus datos personales conforme a la Ley N.° 29733, Ley de Protección de Datos Personales del Perú, y su reglamento.</p><h3>1. Datos que recopilamos</h3><ul><li>DNI, nombres y apellidos (validados con fuentes oficiales para confirmar identidad).</li><li>Número de WhatsApp, para contactarte en caso de resultar ganador.</li><li>Comprobante de pago: monto, fecha, número de operación y titular.</li></ul><h3>2. Finalidad</h3><ul><li>Validar tu pago y generar tus tickets.</li><li>Identificar y contactar a los ganadores.</li><li>Prevenir fraudes (comprobantes duplicados o adulterados).</li></ul><h3>3. Conservación y seguridad</h3><p>Tus datos se almacenan de forma segura y se conservan por el tiempo necesario para la ejecución del evento y el cumplimiento de obligaciones legales. Aplicamos medidas técnicas razonables para protegerlos.</p><h3>4. Compartir información</h3><p>No vendemos ni cedemos tus datos a terceros con fines comerciales. Solo podrían compartirse con autoridades cuando la ley lo exija.</p><h3>5. Tus derechos (ARCO)</h3><p>Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiéndonos por WhatsApp: +51 902 330 511.</p>",
     ],
     refunds: [
       "Política de devoluciones",
-      "<p>La compra de tickets para los sorteos de GRUPO BIG STORE E.I.R.L. corresponde a la participación en un juego de azar. A continuación se detalla nuestra política de devoluciones.</p><h3>1. Naturaleza de la compra</h3><p>Una vez generados los tickets y confirmado el pago, la participación se considera efectiva. Por la naturaleza del sorteo, los tickets no son reembolsables salvo los casos señalados a continuación.</p><h3>2. Casos en que procede una devolución</h3><ul><li>Cobro duplicado comprobable por un error técnico del sistema de pago.</li><li>Cancelación del sorteo por parte del organizador antes de su realización.</li><li>Pago validado pero tickets no generados por una falla atribuible a la plataforma.</li></ul><h3>3. Casos en que no procede</h3><ul><li>No haber resultado ganador.</li><li>Datos ingresados incorrectamente por el participante.</li><li>Comprobantes rechazados por ser duplicados, adulterados o de un periodo no vigente.</li></ul><h3>4. Cómo solicitarla</h3><p>Escríbenos por WhatsApp (+51 902 330 511) dentro de los 7 días del pago, adjuntando tu comprobante y número de operación. Evaluaremos tu caso y, de proceder, la devolución se realizará por el mismo medio de pago (Yape).</p>",
+      "<p>La compra de tickets para los eventos de GRUPO BIG STORE E.I.R.L. corresponde a la participación en un juego de azar. A continuación, se detalla nuestra política de devoluciones.</p><h3>1. Naturaleza de la compra</h3><p>Una vez generados los tickets y confirmado el pago, la participación se considera efectiva. Por la naturaleza del evento, los tickets no son reembolsables salvo los casos señalados a continuación.</p><h3>2. Casos en que procede una devolución</h3><ul><li>Cobro duplicado comprobable por un error técnico del sistema de pago.</li><li>Cancelación del evento por parte del organizador antes de su realización.</li><li>Pago validado pero tickets no generados por una falla atribuible a la plataforma.</li></ul><h3>3. Casos en que no procede</h3><ul><li>No haber resultado ganador.</li><li>Datos ingresados incorrectamente por el participante.</li><li>Comprobantes rechazados por ser duplicados, adulterados o de un periodo no vigente.</li></ul><h3>4. Cómo solicitarla</h3><p>Escríbenos por WhatsApp (+51 902 330 511) dentro de los 7 días del pago, adjuntando tu comprobante y número de operación. Evaluaremos tu caso y, de proceder, la devolución se realizará por el mismo medio de pago (Yape).</p>",
     ],
     news: [
       "Noticias",
-      "<p>Aquí publicaremos novedades de sorteos, fechas de cierre, resultados y comunicados importantes de PC BOX.</p><p>Consulta también la sección Ganadores para ver los tickets premiados cuando el sorteo haya terminado.</p>",
+      "<p>Aquí publicaremos novedades de los eventos, fechas de cierre, resultados y comunicados importantes de PC BOX.</p><p>Consulta también la sección Ganadores para ver los tickets premiados cuando el evento haya terminado.</p>",
     ],
     complaints: [
       "Libro de reclamaciones",
@@ -692,7 +692,7 @@ function showPolicyPage(policy) {
   }
   const complaintForm =
     policy === "complaints"
-      ? `<form class="complaint-form" id="complaint-form"><div class="complaint-types"><label><input type="radio" name="caseType" value="Reclamo" checked /> <strong>Reclamo</strong><small>(disconformidad del servicio)</small></label><label><input type="radio" name="caseType" value="Queja" /> <strong>Queja</strong><small>(malestar en la atención)</small></label></div><h3>1. Tus datos</h3><div class="form-grid"><label class="form-label">Nombre *<input class="field" name="name" required /></label><label class="form-label">Apellido<input class="field" name="lastName" /></label><label class="form-label">Tipo de documento<select class="field" name="documentType"><option>DNI</option><option>CE</option><option>RUC</option></select></label><label class="form-label">N° de documento *<input class="field" name="documentNumber" required /></label><label class="form-label">Correo electrónico<input class="field" type="email" name="email" /></label><label class="form-label">Teléfono<input class="field" name="phone" required /></label><label class="form-label full">Domicilio (opcional)<input class="field" name="address" /></label></div><label class="check-row"><input type="checkbox" name="minor" /> Soy menor de edad (responde un padre/madre o apoderado)</label><h3>2. Bien contratado</h3><div class="form-grid"><label class="form-label">Tipo<select class="field" name="serviceType"><option>Servicio</option><option>Producto</option><option>Ticket de sorteo</option></select></label><label class="form-label">Monto reclamado (S/) (opcional)<input class="field" name="amount" inputmode="decimal" /></label><label class="form-label full">Descripción del bien / servicio<input class="field" name="serviceDescription" placeholder="Ej. Ticket de sorteo, recarga, etc." /></label></div><h3>3. Detalle</h3><label class="form-label">Detalle del reclamo *<textarea class="field" name="details" rows="5" placeholder="Cuéntanos qué ocurrió..." required></textarea></label><label class="form-label">Pedido del consumidor<textarea class="field" name="request" rows="4" placeholder="¿Qué solicitas que hagamos?"></textarea></label><button class="button full" type="submit">✉ Enviar reclamo</button><p class="complaint-legal">Al enviar aceptas que usemos tus datos para atender tu solicitud, conforme a nuestra Política de privacidad.</p></form>`
+      ? `<form class="complaint-form" id="complaint-form"><div class="complaint-types"><label><input type="radio" name="caseType" value="Reclamo" checked /> <strong>Reclamo</strong><small>(disconformidad del servicio)</small></label><label><input type="radio" name="caseType" value="Queja" /> <strong>Queja</strong><small>(malestar en la atención)</small></label></div><h3>1. Tus datos</h3><div class="form-grid"><label class="form-label">Nombre *<input class="field" name="name" required /></label><label class="form-label">Apellido<input class="field" name="lastName" /></label><label class="form-label">Tipo de documento<select class="field" name="documentType"><option>DNI</option><option>CE</option><option>RUC</option></select></label><label class="form-label">N° de documento *<input class="field" name="documentNumber" required /></label><label class="form-label">Correo electrónico<input class="field" type="email" name="email" /></label><label class="form-label">Teléfono<input class="field" name="phone" required /></label><label class="form-label full">Domicilio (opcional)<input class="field" name="address" /></label></div><label class="check-row"><input type="checkbox" name="minor" /> Soy menor de edad (responde un padre/madre o apoderado)</label><h3>2. Bien contratado</h3><div class="form-grid"><label class="form-label">Tipo<select class="field" name="serviceType"><option>Servicio</option><option>Producto</option><option>Ticket de evento</option></select></label><label class="form-label">Monto reclamado (S/) (opcional)<input class="field" name="amount" inputmode="decimal" /></label><label class="form-label full">Descripción del bien / servicio<input class="field" name="serviceDescription" placeholder="Ej. Ticket de evento, recarga, etc." /></label></div><h3>3. Detalle</h3><label class="form-label">Detalle del reclamo *<textarea class="field" name="details" rows="5" placeholder="Cuéntanos qué ocurrió..." required></textarea></label><label class="form-label">Pedido del consumidor<textarea class="field" name="request" rows="4" placeholder="¿Qué solicitas que hagamos?"></textarea></label><button class="button full" type="submit">✉ Enviar reclamo</button><p class="complaint-legal">Al enviar aceptas que usemos tus datos para atender tu solicitud, conforme a nuestra Política de privacidad.</p></form>`
       : "";
   policyPage.innerHTML = `<div class="container policy-page-inner"><button class="policy-back" type="button" data-policy-back>← Volver</button><span class="showcase-kicker">Pa salado mi causa · Información</span><h1>${escapeHtml(selected[0])}</h1><div class="policy-content">${selected[1]}</div>${complaintForm}</div>`;
   window.location.hash = "politicas";
@@ -737,7 +737,7 @@ function enhancePublicLayout() {
   if (hero) {
     hero.classList.add("hero-ticket-banner");
     hero.innerHTML = `
-      <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Sorteo de Pa salado mi causa" />
+      <img class="hero-media" src="${officialBannerImage}" alt="Banner oficial del Gran Evento de Pa salado mi causa" />
       <div class="container hero-content">
         <div class="hero-countdown hero-countdown-centered" data-countdown><div class="countdown-grid"><div><strong data-countdown-unit="days">00</strong><small>DÍAS</small></div><div><strong data-countdown-unit="hours">00</strong><small>HORAS</small></div><div><strong data-countdown-unit="minutes">00</strong><small>MIN</small></div><div><strong data-countdown-unit="seconds">00</strong><small>SEG</small></div></div><span class="countdown-close-time">Cierre: 30 de octubre · 9:00 p. m.</span></div>
       </div>`;
@@ -781,7 +781,7 @@ function enhancePublicLayout() {
   const footer = document.querySelector(".site-footer");
   if (footer) {
     footer.innerHTML = `
-       <div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: sorteos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Sorteos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
+       <div class="container footer-inner"><div class="footer-copy"><img class="brand-logo footer-logo" src="${logoImage}" alt="Pa salado mi causa" /><span>Pa salado mi causa: eventos verificados y atención cercana para nuestros clientes.</span></div><div class="footer-links"><a href="#sorteos" data-nav>Eventos</a><a href="#mis-tickets" data-nav>Mis tickets</a><a href="#ganadores" data-nav>Ganadores</a><a href="#soporte" data-nav>Soporte</a></div></div>
       <div class="policy-bar"><div class="container"><a href="#politicas" data-policy="terms">Términos y condiciones</a><a href="#politicas" data-policy="privacy">Política de privacidad</a><a href="#politicas" data-policy="refunds">Política de devoluciones</a><a href="#politicas" data-policy="news">Noticias</a><a href="#politicas" data-policy="complaints">Libro de reclamaciones</a><a href="https://www.facebook.com/pcboxsmart" target="_blank" rel="noopener">Facebook</a></div></div>
        <div class="copyright">© ${new Date().getFullYear()} Pa salado mi causa. Todos los derechos reservados.</div>`;
     footer.querySelectorAll("[data-policy]").forEach((link) =>
@@ -796,7 +796,7 @@ function enhancePublicLayout() {
       .querySelector("main")
       .insertAdjacentHTML(
         "beforeend",
-        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención Pa salado mi causa</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 902 330 511</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51902330511?text=Hola%20Pa%20salado%20mi%20causa%2C%20necesito%20soporte%20sobre%20el%20sorteo." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
+        '<section class="section support-section" id="soporte"><div class="container"><div class="support-panel"><div><span class="showcase-kicker">Atención Pa salado mi causa</span><h2>¿Necesitas ayuda?</h2><p>Escríbenos de lunes a sábado al <strong>+51 902 330 511</strong> para resolver dudas sobre pagos, inscripciones o tickets.</p></div><a class="button" href="https://wa.me/51902330511?text=Hola%20Pa%20salado%20mi%20causa%2C%20necesito%20soporte%20sobre%20el%20evento." target="_blank" rel="noopener">Hablar con soporte <span>→</span></a></div></div></section>',
       );
   }
   renderRaffleCardsV2();
@@ -805,7 +805,7 @@ function enhancePublicLayout() {
 
 function showInfoModal(raffle) {
   const modalRoot = document.querySelector("#modal-root");
-  modalRoot.innerHTML = `<div class="modal-backdrop" data-close-modal><section class="modal" role="dialog" aria-modal="true" aria-labelledby="info-title"><button class="modal-close" data-close-modal aria-label="Cerrar">×</button><h2 id="info-title">${escapeHtml(displayRaffleTitle(raffle.title))}</h2><p class="muted" style="margin-top:13px">${escapeHtml(raffle.details || raffle.description || "Conoce los detalles de este sorteo.")}</p><div class="person-box"><div class="total-row"><span>Precio por ticket</span><strong>${money(raffle.ticket_price)}</strong></div><div class="total-row"><span>Fecha del sorteo</span><strong>${formatDate(raffle.draw_date)}</strong></div></div><ol class="info-list">${(raffle.prizes || []).map((prize) => `<li>${escapeHtml(prize.name)}</li>`).join("")}</ol><p class="notice">El comprobante se revisa antes de asignar los números de ticket.</p><button class="button full" data-close-modal>Entendido</button></section></div>`;
+  modalRoot.innerHTML = `<div class="modal-backdrop" data-close-modal><section class="modal" role="dialog" aria-modal="true" aria-labelledby="info-title"><button class="modal-close" data-close-modal aria-label="Cerrar">×</button><h2 id="info-title">${escapeHtml(displayRaffleTitle(raffle.title))}</h2><p class="muted" style="margin-top:13px">${escapeHtml(eventLanguage(raffle.details || raffle.description || "Conoce los detalles de este evento."))}</p><div class="person-box"><div class="total-row"><span>Precio por ticket</span><strong>${money(raffle.ticket_price)}</strong></div><div class="total-row"><span>Fecha del evento</span><strong>${formatDate(raffle.draw_date)}</strong></div></div><ol class="info-list">${(raffle.prizes || []).map((prize) => `<li>${escapeHtml(prize.name)}</li>`).join("")}</ol><p class="notice">El comprobante se revisa antes de asignar los números de ticket.</p><button class="button full" data-close-modal>Entendido</button></section></div>`;
   bindModalClose();
 }
 
@@ -1048,7 +1048,7 @@ async function handleNotify(event) {
   try {
     await publicApi("suscribir-notificaciones", payload);
     event.currentTarget.reset();
-    showToast("Listo. Te avisaremos de nuevos sorteos y ofertas.", "success");
+    showToast("Listo. Te avisaremos de nuevos eventos y ofertas.", "success");
   } catch (error) {
     showToast(error.message, "error");
   }
@@ -1080,12 +1080,12 @@ function renderRegistrationResult(item) {
       : item.estado === "rechazado"
         ? "Rechazado"
         : "En revisión";
-  return `<article class="card result-card"><div class="result-header"><div><h3>${escapeHtml(item.sorteo)}</h3><p class="muted">${escapeHtml(item.nombre)} · ${formatDate(item.fecha)}</p></div><span class="status ${status}">${label}</span></div><div class="total-row"><span>Tickets</span><strong>${item.cantidad}</strong><span>Monto</span><strong>${money(item.monto)}</strong></div>${item.tickets?.length ? `<p class="muted" style="margin-top:15px;font-size:12px">Tus números</p><div class="ticket-list">${item.tickets.map((ticket) => `<span class="ticket">${ticket}</span>`).join("")}</div>` : `<p class="muted" style="margin-top:15px;font-size:12px">Tus números se asignarán cuando el administrador apruebe el comprobante.</p>`}</article>`;
+  return `<article class="card result-card"><div class="result-header"><div><h3>${escapeHtml(eventLanguage(item.sorteo))}</h3><p class="muted">${escapeHtml(item.nombre)} · ${formatDate(item.fecha)}</p></div><span class="status ${status}">${label}</span></div><div class="total-row"><span>Tickets</span><strong>${item.cantidad}</strong><span>Monto</span><strong>${money(item.monto)}</strong></div>${item.tickets?.length ? `<p class="muted" style="margin-top:15px;font-size:12px">Tus números</p><div class="ticket-list">${item.tickets.map((ticket) => `<span class="ticket">${ticket}</span>`).join("")}</div>` : `<p class="muted" style="margin-top:15px;font-size:12px">Tus números se asignarán cuando el administrador apruebe el comprobante.</p>`}</article>`;
 }
 
 async function loadData() {
   if (!supabase) {
-    state.dataError = "Modo visual: conecta Supabase para cargar sorteos y permitir inscripciones.";
+    state.dataError = "Modo visual: conecta Supabase para cargar eventos y permitir inscripciones.";
     renderRaffleCardsV2();
     return;
   }
