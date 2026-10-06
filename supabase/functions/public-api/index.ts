@@ -1,4 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  documentType,
+  documentNumber,
+  foreignResidentIdentity,
+  receiptFolder,
+} from "../_shared/registration-identity.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -82,12 +88,13 @@ function enforceRateLimit(
 
 async function createReceiptUpload(data: Record<string, unknown>, request: Request) {
   enforceRateLimit(request, "receipt-upload", 12);
-  if (!validDni(data.dni)) throw new Error("El DNI debe tener 8 dígitos.");
+  const type = documentType(data.documentType);
+  const number = documentNumber(type, data.dni);
   const extension = typeof data.extension === "string" ? data.extension.toLowerCase() : "";
   const contentType = typeof data.contentType === "string" ? data.contentType.toLowerCase() : "";
   if (!/^(jpg|jpeg|png|webp|heic|pdf)$/.test(extension) || RECEIPT_TYPES[extension] !== contentType)
     throw new Error("Formato de comprobante no permitido.");
-  const path = `${data.dni}/${crypto.randomUUID()}.${extension}`;
+  const path = `${receiptFolder(type, number)}/${crypto.randomUUID()}.${extension}`;
   const { data: signed, error } = await admin.storage
     .from("comprobantes")
     .createSignedUploadUrl(path);
@@ -120,8 +127,9 @@ async function consultDni(dni: string) {
 }
 
 async function createRegistration(data: Record<string, unknown>) {
+  const type = documentType(data.documentType);
+  const number = documentNumber(type, data.dni);
   if (
-    !validDni(data.dni) ||
     typeof data.raffleId !== "string" ||
     typeof data.fullName !== "string" ||
     typeof data.birthDate !== "string" ||
@@ -137,14 +145,21 @@ async function createRegistration(data: Record<string, unknown>) {
   )
     throw new Error("Datos de inscripción inválidos.");
   const receiptMatch = data.receiptPath.match(
-    /^(\d{8})\/([a-f0-9-]{8,64})\.(jpg|jpeg|png|webp|heic|pdf)$/i,
+    /^((?:CE-)?\d{8,12})\/([a-f0-9-]{8,64})\.(jpg|jpeg|png|webp|heic|pdf)$/i,
   );
-  if (!receiptMatch || receiptMatch[1] !== data.dni)
-    throw new Error("Ruta de comprobante inválida.");
+  const folder = receiptFolder(type, number);
+  if (!receiptMatch || receiptMatch[1] !== folder) throw new Error("Ruta de comprobante inválida.");
 
-  const person = await consultDni(data.dni);
-  if (normalizeText(data.fullName) !== normalizeText(person.nombreCompleto))
-    throw new Error("Los datos no coinciden con el DNI validado.");
+  const ceIdentity = type === "CE" ? foreignResidentIdentity(data) : null;
+  let fullName = ceIdentity?.fullName ?? data.fullName;
+  if (type === "DNI") {
+    const person = await consultDni(number);
+    if (normalizeText(data.fullName) !== normalizeText(person.nombreCompleto))
+      throw new Error("Los datos no coinciden con el DNI validado.");
+    fullName = person.nombreCompleto;
+  } else if (!/^9\d{8}$/.test(String(data.phone))) {
+    throw new Error("Ingresa un WhatsApp válido de 9 dígitos.");
+  }
 
   const { data: raffle, error: raffleError } = await admin
     .from("raffles")
@@ -158,7 +173,7 @@ async function createRegistration(data: Record<string, unknown>) {
   const fileName = data.receiptPath.split("/")[1];
   const { data: files, error: fileError } = await admin.storage
     .from("comprobantes")
-    .list(data.dni, { search: fileName });
+    .list(folder, { search: fileName });
   const receipt = files?.find((file) => file.name === fileName);
   const receiptSize = Number(receipt?.metadata?.size ?? receipt?.metadata?.sizeBytes ?? 0);
   if (fileError || !receipt) throw new Error("No encontramos el comprobante subido.");
@@ -178,9 +193,13 @@ async function createRegistration(data: Record<string, unknown>) {
     .from("registrations")
     .insert({
       raffle_id: data.raffleId,
-      dni: data.dni,
-      full_name: data.fullName,
-      birth_date: data.birthDate || null,
+      dni: number,
+      document_type: type,
+      first_names: ceIdentity?.firstNames ?? null,
+      paternal_surname: ceIdentity?.paternalSurname ?? null,
+      maternal_surname: ceIdentity?.maternalSurname || null,
+      full_name: fullName,
+      birth_date: type === "DNI" ? data.birthDate || null : null,
       phone: data.phone,
       email: data.email || null,
       quantity: data.quantity,
@@ -199,14 +218,16 @@ async function createRegistration(data: Record<string, unknown>) {
   return registration;
 }
 
-async function findRegistrations(dni: string) {
-  if (!validDni(dni)) throw new Error("El DNI debe tener 8 dígitos.");
+async function findRegistrations(data: Record<string, unknown>) {
+  const type = documentType(data.documentType);
+  const number = documentNumber(type, data.dni);
   const { data: registrations, error } = await admin
     .from("registrations")
     .select(
       "id, full_name, quantity, amount, status, created_at, raffle_id, raffles(title, status, draw_date)",
     )
-    .eq("dni", dni)
+    .eq("dni", number)
+    .eq("document_type", type)
     .order("created_at", { ascending: false });
   if (error) throw error;
   const ids = (registrations ?? []).map((registration) => registration.id);
@@ -253,7 +274,7 @@ async function handle(request: Request) {
         enforceRateLimit(request, "create-registration", 10);
         return json(await createRegistration(body));
       case "consultar-inscripciones":
-        return json({ inscripciones: await findRegistrations(String(body.dni ?? "")) });
+        return json({ inscripciones: await findRegistrations(body) });
       case "suscribir-notificaciones": {
         if (
           typeof body.fullName !== "string" ||

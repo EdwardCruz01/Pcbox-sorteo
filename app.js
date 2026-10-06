@@ -1,4 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  documentNumber,
+  foreignResidentIdentity,
+} from "./supabase/functions/_shared/registration-identity.ts";
 
 const runtimeEnv = import.meta.env || {};
 const siteBase =
@@ -205,6 +209,10 @@ const state = {
     open: false,
     step: 0,
     accepted: false,
+    documentType: "DNI",
+    firstNames: "",
+    paternalSurname: "",
+    maternalSurname: "",
     dni: "",
     name: "",
     birthDate: "",
@@ -352,7 +360,7 @@ function renderApp() {
 
       <section class="section compact border" id="como-participar">
         <div class="container"><div class="section-heading"><div><h2>¿Cómo participar?</h2><p>Cinco pasos, menos de dos minutos.</p></div></div><ol class="steps">
-          <li class="step"><span class="step-icon">✓</span><h3>Valida tu DNI</h3><p>Confirmamos tu mayoría de edad.</p></li>
+          <li class="step"><span class="step-icon">✓</span><h3>Ingresa tu documento</h3><p>Usa tu DNI o carnet de extranjería y confirma tu mayoría de edad.</p></li>
           <li class="step"><span class="step-icon">#</span><h3>Elige tickets</h3><p>Más tickets, más oportunidades.</p></li>
           <li class="step"><span class="step-icon">S/</span><h3>Paga con Yape</h3><p>Escanea el QR por el monto exacto.</p></li>
           <li class="step"><span class="step-icon">↑</span><h3>Sube captura</h3><p>Adjunta tu comprobante.</p></li>
@@ -374,7 +382,7 @@ function renderApp() {
 
       <section class="section compact" id="notificaciones"><div class="container notify-wrap"><div><p class="notify-title">♧ Recibir notificaciones</p><h2 style="margin-top:8px">No te pierdas el próximo evento</h2><p class="muted" style="margin-top:7px">Déjanos un correo o celular y te avisaremos de nuevos eventos, resultados y ofertas.</p></div><form class="notify-form" id="notify-form"><input class="field" name="fullName" placeholder="Tu nombre" required /><input class="field" name="email" type="email" placeholder="Correo" /><input class="field" name="phone" inputmode="tel" placeholder="Celular" /><button class="button" type="submit">Avisarme</button></form></div></section>
 
-      <section class="section compact border" id="participantes"><div class="container"><div class="section-heading"><div><h2>Consulta tu inscripción</h2><p>Ingresa tu DNI para ver el estado de tu comprobante y tus tickets.</p></div></div><form class="actions" id="participant-form"><input class="field" style="max-width:290px;letter-spacing:.18em" name="dni" inputmode="numeric" maxlength="8" placeholder="Tu DNI" required /><button class="button" type="submit">Buscar</button></form><div id="participant-results"></div></div></section>
+      <section class="section compact border" id="participantes"><div class="container"><div class="section-heading"><div><h2>Consulta tu inscripción</h2><p>Ingresa tu DNI o carnet de extranjería para ver el estado de tu comprobante y tus tickets.</p></div></div><form class="actions participant-search" id="participant-form"><label class="form-label">Tipo de documento<select class="field" name="documentType"><option value="DNI">DNI</option><option value="CE">Carnet de extranjería</option></select></label><label class="form-label"><span id="participant-document-label">Número de DNI</span><input class="field" name="dni" inputmode="numeric" minlength="8" maxlength="8" pattern="[0-9]{8}" placeholder="Tu DNI" required /></label><button class="button" type="submit">Buscar</button></form><div id="participant-results" aria-live="polite"></div></div></section>
 
       <section class="section compact" id="ganadores"><div class="container"><div class="section-heading"><div><h2>Ganadores</h2><p>Resultados publicados de nuestros eventos realizados.</p></div></div><div id="winner-results"></div></div></section>
     </main>
@@ -396,6 +404,13 @@ function renderApp() {
     );
   document.querySelector("#notify-form").addEventListener("submit", handleNotify);
   document.querySelector("#participant-form").addEventListener("submit", handleParticipantSearch);
+  document
+    .querySelector('#participant-form [name="documentType"]')
+    .addEventListener("change", () => {
+      updateParticipantDocument();
+      document.querySelector('#participant-form [name="dni"]').value = "";
+      document.querySelector("#participant-results").innerHTML = "";
+    });
   document.querySelector("#raffle-grid").addEventListener("click", handleRaffleAction);
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-copy-number]");
@@ -662,7 +677,7 @@ function showPolicyPage(policy) {
     terms: ["Términos y condiciones", TERMS_AND_CONDITIONS_FINAL_HTML],
     privacy: [
       "Política de privacidad",
-      "<p>En GRUPO BIG STORE E.I.R.L. protegemos tus datos personales conforme a la Ley N.° 29733, Ley de Protección de Datos Personales del Perú, y su reglamento.</p><h3>1. Datos que recopilamos</h3><ul><li>DNI, nombres y apellidos (validados con fuentes oficiales para confirmar identidad).</li><li>Número de WhatsApp, para contactarte en caso de resultar ganador.</li><li>Comprobante de pago: monto, fecha, número de operación y titular.</li></ul><h3>2. Finalidad</h3><ul><li>Validar tu pago y generar tus tickets.</li><li>Identificar y contactar a los ganadores.</li><li>Prevenir fraudes (comprobantes duplicados o adulterados).</li></ul><h3>3. Conservación y seguridad</h3><p>Tus datos se almacenan de forma segura y se conservan por el tiempo necesario para la ejecución del evento y el cumplimiento de obligaciones legales. Aplicamos medidas técnicas razonables para protegerlos.</p><h3>4. Compartir información</h3><p>No vendemos ni cedemos tus datos a terceros con fines comerciales. Solo podrían compartirse con autoridades cuando la ley lo exija.</p><h3>5. Tus derechos (ARCO)</h3><p>Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiéndonos por WhatsApp: +51 902 330 511.</p>",
+      "<p>En GRUPO BIG STORE E.I.R.L. protegemos tus datos personales conforme a la Ley N.° 29733, Ley de Protección de Datos Personales del Perú, y su reglamento.</p><h3>1. Datos que recopilamos</h3><ul><li>Tipo y número de documento (DNI o carnet de extranjería), nombres y apellidos. Los datos de DNI se consultan con el servicio de validación de identidad; los datos del carnet de extranjería son ingresados por el participante.</li><li>Número de WhatsApp, para contactarte en caso de resultar ganador.</li><li>Comprobante de pago: monto, fecha, número de operación y titular.</li></ul><h3>2. Finalidad</h3><ul><li>Validar tu pago y generar tus tickets.</li><li>Identificar y contactar a los ganadores.</li><li>Prevenir fraudes (comprobantes duplicados o adulterados).</li></ul><h3>3. Conservación y seguridad</h3><p>Tus datos se almacenan de forma segura y se conservan por el tiempo necesario para la ejecución del evento y el cumplimiento de obligaciones legales. Aplicamos medidas técnicas razonables para protegerlos.</p><h3>4. Compartir información</h3><p>No vendemos ni cedemos tus datos a terceros con fines comerciales. Solo podrían compartirse con autoridades cuando la ley lo exija.</p><h3>5. Tus derechos (ARCO)</h3><p>Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de tus datos escribiéndonos por WhatsApp: +51 902 330 511.</p>",
     ],
     refunds: [
       "Política de devoluciones",
@@ -825,6 +840,10 @@ function openRegistration(raffle) {
     open: true,
     step: 0,
     accepted: false,
+    documentType: "DNI",
+    firstNames: "",
+    paternalSurname: "",
+    maternalSurname: "",
     dni: "",
     name: "",
     birthDate: "",
@@ -847,8 +866,13 @@ function renderRegistrationModal() {
   let content = "";
   if (form.step === 0)
     content = `<div class="terms"><strong>Términos y condiciones</strong><p>Revisa el documento completo antes de continuar con tu inscripción.</p><button class="text-link" type="button" data-open-terms>Leer términos y condiciones</button></div><label class="check-row"><input type="checkbox" id="terms-check" ${form.accepted ? "checked" : ""} /> Confirmo que soy mayor de 18 años y acepto los <button class="inline-policy-link" type="button" data-open-terms>términos y condiciones</button>.</label><button class="button full" id="continue-terms" ${form.accepted ? "" : "disabled"}>Continuar</button>`;
-  if (form.step === 1)
-    content = `<form id="dni-form"><label class="form-label">Número de DNI<input class="field" name="dni" inputmode="numeric" maxlength="8" placeholder="12345678" value="${escapeHtml(form.dni)}" required /></label><p class="muted" style="margin-top:10px;font-size:12px">Validamos tu DNI y tus nombres registrados.</p><button class="button full" type="submit">Validar DNI</button></form>`;
+  if (form.step === 1) {
+    const selector = `<fieldset class="document-type"><legend>Tipo de documento</legend><div class="document-options"><label><input type="radio" name="documentType" value="DNI" ${form.documentType === "DNI" ? "checked" : ""} /><span>DNI</span></label><label><input type="radio" name="documentType" value="CE" ${form.documentType === "CE" ? "checked" : ""} /><span>Carnet de extranjería</span></label></div></fieldset>`;
+    content =
+      form.documentType === "CE"
+        ? `${selector}<form id="ce-form" class="identity-form"><label class="form-label">N.º de carnet de extranjería<input class="field" name="dni" inputmode="numeric" minlength="8" maxlength="12" pattern="[0-9]{8,12}" placeholder="Ej. 001234567" value="${escapeHtml(form.dni)}" required /></label><label class="form-label">Nombres<input class="field" name="firstNames" autocomplete="given-name" maxlength="80" placeholder="Tus nombres" value="${escapeHtml(form.firstNames)}" required /></label><label class="form-label">Apellido paterno<input class="field" name="paternalSurname" maxlength="80" placeholder="Apellido paterno" value="${escapeHtml(form.paternalSurname)}" required /></label><label class="form-label">Apellido materno (opcional)<input class="field" name="maternalSurname" maxlength="80" placeholder="Apellido materno" value="${escapeHtml(form.maternalSurname)}" /></label><label class="form-label">WhatsApp (9 dígitos)<input class="field" name="phone" type="tel" autocomplete="tel-national" inputmode="numeric" minlength="9" maxlength="9" pattern="9[0-9]{8}" placeholder="9XXXXXXXX" value="${escapeHtml(form.phone)}" required /></label><label class="form-label">Correo (opcional)<input class="field" name="email" type="email" autocomplete="email" maxlength="160" placeholder="correo@ejemplo.com" value="${escapeHtml(form.email)}" /></label><p class="muted identity-note">Escribe tus nombres tal como aparecen en tu carnet de extranjería.</p><button class="button full" type="submit">Continuar →</button></form>`
+        : `${selector}<form id="dni-form"><label class="form-label">Número de DNI<input class="field" name="dni" inputmode="numeric" minlength="8" maxlength="8" pattern="[0-9]{8}" placeholder="12345678" value="${escapeHtml(form.dni)}" required /></label><p class="muted identity-note">Validamos tu DNI y tus nombres registrados.</p><button class="button full" type="submit">Validar DNI</button></form>`;
+  }
   if (form.step === 2)
     content = `<form id="person-form"><div class="person-box"><p class="muted" style="font-size:11px;text-transform:uppercase;letter-spacing:.12em">Datos validados por ApiPeruDev</p><p class="person-name">${escapeHtml(form.name)}</p><p class="muted">DNI ${escapeHtml(form.dni)}</p></div><div class="form-grid"><label class="form-label full">Nombre completo<input class="field" name="name" value="${escapeHtml(form.name)}" readonly /></label><label class="form-label">Celular<input class="field" name="phone" inputmode="tel" maxlength="20" placeholder="999 999 999" required /></label><label class="form-label">Correo (opcional)<input class="field" name="email" type="email" maxlength="160" placeholder="correo@ejemplo.com" /></label></div><button class="button full" type="submit">Continuar</button></form>`;
   if (form.step === 3)
@@ -856,7 +880,7 @@ function renderRegistrationModal() {
   if (form.step === 4)
     content = `<div class="qr-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><p class="payment-account">GRUPO BIG STORE E.I.R.L.</p><div class="payment-number-row"><strong class="payment-number">902330511</strong><button class="copy-payment-number" type="button" data-copy-number="902330511">Copiar número</button></div><img class="registration-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin" /><strong style="font-size:24px">${money(Number(raffle.ticket_price) * form.quantity)}</strong><p style="font-size:11px;opacity:.7">Realiza el pago exacto y luego sube tu comprobante.</p></div><form id="receipt-form"><label class="upload-label" for="receipt"><strong>Subir</strong><span class="selected-file">${form.file ? escapeHtml(form.file.name) : "Selecciona tu comprobante"}</span></label><input class="sr-only" id="receipt" type="file" accept="image/jpeg,image/png,image/webp,image/heic,application/pdf" required /><button class="button full" type="submit">Enviar comprobante</button></form>`;
   if (form.step === 5)
-    content = `<div class="success"><strong>Inscripción en revisión</strong><p>Tu comprobante fue enviado. Cuando el administrador lo apruebe recibirás tu número de ticket.</p></div><p class="muted" style="margin-top:15px;text-align:center">Consulta tu estado con el DNI <strong>${escapeHtml(form.dni)}</strong>.</p><a class="button full" href="#participantes" data-close-modal>Ver mi inscripción</a>`;
+    content = `<div class="success"><strong>Inscripción en revisión</strong><p>Tu comprobante fue enviado. Cuando el administrador lo apruebe recibirás tu número de ticket.</p></div><p class="muted" style="margin-top:15px;text-align:center">Consulta tu estado con ${form.documentType === "CE" ? "el carnet de extranjería" : "el DNI"} <strong>${escapeHtml(form.dni)}</strong>.</p><a class="button full" href="#participantes" data-close-modal>Ver mi inscripción</a>`;
   root.innerHTML = `<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="registration-title"><button class="modal-close" data-close-registration aria-label="Cerrar">×</button><h2 id="registration-title">${title}</h2>${form.step < 5 ? `<div class="progress">${[0, 1, 2, 3, 4].map((step) => `<span class="${step <= form.step ? "on" : ""}"></span>`).join("")}</div>` : ""}${content}</section></div>`;
   bindRegistrationEvents();
 }
@@ -883,6 +907,21 @@ function bindRegistrationEvents() {
   }
   const dniForm = root.querySelector("#dni-form");
   if (dniForm) dniForm.addEventListener("submit", handleDniValidation);
+  root.querySelectorAll('[name="documentType"]').forEach((input) => {
+    input.addEventListener("change", () => {
+      Object.assign(state.registration, {
+        documentType: input.value,
+        dni: "",
+        name: "",
+        birthDate: "",
+        firstNames: "",
+        paternalSurname: "",
+        maternalSurname: "",
+      });
+      renderRegistrationModal();
+    });
+  });
+  root.querySelector("#ce-form")?.addEventListener("submit", handleCeIdentity);
   const personForm = root.querySelector("#person-form");
   if (personForm)
     personForm.addEventListener("submit", (event) => {
@@ -937,6 +976,10 @@ function bindRegistrationEvents() {
   const successLink = root.querySelector("[data-close-modal]");
   if (successLink)
     successLink.addEventListener("click", () => {
+      const searchForm = document.querySelector("#participant-form");
+      searchForm.elements.documentType.value = state.registration.documentType;
+      updateParticipantDocument();
+      searchForm.elements.dni.value = state.registration.dni;
       state.registration.open = false;
       root.innerHTML = "";
     });
@@ -945,15 +988,53 @@ function bindRegistrationEvents() {
 async function handleDniValidation(event) {
   event.preventDefault();
   const data = new FormData(event.currentTarget);
-  const dni = String(data.get("dni") || "").replace(/\D/g, "");
+  const dni = String(data.get("dni") || "").trim();
   if (!/^\d{8}$/.test(dni)) return showToast("Ingresa un DNI válido de 8 dígitos.", "error");
+  const registration = state.registration;
+  const formElement = event.currentTarget;
+  const button = formElement.querySelector('button[type="submit"]');
+  button.disabled = true;
   try {
     const result = await publicApi("consultar-dni", { dni });
+    if (
+      state.registration !== registration ||
+      !registration.open ||
+      registration.documentType !== "DNI" ||
+      !formElement.isConnected
+    )
+      return;
     if (result.mayorDeEdad === false) throw new Error("Debes ser mayor de edad para participar.");
     state.registration.dni = dni;
     state.registration.name = result.nombreCompleto;
     state.registration.birthDate = result.fechaNacimiento;
     state.registration.step = 2;
+    renderRegistrationModal();
+  } catch (error) {
+    if (formElement.isConnected) showToast(error.message, "error");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function handleCeIdentity(event) {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  try {
+    const dni = documentNumber("CE", data.dni);
+    const identity = foreignResidentIdentity(data);
+    const phone = String(data.phone || "").trim();
+    if (!/^9\d{8}$/.test(phone)) throw new Error("Ingresa un WhatsApp válido de 9 dígitos.");
+    if (!state.registration.adultConfirmed || !state.registration.accepted)
+      throw new Error("Debes confirmar que eres mayor de edad y aceptar los términos.");
+    Object.assign(state.registration, identity, {
+      documentType: "CE",
+      dni,
+      name: identity.fullName,
+      birthDate: "",
+      phone,
+      email: String(data.email || "").trim(),
+      step: 3,
+    });
     renderRegistrationModal();
   } catch (error) {
     showToast(error.message, "error");
@@ -976,6 +1057,7 @@ async function handleReceiptSubmit(event) {
     if (!extension) throw new Error("El comprobante debe tener un formato permitido.");
     const uploadTicket = await publicApi("crear-upload", {
       dni: state.registration.dni,
+      documentType: state.registration.documentType,
       extension,
       contentType: file.type,
     });
@@ -989,6 +1071,10 @@ async function handleReceiptSubmit(event) {
     await publicApi("crear-inscripcion", {
       raffleId: state.activeRaffle.id,
       dni: state.registration.dni,
+      documentType: state.registration.documentType,
+      firstNames: state.registration.firstNames,
+      paternalSurname: state.registration.paternalSurname,
+      maternalSurname: state.registration.maternalSurname,
       fullName: state.registration.name,
       birthDate: state.registration.birthDate,
       adultConfirmed: state.registration.adultConfirmed,
@@ -1054,17 +1140,38 @@ async function handleNotify(event) {
   }
 }
 
+function updateParticipantDocument() {
+  const form = document.querySelector("#participant-form");
+  const isCe = form.elements.documentType.value === "CE";
+  const input = form.elements.dni;
+  input.maxLength = isCe ? 12 : 8;
+  input.pattern = isCe ? "[0-9]{8,12}" : "[0-9]{8}";
+  input.placeholder = isCe ? "Tu carnet de extranjería" : "Tu DNI";
+  document.querySelector("#participant-document-label").textContent = isCe
+    ? "N.º de carnet de extranjería"
+    : "Número de DNI";
+}
+
 async function handleParticipantSearch(event) {
   event.preventDefault();
-  const dni = String(new FormData(event.currentTarget).get("dni") || "").replace(/\D/g, "");
+  const form = event.currentTarget;
+  const formData = new FormData(form);
+  const documentType = String(formData.get("documentType") || "DNI");
+  let dni;
+  try {
+    dni = documentNumber(documentType, formData.get("dni"));
+  } catch (error) {
+    return showToast(error.message, "error");
+  }
   const results = document.querySelector("#participant-results");
-  if (!/^\d{8}$/.test(dni)) return showToast("Ingresa un DNI válido de 8 dígitos.", "error");
   results.innerHTML = `<p class="empty">Consultando…</p>`;
   try {
-    const data = await publicApi("consultar-inscripciones", { dni });
+    const data = await publicApi("consultar-inscripciones", { dni, documentType });
+    if (form.elements.documentType.value !== documentType || form.elements.dni.value.trim() !== dni)
+      return;
     results.innerHTML = data.inscripciones?.length
       ? data.inscripciones.map(renderRegistrationResult).join("")
-      : `<p class="empty">No encontramos inscripciones con ese DNI.</p>`;
+      : `<p class="empty">No encontramos inscripciones con ese ${documentType === "CE" ? "carnet de extranjería" : "DNI"}.</p>`;
   } catch (error) {
     results.innerHTML = "";
     showToast(error.message, "error");

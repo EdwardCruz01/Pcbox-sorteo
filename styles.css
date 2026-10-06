@@ -912,6 +912,73 @@ p {
   color: var(--muted);
   font-size: 12px;
 }
+.document-type {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 20px 0;
+}
+.document-type legend {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.document-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.document-options label {
+  position: relative;
+  cursor: pointer;
+}
+.document-options input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.document-options span {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+.document-options input:checked + span {
+  border-color: var(--primary);
+  background: rgba(84, 173, 255, 0.14);
+  color: var(--text);
+}
+.document-options input:focus-visible + span {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.identity-form {
+  display: grid;
+  gap: 14px;
+}
+.identity-note {
+  margin-top: 10px;
+  font-size: 12px;
+}
+.participant-search {
+  align-items: end;
+}
+.participant-search .form-label {
+  width: min(100%, 290px);
+}
+.participant-search .field {
+  width: 100%;
+}
 .quantity {
   display: flex;
   align-items: center;
