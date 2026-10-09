@@ -124,7 +124,7 @@ async function consultDni(dni: string) {
     nombreCompleto: String(payload.data.nombre_completo),
     fechaNacimiento: "",
     mayorDeEdad: null,
-    fuente: "ApiPeruDev",
+    fuente: "ApiPeru",
   };
 }
 
