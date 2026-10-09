@@ -18,7 +18,8 @@ const admin = createClient(supabaseUrl, serviceRoleKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 const apiPeruToken = Deno.env.get("APIPERU_TOKEN") ?? "";
-const apiPeruDniUrl = "https://api.apiperu.dev/dni";
+const apiPeruApiKey = Deno.env.get("APIPERU_API_KEY") ?? "";
+const apiPeruDniUrl = "https://api.apiperu.pe/dni";
 const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
 const RECEIPT_TYPES: Record<string, string> = {
   jpg: "image/jpeg",
@@ -110,6 +111,7 @@ async function consultDni(dni: string) {
       Accept: "application/json",
       Authorization: `Bearer ${apiPeruToken}`,
       "Content-Type": "application/json",
+      ...(apiPeruApiKey ? { "X-API-Key": apiPeruApiKey } : {}),
     },
     body: JSON.stringify({ dni }),
   });
