@@ -104,6 +104,7 @@ export function mountHalloweenDecor({ config, asset }) {
   let movingDown = false;
   let flightActive = false;
   const flownSections = new Set();
+  const mobileViewport = window.matchMedia("(max-width: 700px)");
   const motionAllowed =
     config.animationsEnabled && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -111,13 +112,27 @@ export function mountHalloweenDecor({ config, asset }) {
     const nextScrollY = window.scrollY;
     if (Math.abs(nextScrollY - lastScrollY) > 2) movingDown = nextScrollY > lastScrollY;
     lastScrollY = nextScrollY;
+    if (
+      mobileViewport.matches &&
+      motionAllowed &&
+      movingDown &&
+      nextScrollY > 80 &&
+      !flightActive &&
+      !flownSections.has("mobile-scroll") &&
+      !document.body.classList.contains("halloween-promo-open") &&
+      document.getElementById("sorteos")?.getBoundingClientRect().top < window.innerHeight * 0.8
+    ) {
+      flyGhost("mobile-scroll", true);
+    }
   }
 
-  function flyGhost(sectionId) {
+  function flyGhost(sectionId, across = false) {
     flightActive = true;
     flownSections.add(sectionId);
     const flight = document.createElement("div");
-    flight.className = `halloween-flight ${flownSections.size % 2 ? "flight-left" : "flight-right"}`;
+    flight.className = across
+      ? "halloween-flight halloween-flight-across"
+      : `halloween-flight ${flownSections.size % 2 ? "flight-left" : "flight-right"}`;
     flight.setAttribute("aria-hidden", "true");
     flight.append(
       decorativeImage("halloween-flight-ghost", asset("halloween/fantasma_saludando.png")),
@@ -142,6 +157,7 @@ export function mountHalloweenDecor({ config, asset }) {
           entry.target.querySelector(".halloween-scene")?.classList.add("is-visible");
           if (
             motionAllowed &&
+            !mobileViewport.matches &&
             flightSections.has(entry.target.id) &&
             movingDown &&
             window.scrollY > 80 &&
