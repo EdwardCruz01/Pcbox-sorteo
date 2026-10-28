@@ -3279,3 +3279,8 @@ p {
     background: #071329;
   }
 }
+
+/* El borde oscuro del flyer de portada se funde con el fondo sin recortar su contenido. */
+.hero-ticket-banner .hero-media {
+  mask-image: radial-gradient(ellipse 73% 72% at 50% 48%, #000 60%, transparent 100%);
+}

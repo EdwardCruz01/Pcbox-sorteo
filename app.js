@@ -15,7 +15,7 @@ const siteBase =
 const asset = (name) => `${siteBase}assets/${name}`;
 const heroImage = asset("banner-portada-primer-gran-sorteo.jpeg");
 const logoImage = asset("logo-pa-salado-mi-causa.png");
-const officialBannerImage = asset("banner-portada-primer-gran-sorteo.jpeg");
+const officialBannerImage = asset("banner-portada-halloween-2026.png");
 const raffleCardBannerImage = asset("banner-tarjeta-primer-gran-sorteo.jpeg");
 const productsLogoImage = asset("logo-pcbox-productos.png");
 const officialQrImage = asset("qr-yape-oficial.jpg");
