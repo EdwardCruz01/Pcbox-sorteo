@@ -3,6 +3,10 @@ import {
   documentNumber,
   foreignResidentIdentity,
 } from "./supabase/functions/_shared/registration-identity.ts";
+import { seasonalConfig } from "./seasonal/config.js";
+import { mountHalloweenDecor } from "./seasonal/halloween-decor.js";
+import { mountPromoPopup } from "./seasonal/promo-popup.js";
+import "./seasonal/halloween.css";
 
 const runtimeEnv = import.meta.env || {};
 const siteBase =
@@ -1222,3 +1226,5 @@ async function loadData() {
 renderApp();
 enhancePublicLayout();
 loadData();
+mountHalloweenDecor({ config: seasonalConfig, asset });
+mountPromoPopup({ config: seasonalConfig, asset });

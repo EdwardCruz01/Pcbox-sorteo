@@ -15,6 +15,10 @@ Abre `http://127.0.0.1:8080/`. El entrypoint es `index.html`, la interfaz está 
 
 El código anterior de TanStack/React se conserva dentro de `src/` como referencia, pero ya no es el entrypoint ni participa en el build de esta web vanilla.
 
+## Campaña temporal de Halloween
+
+Los adornos y el popup están aislados en `seasonal/`. Ajusta `seasonal/config.js` para activar o desactivar la decoración (`halloweenEnabled`), el popup (`popupEnabled`) y las animaciones (`animationsEnabled`) por separado. `popupFrequency` acepta `"session"` (una vez por sesión) o `"always"` (en cada carga). Para cambiar el flyer, coloca la nueva imagen en `public/assets/` y actualiza `flyerFile` con la ruta relativa a esa carpeta. Los recursos actuales están en `public/assets/halloween/`.
+
 ## Supabase
 
 El frontend usa `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`. La inscripción, consulta de tickets y suscripción de notificaciones pasan por `supabase/functions/public-api/index.ts`.

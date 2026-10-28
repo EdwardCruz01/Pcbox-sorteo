@@ -1,0 +1,155 @@
+.halloween-decor {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  contain: layout style;
+}
+
+.halloween-decor-item {
+  position: absolute;
+  display: block;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0;
+  animation: halloween-appear 800ms ease-out forwards;
+  will-change: auto;
+}
+
+.halloween-decor .web {
+  top: 0;
+  width: clamp(58px, 5vw, 72px);
+  opacity: 0.35;
+  animation: none;
+}
+
+.halloween-decor .web-left { left: 0; }
+.halloween-decor .web-right { right: 0; transform: scaleX(-1); }
+
+.halloween-decor .bats {
+  top: 25%;
+  right: 0;
+  width: 55px;
+  animation: halloween-appear 800ms ease-out forwards, halloween-bats 13s ease-in-out 1s infinite alternate;
+}
+
+.halloween-decor .ghost {
+  top: 57%;
+  left: 0;
+  width: 48px;
+  animation: halloween-appear 800ms ease-out forwards, halloween-float 8s ease-in-out 1s infinite alternate;
+}
+
+.halloween-decor .pumpkin {
+  bottom: 3%;
+  right: 0;
+  width: 52px;
+}
+
+.halloween-decor .sparkles {
+  bottom: 23%;
+  right: 0;
+  width: 60px;
+  opacity: 0.3;
+  animation: halloween-appear 800ms ease-out forwards, halloween-glow 10s ease-in-out 1s infinite alternate;
+}
+
+@keyframes halloween-appear { to { opacity: 0.65; } }
+@keyframes halloween-bats { to { translate: -12px 8px; } }
+@keyframes halloween-float { to { translate: 0 -12px; } }
+@keyframes halloween-glow { to { opacity: 0.2; } }
+
+.halloween-promo-open { overflow: hidden; }
+
+.halloween-promo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 14px;
+  background: rgba(4, 7, 19, 0.86);
+  backdrop-filter: blur(5px);
+}
+
+.halloween-promo-dialog {
+  position: relative;
+  display: flex;
+  max-width: min(100%, 600px);
+  max-height: calc(100dvh - 28px);
+  border-radius: 13px;
+  box-shadow: 0 18px 80px rgba(0, 0, 0, 0.65);
+  animation: halloween-promo-in 260ms ease-out both;
+}
+
+.halloween-promo-flyer {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 28px);
+  border-radius: 13px;
+  object-fit: contain;
+}
+
+.halloween-promo-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  background: rgba(6, 11, 31, 0.9);
+  color: white;
+  font: 700 29px/1 Arial, sans-serif;
+  cursor: pointer;
+}
+
+.halloween-promo-close:focus-visible {
+  outline: 3px solid #fbbf70;
+  outline-offset: 3px;
+}
+
+@keyframes halloween-promo-in {
+  from { opacity: 0; transform: scale(0.975); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.halloween-decor.halloween-static .halloween-decor-item {
+  animation: none;
+  opacity: 0.65;
+}
+
+.halloween-promo.halloween-static .halloween-promo-dialog {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .halloween-decor-item {
+    animation: none !important;
+    opacity: 0.65;
+  }
+
+  .halloween-promo-dialog {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .halloween-decor .web { width: 42px; }
+  .halloween-decor .bats { top: 24%; width: 45px; }
+  .halloween-decor .ghost { top: 57%; width: 38px; }
+  .halloween-decor .pumpkin { bottom: 5%; width: 42px; }
+  .halloween-decor .sparkles { display: none; }
+  .halloween-promo { padding: 10px; }
+  .halloween-promo-dialog,
+  .halloween-promo-flyer { max-height: calc(100dvh - 20px); }
+}
