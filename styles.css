@@ -1981,11 +1981,13 @@ p {
 .policy-page {
   min-height: calc(100vh - 82px);
   padding: 46px 0 70px;
+  scroll-margin-top: 74px;
 }
 .policy-page-inner {
   max-width: 920px;
 }
 .policy-back {
+  display: block;
   margin-bottom: 30px;
   padding: 0;
   border: 0;
@@ -2069,6 +2071,7 @@ p {
 @media (max-width: 620px) {
   .policy-page {
     padding-top: 28px;
+    scroll-margin-top: 70px;
   }
   .complaint-types {
     grid-template-columns: 1fr;
