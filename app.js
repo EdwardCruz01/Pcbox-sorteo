@@ -47,6 +47,11 @@ const RECEIPT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "a
 const FIXED_DRAW_DATE = "2026-10-31T21:00:00-05:00";
 const SALES_CLOSE_DATE = "2026-10-30T23:59:00-05:00";
 let countdownTimer = null;
+let salesClosureApplied = false;
+
+function canRegister(raffle) {
+  return raffle?.status === "activo" && !raffle.demo && Date.now() < Date.parse(SALES_CLOSE_DATE);
+}
 
 function raffleImagePath(value, fallback) {
   const normalized = String(value || "").trim();
@@ -423,10 +428,11 @@ function renderApp() {
   });
   renderRaffles();
   renderWinners();
-  document.querySelector(".participate-button")?.addEventListener("click", (event) => {
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".participate-button")) return;
     event.preventDefault();
-    if (!state.activeRaffle || state.activeRaffle.demo)
-      return showToast("El evento todavía no está publicado.", "error");
+    if (!canRegister(state.activeRaffle))
+      return showToast("Las inscripciones de este evento están cerradas.", "error");
     openRegistration(state.activeRaffle);
   });
   startFlyerRotation();
@@ -458,7 +464,7 @@ function renderRaffles() {
         )
         .join("")}</ul>
       <p class="draw-date">◷ ${raffle.draw_date ? `Evento: ${formatDate(raffle.draw_date)}` : "Fecha por anunciar"}</p>
-      <div class="card-actions"><button class="button" data-action="register" data-id="${escapeHtml(raffle.id)}" ${raffle.demo ? "disabled" : ""}>Inscribirme</button><button class="button secondary" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div></div>
+      <div class="card-actions"><button class="button" data-action="register" data-id="${escapeHtml(raffle.id)}" ${canRegister(raffle) ? "" : "disabled"}>${canRegister(raffle) ? "Inscribirme" : "Inscripciones cerradas"}</button><button class="button secondary" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div></div>
     </article>`,
         )
         .join("")
@@ -560,6 +566,23 @@ function updateCountdown() {
       if (element) element.textContent = String(value).padStart(2, "0");
     });
   });
+  if (remaining === 0 && !salesClosureApplied) {
+    salesClosureApplied = true;
+    document.querySelectorAll('[data-action="register"]').forEach((button) => {
+      button.disabled = true;
+      button.textContent = "PARTICIPACIÓN CERRADA";
+    });
+    const participateButton = document.querySelector(".participate-button");
+    if (participateButton) {
+      participateButton.disabled = true;
+      participateButton.textContent = "INSCRIPCIONES CERRADAS";
+    }
+    if (state.registration.open && state.registration.step < 5) {
+      state.registration.open = false;
+      document.querySelector("#modal-root").innerHTML = "";
+      showToast("Las inscripciones de este evento están cerradas.", "error");
+    }
+  }
 }
 
 function startCountdown() {
@@ -610,7 +633,7 @@ function renderRaffleCardsV2() {
     .map((raffle) => {
       const prizes = groupPrizesForDisplay(raffle.prizes || []);
       const cardImage = raffleImagePath(raffle.image_url, raffleCardBannerImage);
-      const canRegister = raffle.status === "activo" && !raffle.demo;
+      const registrationOpen = canRegister(raffle);
       const showCountdown = !isPcboxRaffle(raffle);
       return `
         <article class="card raffle-showcase">
@@ -646,7 +669,7 @@ function renderRaffleCardsV2() {
                 })
                 .join("")}</div>
             </div>
-            <div class="card-actions"><button class="button full" data-action="register" data-id="${escapeHtml(raffle.id)}" ${canRegister ? "" : "disabled"}>${canRegister ? "PARTICIPAR" : "PARTICIPACIÓN CERRADA"} <span>${canRegister ? "→" : ""}</span></button><button class="button secondary full" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div>
+            <div class="card-actions"><button class="button full" data-action="register" data-id="${escapeHtml(raffle.id)}" ${registrationOpen ? "" : "disabled"}>${registrationOpen ? "PARTICIPAR" : "PARTICIPACIÓN CERRADA"} <span>${registrationOpen ? "→" : ""}</span></button><button class="button secondary full" data-action="info" data-id="${escapeHtml(raffle.id)}">Ver información</button></div>
           </div>
         </article>`;
     })
@@ -764,7 +787,7 @@ function enhancePublicLayout() {
     stepsSection.insertAdjacentHTML(
       "afterend",
       `
-       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><div class="payment-number-row"><strong class="payment-number">902330511</strong><button class="copy-payment-number" type="button" data-copy-number="902330511">Copiar número</button></div><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin de Grupo Big Store" /><span class="payment-hint">GRUPO BIG STORE E.I.R.L.</span></div></div><a class="button participate-button" href="#sorteos" data-nav>PARTICIPO</a></div></section>
+       <section class="section payment-section" id="pagos"><div class="container"><div class="section-heading"><div><span class="showcase-kicker">Método de pago</span><h2>Paga fácil y seguro por Yape</h2><p>Escanea el QR y realiza el pago exacto según la cantidad de tickets.</p></div></div><div class="payment-layout"><div class="payment-copy"><h3>Solo necesitas tu celular</h3><p>Elige tus tickets, paga por Yape y sube la captura del comprobante. Nuestro equipo revisará la operación antes de asignar tus números.</p><ul><li>✓ Pago únicamente por Yape</li><li>✓ Comprobante privado y protegido</li><li>✓ Tickets asignados al aprobar</li></ul></div><div class="payment-card"><div class="payment-tabs"><strong>Yape</strong><span>Plin</span></div><div class="payment-number-row"><strong class="payment-number">902330511</strong><button class="copy-payment-number" type="button" data-copy-number="902330511">Copiar número</button></div><img class="official-qr" src="${officialQrImage}" alt="QR oficial de Yape y Plin de Grupo Big Store" /><span class="payment-hint">GRUPO BIG STORE E.I.R.L.</span></div></div><button class="button participate-button" type="button" ${Date.now() >= Date.parse(SALES_CLOSE_DATE) ? "disabled" : ""}>${Date.now() >= Date.parse(SALES_CLOSE_DATE) ? "INSCRIPCIONES CERRADAS" : "PARTICIPO"}</button></div></section>
        `,
     );
   }
@@ -820,6 +843,10 @@ function bindModalClose() {
 }
 
 function openRegistration(raffle) {
+  if (!canRegister(raffle)) {
+    showToast("Las inscripciones de este evento están cerradas.", "error");
+    return;
+  }
   state.activeRaffle = raffle;
   state.registration = {
     open: true,
@@ -1028,6 +1055,8 @@ function handleCeIdentity(event) {
 
 async function handleReceiptSubmit(event) {
   event.preventDefault();
+  if (!canRegister(state.activeRaffle))
+    return showToast("Las inscripciones de este evento están cerradas.", "error");
   const file = state.registration.file;
   if (!file) return showToast("Adjunta la captura de tu Yape.", "error");
   if (!RECEIPT_TYPES.includes(file.type))

@@ -80,6 +80,12 @@
   transform: rotate(22deg);
   animation: participateSweep 3.8s ease-in-out infinite;
 }
+.participate-button:disabled {
+  animation: none;
+}
+.participate-button:disabled::after {
+  display: none;
+}
 @keyframes participateGlow {
   0%,
   100% {
@@ -3281,6 +3287,15 @@ p {
     padding: 16px 38px 22px;
     background: #071329;
   }
+}
+
+.raffle-showcase .card-actions .button:disabled,
+.participate-button:disabled {
+  color: #aebbd4;
+  background: #28334c;
+  box-shadow: none;
+  opacity: 1;
+  cursor: not-allowed;
 }
 
 /* El borde oscuro del flyer de portada se funde con el fondo sin recortar su contenido. */
