@@ -42,6 +42,7 @@ export const TERMS_AND_CONDITIONS_HTML = `
   <p>– Las opciones adquiridas permiten participar por cualquiera de los premios. No obstante, se aplica la regla de un solo premio por ganador.</p>
   <p>– En caso de que un participante resulte seleccionado para dos o más premios, se le otorgará únicamente aquel que tenga el mayor valor comercial en el mercado.</p>
   <p>Por lo tanto, dejaré el premio de menor valor, el cual se sorteará inmediatamente para que otro participante pueda adjudicarse.</p>
+  <p>Los premios serán otorgados al primer 1° ticket que salga, excepto la moto que será al tercer 3° ticket.</p>
   <h3>7. Dinámica del Evento</h3>
   <p>El evento se realizará en vivo y será transmitido por la página oficial del Facebook de PA SALADO MI CAUSA y de PC BOX y seguirá la siguiente pauta:</p>
   <p>Primero.-  se presentara a los conductores y los auspiciadores de este gran evento.</p>
